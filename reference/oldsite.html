@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="description"
+      content="Ryan Scarbel's personal website and coding portfolio."
+    />
+    <meta
+      prefix="og: http://ogp.me/ns#"
+      property="og:image"
+      content="https://ryanscarbel.com/src/images/ryan-scarbel-website-front-page.png"
+    />
+    <meta
+      prefix="og: http://ogp.me/ns#"
+      property="og:image:type"
+      content="image/png"
+    />
+    <meta
+      prefix="og: http://ogp.me/ns#"
+      property="og:image:width"
+      content="1258"
+    />
+    <meta
+      prefix="og: http://ogp.me/ns#"
+      property="og:image:height"
+      content="720"
+    />
+    <meta prefix="og: http://ogp.me/ns#" property="og:type" content="website" />
+    <meta
+      prefix="og: http://ogp.me/ns#"
+      property="og:url"
+      content="https://ryanscarbe.com"
+    />
+    <meta
+      prefix="og: http://ogp.me/ns#"
+      property="og:title"
+      content="Ryan Scarbel"
+    />
+    <meta
+      prefix="og: http://ogp.me/ns#"
+      property="og:description"
+      content="Ryan Scarbel's personal website and coding portfolio."
+    />
+    <meta name="keywords" content="HTML, CSS, JavaScript, developer, Ryan" />
+    <meta name="author" content="Ryan Scarbel" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://ryanscarbel.com\assets\rs_logo_red_background_icon.png"
+      rel="icon"
+      sizes="32x32"
+      type="image/png"
+    />
+    <script src="https://ryanscarbel.com/src/CreateSVGimages.js" defer></script>
+    <script src="https://ryanscarbel.com/src/insertSVG.js" defer></script>
+    <script src="https://ryanscarbel.com/src/Scripts.js" defer></script>
+    <link href="https://ryanscarbel.com/src/Styles.css" rel="stylesheet" />
+    <noscript
+      ><style>
+        nav {
+          display: none;
+        }
+      </style></noscript
+    >
+    <title>Ryan Scarbel</title>
+  </head>
+  <body>
+    <div id="overlay"></div>
+
+    <nav>
+        <span id="logo"></span>
+      <div class="hamburger-container">
+        <div class="hamburger-button"></div>
+      </div>
+    </nav>
+
+    <div class="menu shadow">
+      <div id="menu-bar"></div>
+
+      <p class="menu-item">
+        <a
+          style="height:100%;"
+          href="https://github.com/rscarbel"
+          id="github-link"
+          target="_blank"
+          >My Github</a
+        >
+      </p>
+      <p class="menu-item">
+        <a
+          style="height:100%;"
+          href="https://www.linkedin.com/in/scarbel/"
+          target="_blank"
+          >My LinkedIn</a
+        >
+      </p>
+
+      <div class="menu-item" onclick="changeTheme('#4a4994','#dfdfff')">
+        <p>Default Theme</p>
+      </div>
+
+      <div class="menu-item" onclick="changeTheme('#944949','#ffdfdf')">
+        <p>Red Theme</p>
+      </div>
+
+      <div class="menu-item" onclick="changeTheme('#497894','#dff3ff')">
+        <p>Blue Theme</p>
+      </div>
+
+      <div class="menu-item" onclick="changeTheme('#499449','#e4ffdf')">
+        <p>Green Theme</p>
+      </div>
+      <p class="menu-item">
+        <a
+          style="height:100%;"
+          href="https://ryanscarbel.com/src/resume/Resume_Ryan_Scarbel.pdf"
+          target="_blank"
+          >Resume</a
+        >
+      </p>
+    </div>
+
+    <header>
+      <div>
+        <h1 id="heading">Fullstack software engineer, husband, cat-dad</h1>
+
+        <h3 id="subheading">
+          I write clean code, make friends with everyone, and love my life.
+        </h3>
+      </div>
+      <!-- The SVG of me is created and inserted using javascript. This is the only way to access individual elements of the SVG (e.g. access only the shirt). There are ways of accessing individual components like that, but none of those methods were possible to implement here. I have a regular picture of myself for browsers not running javascript. --><span id="profile-picture"><img
+            src="https://ryanscarbel.com/src/images/cartoon_ryan.png" width="150px"
+            alt="Ryan Scarbel Profile Picture." /></span>
+    </header>
+
+    <div id="about-me">
+      <h2>Hi! I&#39;m Ryan!</h2>
+
+      <div id="description">
+        <p>
+          I&#39;m a fullstack software engineer. I started my coding journey in 2008 by
+          building desktop apps in visual basic. I took a hiatus from coding for
+          a while and then picked it up again in 2019 by learning Python.
+        </p>
+
+        <p>
+          In early 2020 I shifted towards web development. I worked as a
+          software engineer for a startup starting at the end of 2020 and into
+          2021. I attended and graduated from a coding bootcamp, General
+          Assembly to supplement my knowledge &amp; skills.
+          
+          Today, I work as a Full Stack Software Engineer for HireArt.
+        </p>
+
+        <p>
+          My strongest assets for a development team are my ability to work well
+          with people of any personality type, do test-driven-development, and
+          design system architecture.
+        </p>
+      </div>
+    </div>
+
+    <div id="skills-section">
+      <h2>Skills</h2>
+
+      <p>Here are some of my proficiencies</p>
+
+      <div id="skills-container">
+        <table>
+          <!-- All td tags in this first row are populated by svg's created in javascript. If javascript is disabled the table looks just fine without the icons. -->
+          <tbody>
+            <tr>
+              <td class="skill-icon top-row shadow" id="languages-icon"></td>
+              <td class="skill-icon top-row shadow" id="technologies-icon"></td>
+              <td class="skill-icon top-row shadow" id="strengths-icon"></td>
+            </tr>
+            <tr>
+              <th class="skill-heading shadow">Languages</th>
+              <th class="skill-heading shadow">Technologies</th>
+              <th class="skill-heading shadow">Strengths</th>
+            </tr>
+            <tr>
+              <td class="skill-item shadow">Javascript &amp; TypeScript</td>
+              <td class="skill-item shadow">React</td>
+              <td class="skill-item shadow">Analytical reasoning</td>
+            </tr>
+            <tr>
+              <td class="skill-item shadow">Python</td>
+              <td class="skill-item shadow">Test-driven-development</td>
+              <td class="skill-item shadow">Learning on the fly</td>
+            </tr>
+            <tr>
+              <td class="skill-item shadow">Ruby</td>
+              <td class="skill-item shadow">Mocha/Chai &amp; Jest</td>
+              <td class="skill-item shadow">Personability</td>
+            </tr>
+            <tr>
+              <td class="skill-item shadow">SQL</td>
+              <td class="skill-item shadow">Django</td>
+              <td class="skill-item shadow">Clear communication</td>
+            </tr>
+            <tr>
+              <td class="skill-item bottom-row shadow">Klingon</td>
+              <td class="skill-item bottom-row shadow">Node</td>
+              <td class="skill-item bottom-row shadow">Writing</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="projects-section">
+      <h2>Projects</h2>
+
+      <p>Here are some of my old projects I&#39;ve worked on:</p
+      <p>Disclaimer - The database these projects are using is no longer being paid for and Heroku has ceased their free plan, so projects with heroku deployments and MongoDB databases no longer have functioning deployments, though the code is still visible.</p>
+
+      <div id="projects-container">
+        <div class="project shadow" id="dijkstras-algorithm">
+          <div
+            class="project-overlay"
+            onclick="window.open('https://github.com/rscarbel/dikstras-algorithm#readme','_blank')"
+          >
+            <h3 class="project-name">
+              <a
+                href="https://github.com/rscarbel/dikstras-algorithm#readme"
+                target="_blank"
+                >Dijkstra&#39;s Algorithm</a
+              >
+            </h3>
+
+            <p class="project-description">
+              <a
+                href="https://github.com/rscarbel/dikstras-algorithm#readme"
+                id="dijkstras-algorithm-p"
+                target="_blank"
+                >A pathfinding algorithm that finds the fastest path between two
+                points. It&#39;s what google maps does.</a
+              >
+            </p>
+          </div>
+        </div>
+        
+        <div class="project shadow" id="elevator">
+          <div
+            class="project-overlay"
+            onclick="window.open('https://github.com/rscarbel/elevator#readme','_blank')"
+          >
+            <h3 class="project-name">
+              <a
+                href="https://github.com/rscarbel/elevator#readme"
+                target="_blank"
+                >Elevator</a
+              >
+            </h3>
+
+            <p class="project-description">
+              <a
+                href="https://github.com/rscarbel/elevator#readme"
+                id="elevator-p"
+                target="_blank"
+                >A TypeScript project written how I code a real-world production
+                application. It may seem minor, but checkout the readme for
+                details.</a
+              >
+            </p>
+          </div>
+        </div>
+        
+
+        <div class="project shadow" id="employee-scheduling">
+          <div
+            class="project-overlay"
+            onclick="window.open('https://github.com/rscarbel/employee_scheduling#readme','_blank')"
+          >
+            <h3 class="project-name">
+              <a
+                href="https://github.com/rscarbel/employee_scheduling#readme"
+                target="_blank"
+                >Employee Scheduling App</a
+              >
+            </h3>
+
+            <p class="project-description">
+              <a
+                href="https://github.com/rscarbel/employee_scheduling#readme"
+                id="employee-scheduling-p"
+                target="_blank"
+                >Fullstack app with authentication using Bcrypt and using Mongo
+                for my databse.</a
+              >
+            </p>
+          </div>
+        </div>
+
+        <div class="project shadow" id="space-invaders">
+          <div
+            class="project-overlay"
+            onclick="window.open('https://ryanscarbel.com/src/space-invaders/game.html','_blank')"
+          >
+            <h3 class="project-name">
+              <a
+                href="https://ryanscarbel.com/src/space-invaders/game.html"
+                target="_blank"
+                >Space Invaders</a
+              >
+            </h3>
+
+            <p class="project-description">
+              <a
+                href="https://ryanscarbel.com/src/space-invaders/game.html"
+                id="space-invaders-p"
+                target="_blank"
+                >A small interactive game I made over a weekend. Only for
+                desktop currently.</a
+              >
+            </p>
+          </div>
+        </div>
+
+        <div class="project shadow" id="messaging-app">
+          <div
+            class="project-overlay"
+            onclick="{window.open('https://github.com/rscarbel/message_board_frontend#readme','_blank')"
+          >
+            <h3 class="project-name">
+              <a
+                href="https://github.com/rscarbel/message_board_frontend#readme"
+                target="_blank"
+                >Messaging App</a
+              >
+            </h3>
+
+            <p class="project-description">
+              <a
+                href="https://github.com/rscarbel/message_board_frontend#readme"
+                id="messaging-app-p"
+                target="_blank"
+                >Send what you want on this app, just remember - the internet is
+                forever.</a
+              >
+            </p>
+          </div>
+        </div>
+
+        <div class="project shadow" id="calorie-counter">
+          <div
+            class="project-overlay"
+            onclick="window.open('https://github.com/rscarbel/caloriecounter#readme','_blank')"
+          >
+            <h3 class="project-name">
+              <a
+                href="https://github.com/rscarbel/caloriecounter#readme"
+                target="_blank"
+                >Calorie Counter</a
+              >
+            </h3>
+
+            <p class="project-description">
+              <a
+                href="https://github.com/rscarbel/caloriecounter#readme"
+                id="calorie-counter-p"
+                target="_blank"
+                >Working on this project as a team made those guys go from
+                coworkers to friends. I miss the good times we had building
+                this.</a
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="testimonial-section">
+      <h2>Testimonials</h2>
+
+      <p>Here&rsquo;s what previous work managers have said about Ryan:</p>
+
+      <div id="testimonial-container">
+        <div class="testimonial">
+          <img
+            alt="David Balfour"
+            class="testimonial-picture shadow"
+            src="https://ryanscarbel.com\assets\David-Balfour.jpg"
+          />
+          <h3 class="testimonial-name">David Balfour</h3>
+
+          <p class="job-title">Meridian 3D &ndash; CAD Manager</p>
+
+          <p class="testimonial-content">
+            &quot;Ryan Scarbel is a high energy person who is constantly
+            striving to get results and is never satisfied unless he has
+            investigated as many options as time permits. He has very pleasant
+            inter-personal skills and understands the importance of contact
+            building and long term relationships. On a personal level he was a
+            great workmate and someone I would greatly enjoy working with in the
+            future.&quot;
+          </p>
+        </div>
+
+        <div class="testimonial">
+          <img
+            alt="Miles Jennings"
+            class="testimonial-picture shadow"
+            src="https://ryanscarbel.com\assets\Miles-Jennings.jpg"
+          />
+          <h3 class="testimonial-name">Miles Jennings</h3>
+
+          <p class="job-title">Recruiter.com &ndash; Founder &amp; CEO</p>
+
+          <p class="testimonial-content">
+            &quot;Ryan has done a lot of direct client work, marketing and sales
+            outreach through Hubspot, marketing automation sequences, and
+            partner calls. A bright and ambitious guy with technical skills and
+            very strong communication and presentation, which is rare. This is
+            someone you can put in front of clients and not think twice.&quot;
+          </p>
+        </div>
+
+        <div class="testimonial">
+          <img
+            alt="Stacey Grant"
+            class="testimonial-picture shadow"
+            src="https://ryanscarbel.com\assets\StaceyGrant.jpg"
+          />
+          <h3 class="testimonial-name">Stacey Grant</h3>
+
+          <p class="job-title">UNCG &ndash; Technology Support Analyst</p>
+
+          <p class="testimonial-content">
+            &quot;His attention to detail and ability to learn on the fly has
+            made him invaluable to us over the never ending periods of
+            transition in the ITS computer labs. Ryan has such a pleasant
+            demeanor about him and his customer service and technical skills are
+            some of the best I have seen in my 15 years serving as Computer Lab
+            Manager at UNCG. He is both dependable and always ready to go the
+            last mile&quot;
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
