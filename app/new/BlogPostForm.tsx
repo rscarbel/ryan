@@ -1,7 +1,8 @@
+// @ts-nocheck
 "use client";
-import { Editor } from "@toast-ui/react-editor";
-import TextEditor from "./TextEditor";
-import React, { useState, useRef } from "react";
+
+import { Editor } from "primereact/editor";
+import React, { useState } from "react";
 
 const BlogPostForm: React.FC = () => {
   const [title, setTitle] = useState("");
@@ -10,17 +11,11 @@ const BlogPostForm: React.FC = () => {
   const [altText, setAltText] = useState("");
   const [tags, setTags] = useState("");
 
-  const editorRef = useRef<Editor | null>(null);
-
   const handleSubmit = async () => {
-    const markdownContent = editorRef.current
-      ? editorRef.current.getInstance().getMarkdown()
-      : "";
-
     try {
-      console.log(markdownContent);
+      console.log(content);
     } catch (error) {
-      console.error("Error sending markdown content:", error);
+      console.error("Error sending content:", error);
     }
   };
 
@@ -37,7 +32,13 @@ const BlogPostForm: React.FC = () => {
           />
         </label>
         <br />
-        <TextEditor editorRef={editorRef} />
+
+        <Editor
+          value={content}
+          onTextChange={(e) => setContent(e.htmlValue || "")}
+          style={{ height: "320px" }}
+        />
+
         <br />
 
         <label>

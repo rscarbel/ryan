@@ -1,4 +1,3 @@
-import Providers from "next-auth/providers";
 import type { AuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
@@ -6,35 +5,35 @@ import FacebookProvider from "next-auth/providers/facebook";
 import TwitterProvider from "next-auth/providers/twitter";
 import LinkedInProvider from "next-auth/providers/linkedin";
 import EmailProvider from "next-auth/providers/email";
-import bcrypt from "bcrypt";
-
-async function verifyPassword(
-  plainText: string,
-  hashedPassword: string
-): Promise<boolean> {
-  return bcrypt.compare(plainText, hashedPassword);
-}
+import CredentialsProvider from "next-auth/providers/credentials";
+import { findUserByEmail } from "@/lib/user";
+import verifyPassword from "@/lib/auth/verifyPassword";
 
 const options: AuthOptions = {
   providers: [
-    Providers.Credentials({
+    CredentialsProvider({
       name: "Email and Password",
       credentials: {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      authorize: async (credentials) => {
-        const user = await yourMethodToFindUser(credentials.email);
-        if (user) {
+      authorize: async (credentials, req) => {
+        if (!credentials) return null;
+
+        const user = await findUserByEmail(credentials.email);
+        if (user && user.passwordHash) {
           const isValid = await verifyPassword(
             credentials.password,
             user.passwordHash
           );
           if (isValid) {
-            return Promise.resolve(user);
+            return {
+              ...user,
+              id: String(user.id),
+            };
           }
         }
-        return Promise.resolve(null);
+        return null;
       },
     }),
     GoogleProvider({
