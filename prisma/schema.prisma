@@ -1,0 +1,140 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  EDITOR
+  ADMIN
+}
+
+enum OAuthService {
+  GOOGLE
+  FACEBOOK
+  TWITTER
+}
+
+model SiteContent {
+  id              Int                  @id @default(autoincrement())
+  key             String               @unique
+  markup          String
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @default(now()) @updatedAt
+  siteContentHist SiteContentHistory[]
+
+  @@index([updatedAt])
+}
+
+model SiteContentHistory {
+  id          Int         @id @default(autoincrement())
+  contentId   Int
+  markup      String
+  createdAt   DateTime    @default(now())
+  siteContent SiteContent @relation(fields: [contentId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id                  Int                  @id @default(autoincrement())
+  email               String               @unique
+  passwordHash        String?
+  name                String
+  roles               UserRole[]
+  oAuth               OAuth[]
+  passwordResetTokens PasswordResetToken[]
+  posts               Post[]
+  comments            Comment[]
+  edits               EditHistory[]        @relation("EditorToEditHistory")
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @default(now()) @updatedAt
+  deletedAt           DateTime?
+}
+
+model OAuth {
+  id         Int          @id @default(autoincrement())
+  userId     Int
+  provider   OAuthService
+  externalId String
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, externalId])
+}
+
+model Post {
+  id          Int           @id @default(autoincrement())
+  title       String
+  content     String
+  imageUrl    String?
+  altText     String?
+  tags        PostToTag[]
+  metadata    Metadata[]
+  editHistory EditHistory[]
+  comments    Comment[]
+  author      User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId    Int
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now()) @updatedAt
+  deletedAt   DateTime?
+}
+
+model EditHistory {
+  id          Int      @id @default(autoincrement())
+  postId      Int
+  editorId    Int
+  diffTitle   String?
+  diffContent String?
+  createdAt   DateTime @default(now())
+  post        Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  editor      User     @relation(fields: [editorId], references: [id], name: "EditorToEditHistory", onDelete: Cascade)
+}
+
+model Tag {
+  id    Int         @id @default(autoincrement())
+  name  String      @unique
+  posts PostToTag[]
+}
+
+model PostToTag {
+  postId Int
+  tagId  Int
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag    Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, tagId])
+}
+
+model Metadata {
+  id     Int  @id @default(autoincrement())
+  postId Int
+  data   Json
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+  id              Int       @id @default(autoincrement())
+  postId          Int
+  userId          Int
+  content         String
+  parentCommentId Int?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @default(now()) @updatedAt
+  post            Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deletedAt       DateTime?
+}
+
+model PasswordResetToken {
+  id     Int      @id @default(autoincrement())
+  userId Int
+  token  String   @unique
+  expiry DateTime
+  used   Boolean  @default(false)
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
