@@ -18,6 +18,16 @@ A collection of utility functions for my personal website.
   - [getDeletedPosts](#getdeletedposts)
   - [getPostCountByAuthor](#getpostcountbyauthor)
 - [User Utilities](#user-utilities)
+  - [createUser](#createuser)
+  - [updateUser](#updateuser)
+  - [softDeleteUser](#softdeleteuser)
+  - [findUserById](#finduserbyid)
+  - [isTokenValid](#istokenvalid)
+  - [getPostsByUser](#getpostsbyuser)
+  - [findUserByEmail](#finduserbyemail)
+  - [createPasswordResetToken](#createpasswordresettoken)
+  - [findPasswordResetToken](#findpasswordresettoken)
+  - [markTokenAsUsed](#marktokenasused)
 
 ## Post Utilities
 
