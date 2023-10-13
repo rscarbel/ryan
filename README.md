@@ -28,6 +28,19 @@ A collection of utility functions for my personal website.
   - [createPasswordResetToken](#createpasswordresettoken)
   - [findPasswordResetToken](#findpasswordresettoken)
   - [markTokenAsUsed](#marktokenasused)
+- [Site Content Utilities](#site-content-utilities)
+  - [`getContentByKey`](#getcontentbykey)
+  - [`getAllContent`](#getallcontent)
+  - [`createContent`](#createcontent)
+  - [`updateContentByKey`](#updatecontentbykey)
+  - [`deleteContentByKey`](#deletecontentbykey)
+  - [`getContentHistoryByKey`](#getcontenthistorybykey)
+  - [`deleteAllHistoryForKey`](#deleteallhistoryforkey)
+  - [`getLatestHistoryByKey`](#getlatesthistorybykey)
+  - [`countHistoryForKey`](#counthistoryforkey)
+  - [`contentKeyExists`](#contentkeyexists)
+  - [`getContentUpdatedAfter`](#getcontentupdatedafter)
+  - [`getAllContentWithoutHistories`](#getallcontentwithouthistories)
 
 ## Post Utilities
 
@@ -251,3 +264,110 @@ Marks a password reset token as used by its unique identifier.
   ```javascript
   await markTokenAsUsed(1); // mark token with id 1 as used
 
+ ## Site Content Utilities
+
+### `getContentByKey`
+Fetches site content by its unique key.
+- **Parameters**:
+  - **key** (string): The unique key of the site content.
+- **Returns**: SiteContent object or null if not found.
+- **Usage**:
+  ```javascript
+  const content = await getContentByKey('home');
+
+### `getAllContent`
+Fetches all site content ordered by the most recently updated.
+- **Returns**: Array of SiteContent objects.
+- **Usage**:
+  ```javascript
+  const contentList = await getAllContent();
+
+### `createContent`
+Creates a new site content entry.
+- **Parameters**:
+  - **key** (string): The unique key of the site content.
+  - **markup** (string): The content markup.
+- **Returns**: Created SiteContent object.
+- **Usage**:
+  ```javascript
+  const newContent = await createContent('about', 'This is the about page content.');
+
+### `updateContentByKey`
+Updates site content by its unique key.
+- **Parameters**:
+  - **key** (string): The unique key of the site content.
+  - **newMarkup** (string): The updated content markup.
+- **Returns**: Updated SiteContent object.
+- **Usage**:
+  ```javascript
+  const updatedContent = await updateContentByKey('about', 'Updated about page content.');
+
+### `deleteContentByKey`
+Deletes site content by its unique key.
+- **Parameters**:
+  - **key** (string): The unique key of the site content.
+- **Returns**: Deleted SiteContent object.
+- **Usage**:
+  ```javascript
+  const deletedContent = await deleteContentByKey('about');
+
+### `getContentHistoryByKey`
+Fetches the history of site content by its unique key.
+- **Parameters**:
+  - **key** (string): The unique key of the site content.
+- **Returns**: Array of SiteContentHistory objects.
+- **Usage**:
+  ```javascript
+  const history = await getContentHistoryByKey('about');
+
+### `deleteAllHistoryForKey`
+Deletes all history records of site content by its unique key.
+- **Parameters**:
+  - **key** (string): The unique key of the site content.
+- **Returns**: Void.
+- **Usage**:
+  ```javascript
+  await deleteAllHistoryForKey('about');
+
+### `getLatestHistoryByKey`
+Fetches the latest history record of site content by its unique key.
+- **Parameters**:
+  - **key** (string): The unique key of the site content.
+- **Returns**: Latest SiteContentHistory object or null if not found.
+- **Usage**:
+  ```javascript
+  const latestHistory = await getLatestHistoryByKey('about');
+
+### `countHistoryForKey`
+Counts the number of history records for site content by its unique key.
+- **Parameters**:
+  - **key** (string): The unique key of the site content.
+- **Returns**: Number of history records.
+- **Usage**:
+  ```javascript
+  const historyCount = await countHistoryForKey('about');
+
+### `contentKeyExists`
+Checks if site content with a given key exists.
+- **Parameters**:
+  - **key** (string): The unique key of the site content.
+- **Returns**: Boolean, true if content exists, false otherwise.
+- **Usage**:
+  ```javascript
+  const exists = await contentKeyExists('about');
+
+### `getContentUpdatedAfter`
+Fetches site content updated after a specific date.
+- **Parameters**:
+  - **date** (Date): The date to compare updates to.
+- **Returns**: Array of SiteContent objects.
+- **Usage**:
+  ```javascript
+  const updatedContent = await getContentUpdatedAfter(new Date('2023-01-01'));
+
+### `getAllContentWithoutHistories`
+Fetches all site content that has no associated history records.
+- **Returns**: Array of SiteContent objects.
+- **Usage**:
+  ```javascript
+  const contentWithoutHistories = await getAllContentWithoutHistories();
