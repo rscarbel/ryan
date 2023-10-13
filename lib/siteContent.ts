@@ -17,10 +17,10 @@ export async function getAllContent(): Promise<SiteContent[]> {
 
 export async function createContent(
   key: string,
-  markup: string
+  content: string
 ): Promise<SiteContent> {
   return await prisma.siteContent.create({
-    data: { key: key, markup: markup },
+    data: { key: key, content: content, format: "PLAIN_TEXT" },
   });
 }
 
@@ -37,13 +37,14 @@ export async function updateContentByKey(
   const historyRecordPromise = prisma.siteContentHistory.create({
     data: {
       contentId: content.id,
-      markup: content.markup,
+      content: content.content,
+      format: "PLAIN_TEXT",
     },
   });
 
   const updateRecordPromise = prisma.siteContent.update({
     where: { key: key },
-    data: { markup: newMarkup },
+    data: { content: newMarkup },
   });
 
   const [_, updatedContent] = await prisma.$transaction([

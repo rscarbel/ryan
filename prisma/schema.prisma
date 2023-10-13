@@ -22,10 +22,17 @@ enum OAuthService {
   TWITTER
 }
 
+enum SiteContentFormat {
+  HTML
+  MARKDOWN
+  PLAIN_TEXT
+}
+
 model SiteContent {
   id              Int                  @id @default(autoincrement())
   key             String               @unique
-  markup          String
+  content         String
+  format          SiteContentFormat    @default(PLAIN_TEXT)
   createdAt       DateTime             @default(now())
   updatedAt       DateTime             @default(now()) @updatedAt
   siteContentHist SiteContentHistory[]
@@ -34,11 +41,12 @@ model SiteContent {
 }
 
 model SiteContentHistory {
-  id          Int         @id @default(autoincrement())
+  id          Int               @id @default(autoincrement())
   contentId   Int
-  markup      String
-  createdAt   DateTime    @default(now())
-  siteContent SiteContent @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  content     String
+  format      SiteContentFormat
+  createdAt   DateTime          @default(now())
+  siteContent SiteContent       @relation(fields: [contentId], references: [id], onDelete: Cascade)
 }
 
 model User {
@@ -46,7 +54,7 @@ model User {
   email               String               @unique
   passwordHash        String?
   name                String
-  roles               UserRole[]
+  roles               UserRole[]           @default([USER])
   oAuth               OAuth[]
   passwordResetTokens PasswordResetToken[]
   posts               Post[]

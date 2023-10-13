@@ -35,8 +35,8 @@ describe("siteContent", () => {
   });
 
   test("getAllContent", async () => {
-    await createContent("key1", "markup1");
-    await createContent("key2", "markup2");
+    await createContent("key1", "content1");
+    await createContent("key2", "content2");
     const allContent = await getAllContent();
     expect(allContent.length).toEqual(2);
   });
@@ -44,13 +44,13 @@ describe("siteContent", () => {
   test("createContent", async () => {
     const content = await createContent("testKey", "testMarkup");
     expect(content.key).toBe("testKey");
-    expect(content.markup).toBe("testMarkup");
+    expect(content.content).toBe("testMarkup");
   });
 
   test("updateContentByKey", async () => {
     await createContent("testKey", "testMarkup");
     const updatedContent = await updateContentByKey("testKey", "newMarkup");
-    expect(updatedContent.markup).toBe("newMarkup");
+    expect(updatedContent.content).toBe("newMarkup");
   });
 
   test("deleteContentByKey", async () => {
@@ -64,7 +64,7 @@ describe("siteContent", () => {
     const content = await createContent("testKey", "testMarkup");
     await updateContentByKey("testKey", "newMarkup");
     const history = await getContentHistoryByKey("testKey");
-    expect(history[0].markup).toBe("testMarkup");
+    expect(history[0].content).toBe("testMarkup");
   });
 
   test("deleteAllHistoryForKey", async () => {
@@ -81,7 +81,7 @@ describe("siteContent", () => {
     const latestHistory = await getLatestHistoryByKey("testKey");
 
     if (latestHistory) {
-      expect(latestHistory.markup).toBe("testMarkup");
+      expect(latestHistory.content).toBe("testMarkup");
     } else {
       throw new Error("Expected latestHistory to be not null.");
     }
@@ -108,9 +108,9 @@ describe("siteContent", () => {
   });
 
   test("getAllContentWithoutHistories", async () => {
-    const contentWithHistory = await createContent("key1", "markup1");
+    const contentWithHistory = await createContent("key1", "content1");
     await updateContentByKey("key1", "newMarkup1");
-    await createContent("key2", "markup2");
+    await createContent("key2", "content2");
     const contentWithoutHistory = await getAllContentWithoutHistories();
     expect(contentWithoutHistory.length).toBe(1);
     expect(contentWithoutHistory[0].key).toBe("key2");
