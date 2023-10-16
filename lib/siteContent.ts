@@ -1,140 +1,139 @@
-import { PrismaClient, SiteContent, SiteContentHistory } from "@prisma/client";
-const prisma = new PrismaClient();
+import {
+  PrismaClient,
+  SiteContent,
+  SiteContentHistory,
+  SiteContentFormat,
+} from "@prisma/client";
+const prisma = new PrismaClient({
+  log: ["query", "info", "warn", "error"],
+});
 
-export async function getContentByKey(
-  key: string
-): Promise<SiteContent | null> {
-  return await prisma.siteContent.findUnique({
-    where: { key: key },
-  });
+interface FindUniqueContent {
+  (key: string): Promise<SiteContent | null>;
 }
 
-export async function getAllContent(): Promise<SiteContent[]> {
-  return await prisma.siteContent.findMany({
+export const findUniqueContentByKey: FindUniqueContent = async (key) => {
+  return prisma.siteContent.findUnique({
+    where: { key },
+  });
+};
+
+export const findOrCreateSiteContent = async (
+  key: string,
+  content: string,
+  format: SiteContentFormat
+): Promise<SiteContent> => {
+  const existingSiteContent = await findUniqueContentByKey(key);
+
+  if (existingSiteContent) return existingSiteContent;
+
+  return prisma.siteContent.create({
+    data: { key, content, format },
+  });
+};
+
+export const getContentByKey: FindUniqueContent = findUniqueContentByKey;
+
+export const getAllContent = async (): Promise<SiteContent[]> =>
+  prisma.siteContent.findMany({
     orderBy: { updatedAt: "desc" },
   });
-}
 
-export async function createContent(
+export const createContent = async (
   key: string,
   content: string
-): Promise<SiteContent> {
-  return await prisma.siteContent.create({
-    data: { key: key, content: content, format: "PLAIN_TEXT" },
+): Promise<SiteContent> =>
+  prisma.siteContent.create({
+    data: { key, content, format: "PLAIN_TEXT" },
   });
-}
 
-export async function updateContentByKey(
+export const updateContentByKey = async (
   key: string,
   newMarkup: string
-): Promise<SiteContent> {
-  const content = await prisma.siteContent.findUnique({
-    where: { key: key },
-  });
+): Promise<SiteContent> => {
+  const content = await findUniqueContentByKey(key);
 
   if (!content) throw new Error("Content not found");
 
-  const historyRecordPromise = prisma.siteContentHistory.create({
-    data: {
-      contentId: content.id,
-      content: content.content,
-      format: "PLAIN_TEXT",
-    },
-  });
-
-  const updateRecordPromise = prisma.siteContent.update({
-    where: { key: key },
-    data: { content: newMarkup },
-  });
-
   const [_, updatedContent] = await prisma.$transaction([
-    historyRecordPromise,
-    updateRecordPromise,
+    prisma.siteContentHistory.create({
+      data: {
+        contentId: content.id,
+        content: content.content,
+        format: "PLAIN_TEXT",
+      },
+    }),
+    prisma.siteContent.update({
+      where: { key },
+      data: { content: newMarkup },
+    }),
   ]);
 
   return updatedContent;
-}
+};
 
-export async function deleteContentByKey(key: string): Promise<SiteContent> {
-  return await prisma.siteContent.delete({
-    where: { key: key },
-  });
-}
+export const deleteContentByKey = async (key: string): Promise<SiteContent> =>
+  prisma.siteContent.delete({ where: { key } });
 
-export async function getContentHistoryByKey(
+export const getContentHistoryByKey = async (
   key: string
-): Promise<SiteContentHistory[]> {
-  const content = await prisma.siteContent.findUnique({
-    where: { key: key },
-  });
+): Promise<SiteContentHistory[]> => {
+  const content = await findUniqueContentByKey(key);
 
   if (!content) throw new Error("Content not found");
 
-  return await prisma.siteContentHistory.findMany({
+  return prisma.siteContentHistory.findMany({
     where: { contentId: content.id },
     orderBy: { createdAt: "desc" },
   });
-}
+};
 
-export async function deleteAllHistoryForKey(key: string): Promise<void> {
-  const content = await prisma.siteContent.findUnique({
-    where: { key: key },
-  });
+export const deleteAllHistoryForKey = async (key: string): Promise<void> => {
+  const content = await findUniqueContentByKey(key);
 
   if (!content) throw new Error("Content not found");
 
   await prisma.siteContentHistory.deleteMany({
     where: { contentId: content.id },
   });
-}
+};
 
-export async function getLatestHistoryByKey(
+export const getLatestHistoryByKey = async (
   key: string
-): Promise<SiteContentHistory | null> {
-  const content = await prisma.siteContent.findUnique({
-    where: { key: key },
-  });
+): Promise<SiteContentHistory | null> => {
+  const content = await findUniqueContentByKey(key);
 
   if (!content) throw new Error("Content not found");
 
-  return await prisma.siteContentHistory.findFirst({
+  return prisma.siteContentHistory.findFirst({
     where: { contentId: content.id },
     orderBy: { createdAt: "desc" },
   });
-}
+};
 
-export async function countHistoryForKey(key: string): Promise<number> {
-  const content = await prisma.siteContent.findUnique({
-    where: { key: key },
-  });
+export const countHistoryForKey = async (key: string): Promise<number> => {
+  const content = await findUniqueContentByKey(key);
 
   if (!content) throw new Error("Content not found");
 
-  return await prisma.siteContentHistory.count({
+  return prisma.siteContentHistory.count({
     where: { contentId: content.id },
   });
-}
+};
 
-export async function contentKeyExists(key: string): Promise<boolean> {
-  const content = await prisma.siteContent.findUnique({
-    where: { key: key },
-  });
-
+export const contentKeyExists = async (key: string): Promise<boolean> => {
+  const content = await findUniqueContentByKey(key);
   return !!content;
-}
+};
 
-export async function getContentUpdatedAfter(
-  date: Date
-): Promise<SiteContent[]> {
-  return await prisma.siteContent.findMany({
+export const getContentUpdatedAfter = async (date: Date): Promise<SiteContent[]> =>
+  prisma.siteContent.findMany({
     where: { updatedAt: { gt: date } },
     orderBy: { updatedAt: "desc" },
   });
-}
 
-export async function getAllContentWithoutHistories(): Promise<SiteContent[]> {
-  return await prisma.siteContent.findMany({
+export const getAllContentWithoutHistories = async (): Promise<SiteContent[]> =>
+  prisma.siteContent.findMany({
     where: { siteContentHist: { none: {} } },
     orderBy: { updatedAt: "desc" },
   });
-}
