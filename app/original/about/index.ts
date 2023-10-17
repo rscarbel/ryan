@@ -1,2 +1,2 @@
-import About from "./about";
+import About from "./About";
 export default About;
