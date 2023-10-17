@@ -4,11 +4,15 @@ CREATE TYPE "UserRole" AS ENUM ('USER', 'EDITOR', 'ADMIN');
 -- CreateEnum
 CREATE TYPE "OAuthService" AS ENUM ('GOOGLE', 'FACEBOOK', 'TWITTER');
 
+-- CreateEnum
+CREATE TYPE "SiteContentFormat" AS ENUM ('HTML', 'MARKDOWN', 'PLAIN_TEXT');
+
 -- CreateTable
 CREATE TABLE "SiteContent" (
     "id" SERIAL NOT NULL,
-    "key" TEXT NOT NULL,
-    "markup" TEXT NOT NULL,
+    "contentKey" TEXT NOT NULL,
+    "content" TEXT NOT NULL,
+    "format" "SiteContentFormat" NOT NULL DEFAULT 'PLAIN_TEXT',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -19,7 +23,8 @@ CREATE TABLE "SiteContent" (
 CREATE TABLE "SiteContentHistory" (
     "id" SERIAL NOT NULL,
     "contentId" INTEGER NOT NULL,
-    "markup" TEXT NOT NULL,
+    "content" TEXT NOT NULL,
+    "format" "SiteContentFormat" NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "SiteContentHistory_pkey" PRIMARY KEY ("id")
@@ -31,7 +36,7 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "passwordHash" TEXT,
     "name" TEXT NOT NULL,
-    "roles" "UserRole"[],
+    "roles" "UserRole"[] DEFAULT ARRAY['USER']::"UserRole"[],
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deletedAt" TIMESTAMP(3),
@@ -125,7 +130,7 @@ CREATE TABLE "PasswordResetToken" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "SiteContent_key_key" ON "SiteContent"("key");
+CREATE UNIQUE INDEX "SiteContent_contentKey_key" ON "SiteContent"("contentKey");
 
 -- CreateIndex
 CREATE INDEX "SiteContent_updatedAt_idx" ON "SiteContent"("updatedAt");

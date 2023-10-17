@@ -43,7 +43,7 @@ describe("siteContent", () => {
 
   test("createContent", async () => {
     const content = await createContent("testKey", "testMarkup");
-    expect(content.key).toBe("testKey");
+    expect(content.contentKey).toBe("testKey");
     expect(content.content).toBe("testMarkup");
   });
 
@@ -113,6 +113,6 @@ describe("siteContent", () => {
     await createContent("key2", "content2");
     const contentWithoutHistory = await getAllContentWithoutHistories();
     expect(contentWithoutHistory.length).toBe(1);
-    expect(contentWithoutHistory[0].key).toBe("key2");
+    expect(contentWithoutHistory[0].contentKey).toBe("key2");
   });
 });

@@ -9,26 +9,26 @@ const prisma = new PrismaClient({
 });
 
 interface FindUniqueContent {
-  (key: string): Promise<SiteContent | null>;
+  (contentKey: string): Promise<SiteContent | null>;
 }
 
-export const findUniqueContentByKey: FindUniqueContent = async (key) => {
+export const findUniqueContentByKey: FindUniqueContent = async (contentKey) => {
   return prisma.siteContent.findUnique({
-    where: { key },
+    where: { contentKey },
   });
 };
 
 export const findOrCreateSiteContent = async (
-  key: string,
+  contentKey: string,
   content: string,
   format: SiteContentFormat
 ): Promise<SiteContent> => {
-  const existingSiteContent = await findUniqueContentByKey(key);
+  const existingSiteContent = await findUniqueContentByKey(contentKey);
 
   if (existingSiteContent) return existingSiteContent;
 
   return prisma.siteContent.create({
-    data: { key, content, format },
+    data: { contentKey, content, format },
   });
 };
 
@@ -40,18 +40,19 @@ export const getAllContent = async (): Promise<SiteContent[]> =>
   });
 
 export const createContent = async (
-  key: string,
-  content: string
+  contentKey: string,
+  content: string,
+  format: SiteContentFormat
 ): Promise<SiteContent> =>
   prisma.siteContent.create({
-    data: { key, content, format: "PLAIN_TEXT" },
+    data: { contentKey, content, format: format || "PLAIN_TEXT" },
   });
 
 export const updateContentByKey = async (
-  key: string,
+  contentKey: string,
   newMarkup: string
 ): Promise<SiteContent> => {
-  const content = await findUniqueContentByKey(key);
+  const content = await findUniqueContentByKey(contentKey);
 
   if (!content) throw new Error("Content not found");
 
@@ -64,7 +65,7 @@ export const updateContentByKey = async (
       },
     }),
     prisma.siteContent.update({
-      where: { key },
+      where: { contentKey },
       data: { content: newMarkup },
     }),
   ]);
@@ -72,13 +73,14 @@ export const updateContentByKey = async (
   return updatedContent;
 };
 
-export const deleteContentByKey = async (key: string): Promise<SiteContent> =>
-  prisma.siteContent.delete({ where: { key } });
+export const deleteContentByKey = async (
+  contentKey: string
+): Promise<SiteContent> => prisma.siteContent.delete({ where: { contentKey } });
 
 export const getContentHistoryByKey = async (
-  key: string
+  contentKey: string
 ): Promise<SiteContentHistory[]> => {
-  const content = await findUniqueContentByKey(key);
+  const content = await findUniqueContentByKey(contentKey);
 
   if (!content) throw new Error("Content not found");
 
@@ -88,8 +90,10 @@ export const getContentHistoryByKey = async (
   });
 };
 
-export const deleteAllHistoryForKey = async (key: string): Promise<void> => {
-  const content = await findUniqueContentByKey(key);
+export const deleteAllHistoryForKey = async (
+  contentKey: string
+): Promise<void> => {
+  const content = await findUniqueContentByKey(contentKey);
 
   if (!content) throw new Error("Content not found");
 
@@ -99,9 +103,9 @@ export const deleteAllHistoryForKey = async (key: string): Promise<void> => {
 };
 
 export const getLatestHistoryByKey = async (
-  key: string
+  contentKey: string
 ): Promise<SiteContentHistory | null> => {
-  const content = await findUniqueContentByKey(key);
+  const content = await findUniqueContentByKey(contentKey);
 
   if (!content) throw new Error("Content not found");
 
@@ -111,8 +115,10 @@ export const getLatestHistoryByKey = async (
   });
 };
 
-export const countHistoryForKey = async (key: string): Promise<number> => {
-  const content = await findUniqueContentByKey(key);
+export const countHistoryForKey = async (
+  contentKey: string
+): Promise<number> => {
+  const content = await findUniqueContentByKey(contentKey);
 
   if (!content) throw new Error("Content not found");
 
@@ -121,8 +127,10 @@ export const countHistoryForKey = async (key: string): Promise<number> => {
   });
 };
 
-export const contentKeyExists = async (key: string): Promise<boolean> => {
-  const content = await findUniqueContentByKey(key);
+export const contentKeyExists = async (
+  contentKey: string
+): Promise<boolean> => {
+  const content = await findUniqueContentByKey(contentKey);
   return !!content;
 };
 

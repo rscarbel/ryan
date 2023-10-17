@@ -30,7 +30,7 @@ enum SiteContentFormat {
 
 model SiteContent {
   id              Int                  @id @default(autoincrement())
-  key             String               @unique
+  contentKey      String               @unique
   content         String
   format          SiteContentFormat    @default(PLAIN_TEXT)
   createdAt       DateTime             @default(now())

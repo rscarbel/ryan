@@ -1,16 +1,16 @@
-import { PrismaClient } from "@prisma/client";
-import { addOldSiteContent } from "../migrations/addOldSiteContent";
+// import { PrismaClient } from "@prisma/client";
+// import { addOldSiteContent } from "../migrations/addOldSiteContent";
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
-const runMigrations = async () => {
-  console.log("Running migrations...");
-  await addOldSiteContent();
-  console.log("Migrations complete!");
-};
+// const runMigrations = async () => {
+//   console.log("Running migrations...");
+//   await addOldSiteContent();
+//   console.log("Migrations complete!");
+// };
 
-const result = await runMigrations();
+// const result = await runMigrations();
 
-console.log("Result:", result);
+// console.log("Result:", result);
 
-prisma.$disconnect();
+// prisma.$disconnect();

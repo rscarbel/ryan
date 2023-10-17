@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "datamigrations": "bun lib/data/scripts/runMigrations.ts"
+    "lint": "next lint"
   },
   "dependencies": {
     "@prisma/client": "^5.4.2",
