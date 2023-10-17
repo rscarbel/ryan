@@ -15,12 +15,12 @@ export default async function Projects() {
       </p>
 
       <div id="projects-container">
-        <div class="project shadow" id="dijkstras-algorithm">
+        <div className="project shadow" id="dijkstras-algorithm">
           <div
-            class="project-overlay"
+            className="project-overlay"
             onclick="window.open('https://github.com/rscarbel/dikstras-algorithm#readme','_blank')"
           >
-            <h3 class="project-name">
+            <h3 className="project-name">
               <a
                 href="https://github.com/rscarbel/dikstras-algorithm#readme"
                 target="_blank"
@@ -29,7 +29,7 @@ export default async function Projects() {
               </a>
             </h3>
 
-            <p class="project-description">
+            <p className="project-description">
               <a
                 href="https://github.com/rscarbel/dikstras-algorithm#readme"
                 id="dijkstras-algorithm-p"
@@ -42,12 +42,12 @@ export default async function Projects() {
           </div>
         </div>
 
-        <div class="project shadow" id="elevator">
+        <div className="project shadow" id="elevator">
           <div
-            class="project-overlay"
+            className="project-overlay"
             onclick="window.open('https://github.com/rscarbel/elevator#readme','_blank')"
           >
-            <h3 class="project-name">
+            <h3 className="project-name">
               <a
                 href="https://github.com/rscarbel/elevator#readme"
                 target="_blank"
@@ -56,7 +56,7 @@ export default async function Projects() {
               </a>
             </h3>
 
-            <p class="project-description">
+            <p className="project-description">
               <a
                 href="https://github.com/rscarbel/elevator#readme"
                 id="elevator-p"
@@ -70,12 +70,12 @@ export default async function Projects() {
           </div>
         </div>
 
-        <div class="project shadow" id="employee-scheduling">
+        <div className="project shadow" id="employee-scheduling">
           <div
-            class="project-overlay"
+            className="project-overlay"
             onclick="window.open('https://github.com/rscarbel/employee_scheduling#readme','_blank')"
           >
-            <h3 class="project-name">
+            <h3 className="project-name">
               <a
                 href="https://github.com/rscarbel/employee_scheduling#readme"
                 target="_blank"
@@ -84,7 +84,7 @@ export default async function Projects() {
               </a>
             </h3>
 
-            <p class="project-description">
+            <p className="project-description">
               <a
                 href="https://github.com/rscarbel/employee_scheduling#readme"
                 id="employee-scheduling-p"
@@ -97,12 +97,12 @@ export default async function Projects() {
           </div>
         </div>
 
-        <div class="project shadow" id="space-invaders">
+        <div className="project shadow" id="space-invaders">
           <div
-            class="project-overlay"
+            className="project-overlay"
             onclick="window.open('https://ryanscarbel.com/src/space-invaders/game.html','_blank')"
           >
-            <h3 class="project-name">
+            <h3 className="project-name">
               <a
                 href="https://ryanscarbel.com/src/space-invaders/game.html"
                 target="_blank"
@@ -111,7 +111,7 @@ export default async function Projects() {
               </a>
             </h3>
 
-            <p class="project-description">
+            <p className="project-description">
               <a
                 href="https://ryanscarbel.com/src/space-invaders/game.html"
                 id="space-invaders-p"
@@ -124,12 +124,12 @@ export default async function Projects() {
           </div>
         </div>
 
-        <div class="project shadow" id="messaging-app">
+        <div className="project shadow" id="messaging-app">
           <div
-            class="project-overlay"
+            className="project-overlay"
             onclick="{window.open('https://github.com/rscarbel/message_board_frontend#readme','_blank')"
           >
-            <h3 class="project-name">
+            <h3 className="project-name">
               <a
                 href="https://github.com/rscarbel/message_board_frontend#readme"
                 target="_blank"
@@ -138,7 +138,7 @@ export default async function Projects() {
               </a>
             </h3>
 
-            <p class="project-description">
+            <p className="project-description">
               <a
                 href="https://github.com/rscarbel/message_board_frontend#readme"
                 id="messaging-app-p"
@@ -151,12 +151,12 @@ export default async function Projects() {
           </div>
         </div>
 
-        <div class="project shadow" id="calorie-counter">
+        <div className="project shadow" id="calorie-counter">
           <div
-            class="project-overlay"
+            className="project-overlay"
             onclick="window.open('https://github.com/rscarbel/caloriecounter#readme','_blank')"
           >
-            <h3 class="project-name">
+            <h3 className="project-name">
               <a
                 href="https://github.com/rscarbel/caloriecounter#readme"
                 target="_blank"
@@ -165,7 +165,7 @@ export default async function Projects() {
               </a>
             </h3>
 
-            <p class="project-description">
+            <p className="project-description">
               <a
                 href="https://github.com/rscarbel/caloriecounter#readme"
                 id="calorie-counter-p"

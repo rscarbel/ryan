@@ -1,6 +1,6 @@
 export default async function About() {
   return (
-    <main className="flex flex-col items-center">
+    <main className="flex ">
       <div id="about-me">
         <h2>Hi! I&#39;m Ryan!</h2>
 
