@@ -1,4 +1,12 @@
-export default async function Projects() {
+"use client";
+
+export default function Projects() {
+  const handleClick = (url) => {
+    if (typeof window !== "undefined") {
+      window.open(url, "_blank");
+    }
+  };
+
   return (
     <section
       id="projects-section"
@@ -18,7 +26,11 @@ export default async function Projects() {
         <div className="project shadow" id="dijkstras-algorithm">
           <div
             className="project-overlay"
-            onclick="window.open('https://github.com/rscarbel/dikstras-algorithm#readme','_blank')"
+            onClick={() =>
+              handleClick(
+                "https://github.com/rscarbel/dikstras-algorithm#readme"
+              )
+            }
           >
             <h3 className="project-name">
               <a
@@ -45,7 +57,9 @@ export default async function Projects() {
         <div className="project shadow" id="elevator">
           <div
             className="project-overlay"
-            onclick="window.open('https://github.com/rscarbel/elevator#readme','_blank')"
+            onClick={() =>
+              handleClick("https://github.com/rscarbel/elevator#readme")
+            }
           >
             <h3 className="project-name">
               <a
@@ -73,7 +87,11 @@ export default async function Projects() {
         <div className="project shadow" id="employee-scheduling">
           <div
             className="project-overlay"
-            onclick="window.open('https://github.com/rscarbel/employee_scheduling#readme','_blank')"
+            onClick={() =>
+              handleClick(
+                "https://github.com/rscarbel/employee_scheduling#readme"
+              )
+            }
           >
             <h3 className="project-name">
               <a
@@ -100,7 +118,11 @@ export default async function Projects() {
         <div className="project shadow" id="space-invaders">
           <div
             className="project-overlay"
-            onclick="window.open('https://ryanscarbel.com/src/space-invaders/game.html','_blank')"
+            onClick={() =>
+              handleClick(
+                "https://ryanscarbel.com/src/space-invaders/game.html"
+              )
+            }
           >
             <h3 className="project-name">
               <a
@@ -127,7 +149,11 @@ export default async function Projects() {
         <div className="project shadow" id="messaging-app">
           <div
             className="project-overlay"
-            onclick="{window.open('https://github.com/rscarbel/message_board_frontend#readme','_blank')"
+            onClick={() =>
+              handleClick(
+                "https://github.com/rscarbel/message_board_frontend#readme"
+              )
+            }
           >
             <h3 className="project-name">
               <a
@@ -154,7 +180,9 @@ export default async function Projects() {
         <div className="project shadow" id="calorie-counter">
           <div
             className="project-overlay"
-            onclick="window.open('https://github.com/rscarbel/caloriecounter#readme','_blank')"
+            onClick={() =>
+              handleClick("https://github.com/rscarbel/caloriecounter#readme")
+            }
           >
             <h3 className="project-name">
               <a

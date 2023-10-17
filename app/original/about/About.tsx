@@ -1,7 +1,7 @@
 export default async function About() {
   return (
-    <main className="flex ">
-      <div id="about-me">
+    <section className="flex w-full">
+      <div id="about-me" className="mx-auto w-full">
         <h2>Hi! I&#39;m Ryan!</h2>
 
         <div id="description">
@@ -27,6 +27,6 @@ export default async function About() {
           </p>
         </div>
       </div>
-    </main>
+    </section>
   );
 }

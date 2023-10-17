@@ -148,6 +148,18 @@ tr:nth-child(odd) {
   position: relative;
 }
 
+.skill-item {
+  max-width: 160px;
+  margin-right: 24px;
+  margin-left: 24px;
+}
+
+.skill-heading {
+  max-width: 160px;
+  margin-right: 24px;
+  margin-left: 24px;
+}
+
 #subheading {
   font-size: 28px;
 }
