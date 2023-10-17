@@ -1,6 +1,18 @@
-import Hero from "./hero/hero";
-import "primereact/resources/themes/lara-light-indigo/theme.css"; 
+import Hero from "./hero";
+import About from "./about";
+import Skills from "./skills";
+import Projects from "./projects";
+import Testimonials from "./testimonials";
+import "./original.css";
 
 export default async function OriginalTheme() {
-  return <Hero />;
+  return (
+    <>
+      <Hero />
+      <About />
+      <Skills />
+      <Projects />
+      <Testimonials />
+    </>
+  );
 }
