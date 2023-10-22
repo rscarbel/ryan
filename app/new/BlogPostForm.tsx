@@ -9,39 +9,39 @@ import { SplitButton } from "primereact/splitbutton";
 import { Toast } from "primereact/toast";
 import { FileUpload } from "primereact/fileupload";
 import { SelectButton } from "primereact/selectbutton";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, FormEvent } from "react";
 import TagInput from "./TagInput";
 import "primereact/resources/themes/saga-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 
 const BlogPostForm: React.FC = () => {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  const [altText, setAltText] = useState("");
+  const [title, setTitle] = useState<string>("");
+  const [content, setContent] = useState<string>("");
+  const [imageUrl, setImageUrl] = useState<string>("");
+  const [altText, setAltText] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
-  const [publishDate, setPublishDate] = useState(null);
-  const [postSummary, setPostSummary] = useState("");
-  const [isScheduled, setIsScheduled] = useState(false);
-  const [isCommentAllowed, setIsCommentAllowed] = useState(true);
-  const [callToActionText, setCallToActionText] = useState("Submit");
-  const [status, setStatus] = useState("draft");
+  const [publishDate, setPublishDate] = useState<Date | null>(null);
+  const [postSummary, setPostSummary] = useState<string>("");
+  const [isScheduled, setIsScheduled] = useState<boolean>(false);
+  const [isCommentAllowed, setIsCommentAllowed] = useState<boolean>(true);
+  const [callToActionText, setCallToActionText] = useState<string>("Submit");
+  const [status, setStatus] = useState<string>("draft");
 
-  const toast = useRef(null);
+  const toast = useRef<any>(null);
 
-  const successToastMessages = {
+  const successToastMessages: Record<string, string> = {
     draft: "Draft saved successfully!",
     published: "Post published successfully!",
     scheduled: "Post scheduled successfully!",
   };
 
-  const errorToastMessages = {
+  const errorToastMessages: Record<string, string> = {
     draft: "Error saving the draft!",
     published: "Error publishing the post!",
     scheduled: "Error scheduling the post!",
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     try {
       console.log({
@@ -115,7 +115,7 @@ const BlogPostForm: React.FC = () => {
     },
   ];
 
-  const onImageUpload = (event) => {
+  const onImageUpload = (event: any) => {
     const file = event.files[0];
     setImageUrl(file.name);
   };
