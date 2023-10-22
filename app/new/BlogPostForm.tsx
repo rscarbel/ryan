@@ -39,7 +39,7 @@ const BlogPostForm: React.FC = () => {
     scheduled: "Error scheduling the post!",
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     try {
       console.log({
@@ -64,26 +64,6 @@ const BlogPostForm: React.FC = () => {
         summary: errorToastMessages[status],
       });
     }
-  };
-
-  const submitForm = async () => {
-    const response = await fetch("/api/blog", {
-      method: "POST",
-      body: JSON.stringify({
-        title,
-        content,
-        imageUrl,
-        altText,
-        tags,
-        publishDate,
-        permitComments,
-        isScheduled,
-        status,
-      }),
-    });
-
-    const data = await response.json();
-    console.log(data);
   };
 
   const options = [
@@ -169,10 +149,9 @@ const BlogPostForm: React.FC = () => {
             <span className="text-sm font-medium text-gray-700">Content:</span>
             <Editor
               value={content}
-              onTextChange={(e) => setContent(e.htmlValue || "")}
+              onTextChange={(e) => setContent(e?.htmlValue || "")}
               style={{ height: "320px", padding: "0.5rem" }}
               className="border border-gray-300 rounded my-4 shadow-sm bg-white"
-              toolbarClassName="p-2 bg-gray-100 border-b border-gray-300"
             />
           </label>
 
@@ -231,6 +210,9 @@ const BlogPostForm: React.FC = () => {
                 value={publishDate}
                 onChange={(e) => setPublishDate(e.value)}
                 dateFormat="yy/mm/dd"
+                timeFormat="hh:mm"
+                showTime={true}
+                hourFormat="12"
                 className="mt-1 w-full p-2 shadow-sm border border-gray-300 rounded"
                 showIcon
               />
