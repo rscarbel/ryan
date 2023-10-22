@@ -10,6 +10,7 @@ import { Toast } from "primereact/toast";
 import { FileUpload } from "primereact/fileupload";
 import { SelectButton } from "primereact/selectbutton";
 import React, { useState, useRef } from "react";
+import TagInput from "./TagInput";
 import "primereact/resources/themes/bootstrap4-light-blue/theme.css";
 
 const BlogPostForm: React.FC = () => {
@@ -17,7 +18,7 @@ const BlogPostForm: React.FC = () => {
   const [content, setContent] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [altText, setAltText] = useState("");
-  const [tags, setTags] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
   const [publishDate, setPublishDate] = useState(null);
   const [postSummary, setPostSummary] = useState("");
   const [isScheduled, setIsScheduled] = useState(false);
@@ -149,23 +150,13 @@ const BlogPostForm: React.FC = () => {
             <span className="text-sm font-medium text-gray-700">Content:</span>
             <Editor
               value={content}
-              onTextChange={(e) => setContent(e?.htmlValue || "")}
+              onTextChange={(e) => setContent(e.htmlValue)}
               style={{ height: "320px", padding: "0.5rem" }}
               className="border border-gray-300 rounded my-4 shadow-sm bg-white"
             />
           </label>
 
-          <label className="block">
-            <span className="text-sm font-medium text-gray-700">
-              Tags (comma-separated):
-            </span>
-            <InputText
-              placeholder="e.g., tech, blogging, tutorials"
-              className="mt-1 w-full p-2 shadow-sm border border-gray-300 rounded"
-              value={tags}
-              onChange={(e) => setTags(e.target.value)}
-            />
-          </label>
+          <TagInput onTagsChange={setTags} />
 
           <label className="block">
             <span className="text-sm font-medium text-gray-700">

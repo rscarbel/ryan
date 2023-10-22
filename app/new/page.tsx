@@ -1,16 +1,7 @@
-import dynamic from "next/dynamic";
+import BlogPostForm from "./BlogPostForm";
 
-const DynamicTextEditor = dynamic(() => import("./BlogPostForm"), {
-  ssr: false,
-  loading: () => <div>Loading editor...</div>,
-});
-
-const MarkdownEditor: React.FC = () => {
-  return (
-    <>
-      <DynamicTextEditor />
-    </>
-  );
+const NewBlog: React.FC = () => {
+  return <BlogPostForm />;
 };
 
-export default MarkdownEditor;
+export default NewBlog;
