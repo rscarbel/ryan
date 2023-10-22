@@ -12,10 +12,12 @@ export default function Projects() {
       id="projects-section"
       className="flex flex-col items-center justify-center"
     >
-      <h2>Projects</h2>
+      <h2 className="original-h2">Projects</h2>
 
-      <p>Here are some of my old projects I&#39;ve worked on:</p>
-      <p>
+      <p className="original-p">
+        Here are some of my old projects I&#39;ve worked on:
+      </p>
+      <p className="original-p">
         Disclaimer - The database these projects are using is no longer being
         paid for and Heroku has ceased their free plan, so projects with heroku
         deployments and MongoDB databases no longer have functioning
@@ -32,7 +34,7 @@ export default function Projects() {
               )
             }
           >
-            <h3 className="project-name">
+            <h3 className="original-h3 project-name">
               <a
                 href="https://github.com/rscarbel/dikstras-algorithm#readme"
                 target="_blank"
@@ -41,7 +43,7 @@ export default function Projects() {
               </a>
             </h3>
 
-            <p className="project-description">
+            <p className="original-p project-description">
               <a
                 href="https://github.com/rscarbel/dikstras-algorithm#readme"
                 id="dijkstras-algorithm-p"
@@ -61,7 +63,7 @@ export default function Projects() {
               handleClick("https://github.com/rscarbel/elevator#readme")
             }
           >
-            <h3 className="project-name">
+            <h3 className="original-h3 project-name">
               <a
                 href="https://github.com/rscarbel/elevator#readme"
                 target="_blank"
@@ -70,7 +72,7 @@ export default function Projects() {
               </a>
             </h3>
 
-            <p className="project-description">
+            <p className="original-p project-description">
               <a
                 href="https://github.com/rscarbel/elevator#readme"
                 id="elevator-p"
@@ -93,7 +95,7 @@ export default function Projects() {
               )
             }
           >
-            <h3 className="project-name">
+            <h3 className="original-h3 project-name">
               <a
                 href="https://github.com/rscarbel/employee_scheduling#readme"
                 target="_blank"
@@ -102,7 +104,7 @@ export default function Projects() {
               </a>
             </h3>
 
-            <p className="project-description">
+            <p className="original-p project-description">
               <a
                 href="https://github.com/rscarbel/employee_scheduling#readme"
                 id="employee-scheduling-p"
@@ -124,7 +126,7 @@ export default function Projects() {
               )
             }
           >
-            <h3 className="project-name">
+            <h3 className="original-h3 project-name">
               <a
                 href="https://ryanscarbel.com/src/space-invaders/game.html"
                 target="_blank"
@@ -133,7 +135,7 @@ export default function Projects() {
               </a>
             </h3>
 
-            <p className="project-description">
+            <p className="original-p project-description">
               <a
                 href="https://ryanscarbel.com/src/space-invaders/game.html"
                 id="space-invaders-p"
@@ -155,7 +157,7 @@ export default function Projects() {
               )
             }
           >
-            <h3 className="project-name">
+            <h3 className="original-h3 project-name">
               <a
                 href="https://github.com/rscarbel/message_board_frontend#readme"
                 target="_blank"
@@ -164,7 +166,7 @@ export default function Projects() {
               </a>
             </h3>
 
-            <p className="project-description">
+            <p className="original-p project-description">
               <a
                 href="https://github.com/rscarbel/message_board_frontend#readme"
                 id="messaging-app-p"
@@ -184,7 +186,7 @@ export default function Projects() {
               handleClick("https://github.com/rscarbel/caloriecounter#readme")
             }
           >
-            <h3 className="project-name">
+            <h3 className="original-h3 project-name">
               <a
                 href="https://github.com/rscarbel/caloriecounter#readme"
                 target="_blank"
@@ -193,7 +195,7 @@ export default function Projects() {
               </a>
             </h3>
 
-            <p className="project-description">
+            <p className="original-p project-description">
               <a
                 href="https://github.com/rscarbel/caloriecounter#readme"
                 id="calorie-counter-p"

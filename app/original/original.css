@@ -8,7 +8,6 @@
   --secondary-color: #dfdfff;
 }
 
-/* --- default html nodes --- */
 *,
 *::before,
 *::after {
@@ -22,7 +21,7 @@ body {
   text-align: center;
 }
 
-button {
+.original-button {
   font-size: 24px;
   padding: 10px 25px;
   border: none;
@@ -32,7 +31,7 @@ button {
   box-shadow: inset 0 4px 8px 0 #000000;
 }
 
-button:hover {
+.original-button:hover {
   background-color: var(--main-color);
   color: #ffffff;
   cursor: pointer;
@@ -66,41 +65,42 @@ a th {
   cursor: pointer;
 }
 
-h2 {
+.original-h2 {
   font-size: 32px;
   font-weight: 400;
 }
-h3 {
+.original-h3 {
   font-weight: 400;
 }
 
-header {
+.original-header {
   margin: auto;
   color: var(--dark-gray);
   background-color: var(--white);
   padding: 20px 15%;
 }
 
-nav {
+.original-nav {
   display: flex;
   justify-content: space-between;
 }
 
-table {
+.original-table {
   position: relative;
   margin: auto;
   border-spacing: 25px 0;
   color: #000000;
 }
-td,
-th {
+
+.original-td,
+.original-th {
   width: 20%;
   padding: 15px;
 }
-tr:nth-child(even) {
+.original-tr:nth-child(even) {
   background-color: var(--secondary-color);
 }
-tr:nth-child(odd) {
+.original-tr:nth-child(odd) {
   background-color: #ededfd;
 }
 
@@ -171,7 +171,6 @@ tr:nth-child(odd) {
   padding: 10px 10%;
 }
 
-/* --- classes --- */
 .cta {
   display: flex;
   align-items: center;
@@ -295,8 +294,6 @@ tr:nth-child(odd) {
   display: flex;
   align-items: center;
   justify-content: center;
-  /*font-weight: bold;*/
-  /*text-shadow: 1px 1px 2px white, 0 0 25px white, 0 0 5px white;*/
 }
 
 .project-overlay {
@@ -362,9 +359,8 @@ tr:nth-child(odd) {
   border-radius: 0 0 10px 10px;
 }
 
-/* --- breakpoints --- */
 @media only screen and (max-width: 1000px) {
-  table {
+  .original-table {
     border-spacing: 15px 0;
   }
   .project-name {
@@ -373,7 +369,7 @@ tr:nth-child(odd) {
 }
 
 @media only screen and (max-width: 850px) {
-  table {
+  .original-table {
     border-spacing: 10px 0;
   }
   #heading {
@@ -392,11 +388,11 @@ tr:nth-child(odd) {
 }
 
 @media only screen and (max-width: 701px) {
-  table {
+  .original-table {
     border-spacing: 5px 0;
   }
-  td,
-  th {
+  .original-td,
+  .original-th {
     padding: 4px;
   }
   #heading {

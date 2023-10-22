@@ -4,9 +4,11 @@ export default async function Testimonials() {
       id="testimonial-section"
       className="flex flex-col items-center justify-center"
     >
-      <h2>Testimonials</h2>
+      <h2 className="original-h2">Testimonials</h2>
 
-      <p>Here&rsquo;s what previous work managers have said about Ryan:</p>
+      <p className="original-p">
+        Here&rsquo;s what previous work managers have said about Ryan:
+      </p>
 
       <div id="testimonial-container">
         <div className="testimonial">
@@ -15,11 +17,13 @@ export default async function Testimonials() {
             className="testimonial-picture shadow"
             src="https://ryanscarbel.com\assets\David-Balfour.jpg"
           />
-          <h3 className="testimonial-name">David Balfour</h3>
+          <h3 className="original-h3 testimonial-name">David Balfour</h3>
 
-          <p className="job-title">Meridian 3D &ndash; CAD Manager</p>
+          <p className="original-p job-title">
+            Meridian 3D &ndash; CAD Manager
+          </p>
 
-          <p className="testimonial-content">
+          <p className="original-p testimonial-content">
             &quot;Ryan Scarbel is a high energy person who is constantly
             striving to get results and is never satisfied unless he has
             investigated as many options as time permits. He has very pleasant
@@ -36,11 +40,13 @@ export default async function Testimonials() {
             className="testimonial-picture shadow"
             src="https://ryanscarbel.com\assets\Miles-Jennings.jpg"
           />
-          <h3 className="testimonial-name">Miles Jennings</h3>
+          <h3 className="original-h3 testimonial-name">Miles Jennings</h3>
 
-          <p className="job-title">Recruiter.com &ndash; Founder &amp; CEO</p>
+          <p className="original-p job-title">
+            Recruiter.com &ndash; Founder &amp; CEO
+          </p>
 
-          <p className="testimonial-content">
+          <p className="original-p testimonial-content">
             &quot;Ryan has done a lot of direct client work, marketing and sales
             outreach through Hubspot, marketing automation sequences, and
             partner calls. A bright and ambitious guy with technical skills and
@@ -55,11 +61,13 @@ export default async function Testimonials() {
             className="testimonial-picture shadow"
             src="https://ryanscarbel.com\assets\StaceyGrant.jpg"
           />
-          <h3 className="testimonial-name">Stacey Grant</h3>
+          <h3 className="original-h3 testimonial-name">Stacey Grant</h3>
 
-          <p className="job-title">UNCG &ndash; Technology Support Analyst</p>
+          <p className="original-p job-title">
+            UNCG &ndash; Technology Support Analyst
+          </p>
 
-          <p className="testimonial-content">
+          <p className="original-p testimonial-content">
             &quot;His attention to detail and ability to learn on the fly has
             made him invaluable to us over the never ending periods of
             transition in the ITS computer labs. Ryan has such a pleasant
