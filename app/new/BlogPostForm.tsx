@@ -11,7 +11,8 @@ import { FileUpload } from "primereact/fileupload";
 import { SelectButton } from "primereact/selectbutton";
 import React, { useState, useRef } from "react";
 import TagInput from "./TagInput";
-import "primereact/resources/themes/bootstrap4-light-blue/theme.css";
+import "primereact/resources/themes/saga-blue/theme.css";
+import "primereact/resources/primereact.min.css";
 
 const BlogPostForm: React.FC = () => {
   const [title, setTitle] = useState("");
@@ -152,7 +153,6 @@ const BlogPostForm: React.FC = () => {
               value={content}
               onTextChange={(e) => setContent(e.htmlValue)}
               style={{ height: "320px", padding: "0.5rem" }}
-              className="border border-gray-300 rounded my-4 shadow-sm bg-white"
             />
           </label>
 
