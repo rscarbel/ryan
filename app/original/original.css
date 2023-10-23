@@ -92,6 +92,11 @@ a th {
   color: #000000;
 }
 
+.original-td.skill-icon {
+    text-align: center;
+}
+
+
 .original-td,
 .original-th {
   width: 20%;

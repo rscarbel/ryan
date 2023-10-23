@@ -1,9 +1,9 @@
 import Hero from "./hero";
 import About from "./about";
 import Skills from "./skills";
-import Projects from "./projects";
 import Testimonials from "./testimonials";
 import "./original.css";
+import "primereact/resources/themes/saga-blue/theme.css";
 
 export default async function OriginalTheme() {
   return (
@@ -11,7 +11,6 @@ export default async function OriginalTheme() {
       <Hero />
       <About />
       <Skills />
-      <Projects />
       <Testimonials />
     </>
   );
