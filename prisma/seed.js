@@ -1,14 +1,19 @@
-import {
+const {
   PrismaClient,
   UserRole,
   OAuthService,
-  SiteContentFormat,
   ApplicationStatus,
-} from "@prisma/client";
-import faker from "@faker-js/faker";
+} = require("@prisma/client");
+const { faker } = require("@faker-js/faker");
 
 const prisma = new PrismaClient();
 const NUM_APPLICATION_CARDS = 10;
+
+const randomApplicationStatus = () => {
+  const statuses = Object.values(ApplicationStatus);
+  const randomIndex = Math.floor(Math.random() * statuses.length);
+  return statuses[randomIndex];
+};
 
 async function main() {
   const user1 = await prisma.user.create({
@@ -39,14 +44,17 @@ async function main() {
   for (let i = 0; i < NUM_APPLICATION_CARDS; i++) {
     await prisma.applicationCard.create({
       data: {
-        applicationDate: faker.date.past(2),
+        applicationDate: faker.date.past({
+          years: 1,
+          refDate: new Date(),
+        }),
         applicationLink: faker.internet.url(),
-        companyName: faker.company.companyName(),
+        companyName: faker.company.name(),
         jobDescription: faker.lorem.sentences(3),
         jobTitle: faker.person.jobTitle(),
         notes: faker.lorem.paragraph(),
         salary: faker.finance.amount(30000, 100000, 0),
-        status: faker.random.arrayElement(Object.values(ApplicationStatus)),
+        status: randomApplicationStatus(),
         applicationBoardId: board1.id,
       },
     });

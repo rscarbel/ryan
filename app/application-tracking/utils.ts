@@ -42,3 +42,24 @@ export const initializeBoardData = (applicationCards: any[]) => {
     columnOrder: columnOrder,
   };
 };
+
+export const prettifySalary = (salary: string | number) => {
+  if (typeof salary === "number") {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(salary);
+  }
+  if (typeof salary === "string") {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(parseInt(salary));
+  }
+  return salary;
+};
+
+export const prettifyDate = (date: Date) => {
+  const dateObj = new Date(date);
+  return new Intl.DateTimeFormat("en-US").format(dateObj);
+};

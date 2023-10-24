@@ -97,7 +97,7 @@ const Board: React.FC = ({ cards = [] }) => {
                       >
                         {applicationCards.map((applicationCard, index) => (
                           <ApplicationCard
-                            key={applicationCard.id}
+                            key={String(applicationCard.id)}
                             {...applicationCard}
                             index={index}
                             status={column.title.toLowerCase()}
@@ -121,7 +121,7 @@ const Board: React.FC = ({ cards = [] }) => {
                       >
                         {nextApplicationCards.map((applicationCard, index) => (
                           <ApplicationCard
-                            key={applicationCard.id}
+                            key={String(applicationCard.id)}
                             {...applicationCard}
                             index={index}
                             status={nextColumn.title.toLowerCase()}
@@ -152,7 +152,7 @@ const Board: React.FC = ({ cards = [] }) => {
                     >
                       {applicationCards.map((applicationCard, index) => (
                         <ApplicationCard
-                          key={applicationCard.id}
+                          key={String(applicationCard.id)}
                           {...applicationCard}
                           index={index}
                           status={column.title.toLowerCase()}

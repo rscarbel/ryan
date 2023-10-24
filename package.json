@@ -8,6 +8,9 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
   "dependencies": {
     "@faker-js/faker": "^8.2.0",
     "@hello-pangea/dnd": "^16.3.0",

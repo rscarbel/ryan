@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { Draggable } from "@hello-pangea/dnd";
-import { getStatusColor } from "./utils";
+import { getStatusColor, prettifySalary, prettifyDate } from "./utils";
 
 interface ApplicationCardProps {
   id: string;
@@ -12,13 +12,13 @@ interface ApplicationCardProps {
   jobDescription: string;
   salary: string | number;
   applicationLink: string;
-  applicationDate: string;
+  applicationDate: Date;
   notes: string;
   status: string;
   index: number;
 }
 
-const MAX_CHARACTERS = 50;
+const MAX_CHARACTERS = 10;
 
 const ApplicationCard: React.FC<ApplicationCardProps> = ({
   id,
@@ -33,7 +33,6 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
   index,
 }) => {
   const [isDescriptionExpanded, setDescriptionExpanded] = useState(false);
-  const [isNotesExpanded, setNotesExpanded] = useState(false);
 
   const truncateText = (text: string, maxLength: number = MAX_CHARACTERS) => {
     if (!text) return text;
@@ -43,7 +42,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
   };
 
   return (
-    <Draggable draggableId={id} index={index}>
+    <Draggable draggableId={String(id)} index={index}>
       {(provided) => (
         <div
           ref={provided.innerRef}
@@ -52,16 +51,16 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
           className="p-4 mb-4 bg-white shadow-md rounded-lg border border-gray-200 relative"
         >
           <div
-            className={`absolute top-4 right-4 rounded-full px-4 py-1 text-sm font-medium ${getStatusColor(
+            className={`absolute top-1 right-1 rounded-full px-2 py-0.3 text-xs font-medium ${getStatusColor(
               status
             )}`}
           >
             {status}
           </div>
-          <div className="mb-2 text-xl font-bold text-gray-700">
+          <div className="mb-2 mt-1 text-lg font-bold text-gray-700">
             {companyName}
           </div>
-          <div className="mb-1 text-lg font-medium text-gray-600">
+          <div className="mb-1 text-md font-medium text-gray-600">
             {jobTitle}
           </div>
           <div className="mb-2 text-sm text-gray-500">
@@ -77,7 +76,9 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
               </span>
             )}
           </div>
-          <div className="mb-1 text-gray-600">Salary: {salary}</div>
+          <div className="mb-1 text-gray-600">
+            Salary: {prettifySalary(salary)}
+          </div>
           <a
             href={applicationLink}
             target="_blank"
@@ -87,18 +88,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
             Application Link
           </a>
           <div className="mb-2 text-sm text-gray-500">
-            Date Applied: {applicationDate}
-          </div>
-          <div className="mt-4 text-sm text-gray-500">
-            {isNotesExpanded ? notes : truncateText(notes)}
-            {notes?.length > MAX_CHARACTERS && (
-              <span
-                className="text-blue-500 cursor-pointer"
-                onClick={() => setNotesExpanded(!isNotesExpanded)}
-              >
-                {isNotesExpanded ? " see less" : " see more..."}
-              </span>
-            )}
+            Date Applied: {prettifyDate(applicationDate)}
           </div>
         </div>
       )}
