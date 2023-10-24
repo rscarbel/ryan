@@ -2,15 +2,31 @@
 "use client";
 
 import React, { useState } from "react";
-import { DragDropContext, Droppable } from "@hello-pangea/dnd";
-import ApplicationCard from "./ApplicationCard";
+import { DragDropContext } from "@hello-pangea/dnd";
 import { initializeBoardData } from "./utils";
+import SingleColumn from "./SingleColumn";
+import DoubleColumn from "./DoubleColumn";
 
 const Board: React.FC = ({ cards = [] }) => {
   const [boardData, setBoardData] = useState(initializeBoardData(cards));
 
-  const onDragEnd = (result: any) => {
-    const { source, destination } = result;
+  const updateSingleColumn = (startColumn, newStartTaskIds) => ({
+    ...startColumn,
+    applicationCardIds: newStartTaskIds,
+  });
+
+  const updateMultipleColumns = (
+    startColumn,
+    endColumn,
+    newStartTaskIds,
+    newEndTaskIds
+  ) => ({
+    [startColumn.id]: { ...startColumn, applicationCardIds: newStartTaskIds },
+    [endColumn.id]: { ...endColumn, applicationCardIds: newEndTaskIds },
+  });
+
+  const onDragEnd = (result) => {
+    const { source, destination, draggableId } = result;
 
     if (
       !destination ||
@@ -25,38 +41,25 @@ const Board: React.FC = ({ cards = [] }) => {
     newStartTaskIds.splice(source.index, 1);
 
     if (source.droppableId === destination.droppableId) {
-      newStartTaskIds.splice(destination.index, 0, result.draggableId);
-
-      const newColumn = {
-        ...startColumn,
-        applicationCardIds: newStartTaskIds,
-      };
-
+      newStartTaskIds.splice(destination.index, 0, draggableId);
+      const updatedColumn = updateSingleColumn(startColumn, newStartTaskIds);
       setBoardData((prevData) => ({
         ...prevData,
-        columns: {
-          ...prevData.columns,
-          [newColumn.id]: newColumn,
-        },
+        columns: { ...prevData.columns, [updatedColumn.id]: updatedColumn },
       }));
     } else {
       const endColumn = boardData.columns[destination.droppableId];
       const newEndTaskIds = Array.from(endColumn.applicationCardIds);
-      newEndTaskIds.splice(destination.index, 0, result.draggableId);
-
+      newEndTaskIds.splice(destination.index, 0, draggableId);
+      const updatedColumns = updateMultipleColumns(
+        startColumn,
+        endColumn,
+        newStartTaskIds,
+        newEndTaskIds
+      );
       setBoardData((prevData) => ({
         ...prevData,
-        columns: {
-          ...prevData.columns,
-          [startColumn.id]: {
-            ...startColumn,
-            applicationCardIds: newStartTaskIds,
-          },
-          [endColumn.id]: {
-            ...endColumn,
-            applicationCardIds: newEndTaskIds,
-          },
-        },
+        columns: { ...prevData.columns, ...updatedColumns },
       }));
     }
   };
@@ -64,107 +67,50 @@ const Board: React.FC = ({ cards = [] }) => {
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className="flex flex-wrap p-4">
-        {boardData.columnOrder.map((columnId, idx) => {
+        {boardData.columnOrder.map((columnId) => {
           const column = boardData.columns[columnId];
           const applicationCards = column.applicationCardIds.map(
             (taskId) => boardData.applicationCards[taskId]
           );
 
-          // Check for columns that need to be grouped
-          if (columnId === "offer" || columnId === "rejected") {
-            const nextColumnId = columnId === "offer" ? "accepted" : "passed";
-            const nextColumn = boardData.columns[nextColumnId];
-            const nextApplicationCards = nextColumn.applicationCardIds.map(
+          if (columnId === "offer") {
+            const acceptedColumn = boardData.columns["accepted"];
+            const acceptedCards = acceptedColumn.applicationCardIds.map(
               (taskId) => boardData.applicationCards[taskId]
             );
-
             return (
-              <div
-                key={columnId + "-group"}
-                className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2 flex flex-col"
-              >
-                {/* Current Column */}
-                <div className="w-full p-2">
-                  <h2 className="mb-4 text-lg font-bold text-gray-700">
-                    {column.title}
-                  </h2>
-                  <Droppable droppableId={column.id}>
-                    {(provided) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className="bg-gray-200 rounded p-4 max-h-[600px] overflow-y-auto"
-                      >
-                        {applicationCards.map((applicationCard, index) => (
-                          <ApplicationCard
-                            key={String(applicationCard.id)}
-                            {...applicationCard}
-                            index={index}
-                            status={column.title.toLowerCase()}
-                          />
-                        ))}
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
-                </div>
-                <div className="w-full p-2">
-                  <h2 className="mb-4 text-lg font-bold text-gray-700">
-                    {nextColumn.title}
-                  </h2>
-                  <Droppable droppableId={nextColumn.id}>
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className="bg-gray-200 rounded p-4 max-h-[600px] overflow-y-auto"
-                      >
-                        {nextApplicationCards.map((applicationCard, index) => (
-                          <ApplicationCard
-                            key={String(applicationCard.id)}
-                            {...applicationCard}
-                            index={index}
-                            status={nextColumn.title.toLowerCase()}
-                          />
-                        ))}
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
-                </div>
-              </div>
+              <DoubleColumn
+                key="offer-accepted-group"
+                column1={column}
+                column2={acceptedColumn}
+                applicationCards1={applicationCards}
+                applicationCards2={acceptedCards}
+              />
+            );
+          } else if (columnId === "rejected") {
+            const passedColumn = boardData.columns["passed"];
+            const passedCards = passedColumn.applicationCardIds.map(
+              (taskId) => boardData.applicationCards[taskId]
+            );
+            return (
+              <DoubleColumn
+                key="rejected-passed-group"
+                column1={column}
+                column2={passedColumn}
+                applicationCards1={applicationCards}
+                applicationCards2={passedCards}
+              />
             );
           } else if (columnId !== "accepted" && columnId !== "passed") {
             return (
-              <div
-                key={column.id}
-                className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2"
-              >
-                <h2 className="mb-4 text-lg font-bold text-gray-700">
-                  {column.title}
-                </h2>
-                <Droppable droppableId={column.id}>
-                  {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.droppableProps}
-                      className="bg-gray-200 rounded p-4 max-h-[600px] overflow-y-auto"
-                    >
-                      {applicationCards.map((applicationCard, index) => (
-                        <ApplicationCard
-                          key={String(applicationCard.id)}
-                          {...applicationCard}
-                          index={index}
-                          status={column.title.toLowerCase()}
-                        />
-                      ))}
-                      {provided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
-              </div>
+              <SingleColumn
+                key={columnId}
+                column={column}
+                applicationCards={applicationCards}
+              />
             );
           }
+
           return null;
         })}
       </div>
