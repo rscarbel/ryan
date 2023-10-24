@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { Draggable } from "@hello-pangea/dnd";
 import { getStatusColor } from "./utils";
 
@@ -15,11 +18,22 @@ interface ApplicationCardProps {
   status: string;
   index: number;
 }
+
+const MAX_CHARACTERS = 50;
+
 const ApplicationCard: React.FC<ApplicationCardProps> = ({
   cardData,
   index,
   status,
 }) => {
+  const [isDescriptionExpanded, setDescriptionExpanded] = useState(false);
+  const [isNotesExpanded, setNotesExpanded] = useState(false);
+
+  const truncateText = (text: string, maxLength: number = MAX_CHARACTERS) => {
+    if (text.length <= maxLength) return text;
+    return `${text.substring(0, maxLength)}...`;
+  };
+
   return (
     <Draggable draggableId={cardData.id} index={index}>
       {(provided, snapshot) => (
@@ -43,7 +57,17 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
             {cardData.jobTitle}
           </div>
           <div className="mb-2 text-sm text-gray-500">
-            {cardData.jobDescription}
+            {isDescriptionExpanded
+              ? cardData.jobDescription
+              : truncateText(cardData.jobDescription)}
+            {cardData.jobDescription.length > MAX_CHARACTERS && (
+              <span
+                className="text-blue-500 cursor-pointer"
+                onClick={() => setDescriptionExpanded(!isDescriptionExpanded)}
+              >
+                {isDescriptionExpanded ? " see less" : " see more..."}
+              </span>
+            )}
           </div>
           <div className="mb-1 text-gray-600">Salary: {cardData.salary}</div>
           <a
@@ -58,7 +82,15 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
             Date Applied: {cardData.applicationDate}
           </div>
           <div className="mt-4 text-sm text-gray-500">
-            Notes: {cardData.notes}
+            {isNotesExpanded ? cardData.notes : truncateText(cardData.notes)}
+            {cardData.notes.length > MAX_CHARACTERS && (
+              <span
+                className="text-blue-500 cursor-pointer"
+                onClick={() => setNotesExpanded(!isNotesExpanded)}
+              >
+                {isNotesExpanded ? " see less" : " see more..."}
+              </span>
+            )}
           </div>
         </div>
       )}
