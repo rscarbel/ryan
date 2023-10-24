@@ -10,20 +10,36 @@ import DoubleColumn from "./DoubleColumn";
 const Board: React.FC = ({ cards = [] }) => {
   const [boardData, setBoardData] = useState(initializeBoardData(cards));
 
-  const updateSingleColumn = (startColumn, newStartTaskIds) => ({
-    ...startColumn,
-    applicationCardIds: newStartTaskIds,
-  });
+  const handleSameColumnMove = (
+    startColumn,
+    source,
+    destination,
+    draggableId
+  ) => {
+    const newTaskIds = Array.from(startColumn.applicationCardIds);
+    newTaskIds.splice(source.index, 1);
+    newTaskIds.splice(destination.index, 0, draggableId);
+    return { ...startColumn, applicationCardIds: newTaskIds };
+  };
 
-  const updateMultipleColumns = (
+  const handleDifferentColumnMove = (
     startColumn,
     endColumn,
-    newStartTaskIds,
-    newEndTaskIds
-  ) => ({
-    [startColumn.id]: { ...startColumn, applicationCardIds: newStartTaskIds },
-    [endColumn.id]: { ...endColumn, applicationCardIds: newEndTaskIds },
-  });
+    source,
+    destination,
+    draggableId
+  ) => {
+    const newStartTaskIds = Array.from(startColumn.applicationCardIds);
+    newStartTaskIds.splice(source.index, 1);
+
+    const newEndTaskIds = Array.from(endColumn.applicationCardIds);
+    newEndTaskIds.splice(destination.index, 0, draggableId);
+
+    return {
+      [startColumn.id]: { ...startColumn, applicationCardIds: newStartTaskIds },
+      [endColumn.id]: { ...endColumn, applicationCardIds: newEndTaskIds },
+    };
+  };
 
   const onDragEnd = (result) => {
     const { source, destination, draggableId } = result;
@@ -37,85 +53,68 @@ const Board: React.FC = ({ cards = [] }) => {
     }
 
     const startColumn = boardData.columns[source.droppableId];
-    const newStartTaskIds = Array.from(startColumn.applicationCardIds);
-    newStartTaskIds.splice(source.index, 1);
+    const updatedColumns =
+      source.droppableId === destination.droppableId
+        ? handleSameColumnMove(startColumn, source, destination, draggableId)
+        : handleDifferentColumnMove(
+            startColumn,
+            boardData.columns[destination.droppableId],
+            source,
+            destination,
+            draggableId
+          );
 
-    if (source.droppableId === destination.droppableId) {
-      newStartTaskIds.splice(destination.index, 0, draggableId);
-      const updatedColumn = updateSingleColumn(startColumn, newStartTaskIds);
-      setBoardData((prevData) => ({
-        ...prevData,
-        columns: { ...prevData.columns, [updatedColumn.id]: updatedColumn },
-      }));
-    } else {
-      const endColumn = boardData.columns[destination.droppableId];
-      const newEndTaskIds = Array.from(endColumn.applicationCardIds);
-      newEndTaskIds.splice(destination.index, 0, draggableId);
-      const updatedColumns = updateMultipleColumns(
-        startColumn,
-        endColumn,
-        newStartTaskIds,
-        newEndTaskIds
+    setBoardData((prevData) => ({
+      ...prevData,
+      columns: { ...prevData.columns, ...updatedColumns },
+    }));
+  };
+
+  const renderColumn = (columnId) => {
+    const doubleColumns = {
+      offer: "accepted",
+      rejected: "passed",
+    };
+    if (doubleColumns[columnId]) {
+      const column = boardData.columns[columnId];
+      const pairedColumn = boardData.columns[doubleColumns[columnId]];
+
+      return (
+        <DoubleColumn
+          key={`${columnId}-${doubleColumns[columnId]}-group`}
+          column1={column}
+          column2={pairedColumn}
+          applicationCards1={column.applicationCardIds.map(
+            (taskId) => boardData.applicationCards[taskId]
+          )}
+          applicationCards2={pairedColumn.applicationCardIds.map(
+            (taskId) => boardData.applicationCards[taskId]
+          )}
+        />
       );
-      setBoardData((prevData) => ({
-        ...prevData,
-        columns: { ...prevData.columns, ...updatedColumns },
-      }));
+    } else if (!Object.values(doubleColumns).includes(columnId)) {
+      const column = boardData.columns[columnId];
+      return (
+        <SingleColumn
+          key={columnId}
+          column={column}
+          applicationCards={column.applicationCardIds.map(
+            (taskId) => boardData.applicationCards[taskId]
+          )}
+        />
+      );
     }
+    return null;
   };
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className="flex flex-wrap p-4">
-        {boardData.columnOrder.map((columnId) => {
-          const column = boardData.columns[columnId];
-          const applicationCards = column.applicationCardIds.map(
-            (taskId) => boardData.applicationCards[taskId]
-          );
-
-          if (columnId === "offer") {
-            const acceptedColumn = boardData.columns["accepted"];
-            const acceptedCards = acceptedColumn.applicationCardIds.map(
-              (taskId) => boardData.applicationCards[taskId]
-            );
-            return (
-              <DoubleColumn
-                key="offer-accepted-group"
-                column1={column}
-                column2={acceptedColumn}
-                applicationCards1={applicationCards}
-                applicationCards2={acceptedCards}
-              />
-            );
-          } else if (columnId === "rejected") {
-            const passedColumn = boardData.columns["passed"];
-            const passedCards = passedColumn.applicationCardIds.map(
-              (taskId) => boardData.applicationCards[taskId]
-            );
-            return (
-              <DoubleColumn
-                key="rejected-passed-group"
-                column1={column}
-                column2={passedColumn}
-                applicationCards1={applicationCards}
-                applicationCards2={passedCards}
-              />
-            );
-          } else if (columnId !== "accepted" && columnId !== "passed") {
-            return (
-              <SingleColumn
-                key={columnId}
-                column={column}
-                applicationCards={applicationCards}
-              />
-            );
-          }
-
-          return null;
-        })}
+        {boardData.columnOrder.map((columnId) => renderColumn(columnId))}
       </div>
     </DragDropContext>
   );
 };
+
 
 export default Board;
