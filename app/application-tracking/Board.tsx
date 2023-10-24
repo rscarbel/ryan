@@ -98,7 +98,7 @@ const Board: React.FC = ({ cards = [] }) => {
                         {applicationCards.map((applicationCard, index) => (
                           <ApplicationCard
                             key={applicationCard.id}
-                            cardData={applicationCard}
+                            {...applicationCard}
                             index={index}
                             status={column.title.toLowerCase()}
                           />
@@ -122,7 +122,7 @@ const Board: React.FC = ({ cards = [] }) => {
                         {nextApplicationCards.map((applicationCard, index) => (
                           <ApplicationCard
                             key={applicationCard.id}
-                            cardData={applicationCard}
+                            {...applicationCard}
                             index={index}
                             status={nextColumn.title.toLowerCase()}
                           />
@@ -144,7 +144,7 @@ const Board: React.FC = ({ cards = [] }) => {
                   {column.title}
                 </h2>
                 <Droppable droppableId={column.id}>
-                  {(provided, snapshot) => (
+                  {(provided) => (
                     <div
                       ref={provided.innerRef}
                       {...provided.droppableProps}
@@ -153,7 +153,7 @@ const Board: React.FC = ({ cards = [] }) => {
                       {applicationCards.map((applicationCard, index) => (
                         <ApplicationCard
                           key={applicationCard.id}
-                          cardData={applicationCard}
+                          {...applicationCard}
                           index={index}
                           status={column.title.toLowerCase()}
                         />

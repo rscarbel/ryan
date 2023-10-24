@@ -7,6 +7,38 @@ CREATE TYPE "OAuthService" AS ENUM ('GOOGLE', 'FACEBOOK', 'TWITTER');
 -- CreateEnum
 CREATE TYPE "SiteContentFormat" AS ENUM ('HTML', 'MARKDOWN', 'PLAIN_TEXT');
 
+-- CreateEnum
+CREATE TYPE "ApplicationStatus" AS ENUM ('applied', 'interview', 'offer', 'rejected', 'accepted', 'passed');
+
+-- CreateTable
+CREATE TABLE "ApplicationCard" (
+    "id" SERIAL NOT NULL,
+    "applicationDate" TEXT NOT NULL,
+    "applicationLink" TEXT NOT NULL,
+    "companyName" TEXT NOT NULL,
+    "jobDescription" TEXT NOT NULL,
+    "jobTitle" TEXT NOT NULL,
+    "notes" TEXT NOT NULL,
+    "salary" TEXT NOT NULL,
+    "status" "ApplicationStatus" NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "applicationBoardId" INTEGER NOT NULL,
+
+    CONSTRAINT "ApplicationCard_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ApplicationBoard" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userId" INTEGER NOT NULL,
+
+    CONSTRAINT "ApplicationBoard_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateTable
 CREATE TABLE "SiteContent" (
     "id" SERIAL NOT NULL,
@@ -149,6 +181,12 @@ CREATE UNIQUE INDEX "PostToTag_postId_tagId_key" ON "PostToTag"("postId", "tagId
 
 -- CreateIndex
 CREATE UNIQUE INDEX "PasswordResetToken_token_key" ON "PasswordResetToken"("token");
+
+-- AddForeignKey
+ALTER TABLE "ApplicationCard" ADD CONSTRAINT "ApplicationCard_applicationBoardId_fkey" FOREIGN KEY ("applicationBoardId") REFERENCES "ApplicationBoard"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ApplicationBoard" ADD CONSTRAINT "ApplicationBoard_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "SiteContentHistory" ADD CONSTRAINT "SiteContentHistory_contentId_fkey" FOREIGN KEY ("contentId") REFERENCES "SiteContent"("id") ON DELETE CASCADE ON UPDATE CASCADE;
