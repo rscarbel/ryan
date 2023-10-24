@@ -3,7 +3,13 @@
 
 import { useState } from "react";
 import { Draggable } from "@hello-pangea/dnd";
-import { getStatusColor, prettifySalary, prettifyDate } from "./utils";
+import {
+  getStatusColor,
+  prettifySalary,
+  prettifyDate,
+  truncateText,
+  MAX_CHARACTERS,
+} from "./utils";
 
 interface ApplicationCardProps {
   id: string;
@@ -18,8 +24,6 @@ interface ApplicationCardProps {
   index: number;
 }
 
-const MAX_CHARACTERS = 10;
-
 const ApplicationCard: React.FC<ApplicationCardProps> = ({
   id,
   companyName,
@@ -33,13 +37,6 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
   index,
 }) => {
   const [isDescriptionExpanded, setDescriptionExpanded] = useState(false);
-
-  const truncateText = (text: string, maxLength: number = MAX_CHARACTERS) => {
-    if (!text) return text;
-
-    if (text.length <= maxLength) return text;
-    return `${text.substring(0, maxLength)}...`;
-  };
 
   return (
     <Draggable draggableId={String(id)} index={index}>

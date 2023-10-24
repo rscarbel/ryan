@@ -1,4 +1,5 @@
 import { columnOrder, columns } from "./columnData";
+export const MAX_CHARACTERS = 10;
 
 export const getStatusColor = (status: string) => {
   switch (status) {
@@ -82,4 +83,14 @@ export const updateCardStatus = async (cardId, newStatus) => {
   } catch (error) {
     console.error("Error updating card status:", error);
   }
+};
+
+export const truncateText = (
+  text: string,
+  maxLength: number = MAX_CHARACTERS
+) => {
+  if (!text) return text;
+
+  if (text.length <= maxLength) return text;
+  return `${text.substring(0, maxLength)}...`;
 };
