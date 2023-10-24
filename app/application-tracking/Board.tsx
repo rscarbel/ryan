@@ -13,6 +13,7 @@ interface ApplicationCardType {
   salary: string | number;
   applicationLink: string;
   notes: string;
+  status: string;
 }
 
 interface ColumnType {
@@ -110,6 +111,7 @@ const Board: React.FC<BoardProps> = ({ data = {} }) => {
                         key={applicationCard.id}
                         cardData={applicationCard}
                         index={index}
+                        status={column.title.toLowerCase()}
                       />
                     ))}
                     {provided.placeholder}

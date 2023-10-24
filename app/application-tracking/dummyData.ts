@@ -1,7 +1,7 @@
 const dummyData = {
   applicationCards: {
-    "task-1": {
-      id: "task-1",
+    "application-1": {
+      id: "application-1",
       companyName: "Tech Corp",
       jobTitle: "Frontend Developer",
       jobDescription: "Develop and maintain the company website.",
@@ -9,8 +9,8 @@ const dummyData = {
       applicationLink: "http://techcorp.com/jobs/frontend",
       notes: "Need to follow up next week.",
     },
-    "task-2": {
-      id: "task-2",
+    "application-2": {
+      id: "application-2",
       companyName: "HealthSoft",
       jobTitle: "Backend Developer",
       jobDescription: "Work on our main product API.",
@@ -20,10 +20,10 @@ const dummyData = {
     },
   },
   columns: {
-    "column-1": {
-      id: "column-1",
+    "application-column": {
+      id: "application-column",
       title: "Applied",
-      applicationCardIds: ["task-1", "task-2"],
+      applicationCardIds: ["application-1", "application-2"],
     },
     "column-2": {
       id: "column-2",
@@ -41,7 +41,7 @@ const dummyData = {
       applicationCardIds: [],
     },
   },
-  columnOrder: ["column-1", "column-2", "column-3", "column-4"],
+  columnOrder: ["application-column", "column-2", "column-3", "column-4"],
 };
 
 export default dummyData;

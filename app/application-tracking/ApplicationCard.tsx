@@ -1,4 +1,5 @@
 import { Draggable } from "@hello-pangea/dnd";
+import { getStatusColor } from "./utils";
 
 interface ApplicationCardProps {
   cardData: {
@@ -8,14 +9,16 @@ interface ApplicationCardProps {
     jobDescription: string;
     salary: string | number;
     applicationLink: string;
+    applicationDate: Date;
     notes: string;
   };
+  status: string;
   index: number;
 }
-
 const ApplicationCard: React.FC<ApplicationCardProps> = ({
   cardData,
   index,
+  status,
 }) => {
   return (
     <Draggable draggableId={cardData.id} index={index}>
@@ -24,8 +27,15 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          className="p-4 mb-4 bg-white shadow-md rounded-lg border border-gray-200"
+          className="p-4 mb-4 bg-white shadow-md rounded-lg border border-gray-200 relative"
         >
+          <div
+            className={`absolute top-4 right-4 rounded-full px-4 py-1 text-sm font-medium ${getStatusColor(
+              status
+            )}`}
+          >
+            {status}
+          </div>
           <div className="mb-2 text-xl font-bold text-gray-700">
             {cardData.companyName}
           </div>
