@@ -9,6 +9,7 @@ import {
   truncateText,
   MAX_CHARACTERS,
 } from "./utils";
+import Description from "./Description";
 
 interface ApplicationCardProps {
   id: string;
@@ -31,11 +32,17 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
   salary,
   applicationLink,
   applicationDate,
-  notes,
   status,
   index,
 }) => {
   const [isDescriptionExpanded, setDescriptionExpanded] = useState(false);
+
+  const cardStyles = {
+    base: "p-4 mb-4 bg-white claymorphic-shadow rounded-lg border border-gray-200 relative",
+    status: `absolute top-1 right-1 rounded-full px-2 py-0.3 text-xs font-medium ${getStatusColor(
+      status
+    )}`,
+  };
 
   return (
     <Draggable draggableId={String(id)} index={index}>
@@ -44,34 +51,20 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          className="p-4 mb-4 bg-white claymorphic-shadow rounded-lg border border-gray-200 relative"
+          className={cardStyles.base}
         >
-          <div
-            className={`absolute top-1 right-1 rounded-full px-2 py-0.3 text-xs font-medium ${getStatusColor(
-              status
-            )}`}
-          >
-            {status}
-          </div>
+          <div className={cardStyles.status}>{status}</div>
           <div className="mb-2 mt-1 text-lg font-bold text-gray-700">
             {companyName}
           </div>
           <div className="mb-1 text-md font-medium text-gray-600">
             {jobTitle}
           </div>
-          <div className="mb-2 text-sm text-gray-500">
-            {isDescriptionExpanded
-              ? jobDescription
-              : truncateText(jobDescription)}
-            {jobDescription?.length > MAX_CHARACTERS && (
-              <span
-                className="text-blue-500 cursor-pointer"
-                onClick={() => setDescriptionExpanded(!isDescriptionExpanded)}
-              >
-                {isDescriptionExpanded ? " see less" : " see more..."}
-              </span>
-            )}
-          </div>
+          <Description
+            description={jobDescription}
+            isExpanded={isDescriptionExpanded}
+            toggle={() => setDescriptionExpanded(!isDescriptionExpanded)}
+          />
           <div className="mb-1 text-gray-600">
             Salary: {prettifySalary(salary)}
           </div>
