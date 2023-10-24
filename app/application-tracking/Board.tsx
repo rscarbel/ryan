@@ -93,7 +93,7 @@ const Board: React.FC = ({ cards = [] }) => {
                       <div
                         ref={provided.innerRef}
                         {...provided.droppableProps}
-                        className="bg-gray-100 rounded p-4 max-h-[600px] overflow-y-auto"
+                        className="bg-gray-200 rounded p-4 max-h-[600px] overflow-y-auto"
                       >
                         {applicationCards.map((applicationCard, index) => (
                           <ApplicationCard
@@ -117,7 +117,7 @@ const Board: React.FC = ({ cards = [] }) => {
                       <div
                         ref={provided.innerRef}
                         {...provided.droppableProps}
-                        className="bg-gray-100 rounded p-4 max-h-[600px] overflow-y-auto"
+                        className="bg-gray-200 rounded p-4 max-h-[600px] overflow-y-auto"
                       >
                         {nextApplicationCards.map((applicationCard, index) => (
                           <ApplicationCard
@@ -148,7 +148,7 @@ const Board: React.FC = ({ cards = [] }) => {
                     <div
                       ref={provided.innerRef}
                       {...provided.droppableProps}
-                      className="bg-gray-100 rounded p-4 max-h-[600px] overflow-y-auto"
+                      className="bg-gray-200 rounded p-4 max-h-[600px] overflow-y-auto"
                     >
                       {applicationCards.map((applicationCard, index) => (
                         <ApplicationCard
