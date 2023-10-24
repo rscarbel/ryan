@@ -1,5 +1,5 @@
 const dummyData = {
-  tasks: {
+  applicationCards: {
     "task-1": {
       id: "task-1",
       companyName: "Tech Corp",
@@ -23,22 +23,22 @@ const dummyData = {
     "column-1": {
       id: "column-1",
       title: "Applied",
-      taskIds: ["task-1", "task-2"],
+      applicationCardIds: ["task-1", "task-2"],
     },
     "column-2": {
       id: "column-2",
       title: "Interview",
-      taskIds: [],
+      applicationCardIds: [],
     },
     "column-3": {
       id: "column-3",
       title: "Offer",
-      taskIds: [],
+      applicationCardIds: [],
     },
     "column-4": {
       id: "column-4",
       title: "Rejected",
-      taskIds: [],
+      applicationCardIds: [],
     },
   },
   columnOrder: ["column-1", "column-2", "column-3", "column-4"],

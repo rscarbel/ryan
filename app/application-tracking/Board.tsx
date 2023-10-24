@@ -3,9 +3,9 @@
 
 import React, { useState } from "react";
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
-import Task from "./Task";
+import ApplicationCard from "./ApplicationCard";
 
-interface TaskType {
+interface ApplicationCardType {
   id: string;
   companyName: string;
   jobTitle: string;
@@ -18,11 +18,11 @@ interface TaskType {
 interface ColumnType {
   id: string;
   title: string;
-  taskIds: string[];
+  applicationCardIds: string[];
 }
 
 interface InitialDataType {
-  tasks: Record<string, TaskType>;
+  applicationCards: Record<string, ApplicationCardType>;
   columns: Record<string, ColumnType>;
   columnOrder: string[];
 }
@@ -45,7 +45,7 @@ const Board: React.FC<BoardProps> = ({ data = {} }) => {
     }
 
     const startColumn = boardData.columns[source.droppableId];
-    const newStartTaskIds = Array.from(startColumn.taskIds);
+    const newStartTaskIds = Array.from(startColumn.applicationCardIds);
     newStartTaskIds.splice(source.index, 1);
 
     if (source.droppableId === destination.droppableId) {
@@ -53,7 +53,7 @@ const Board: React.FC<BoardProps> = ({ data = {} }) => {
 
       const newColumn = {
         ...startColumn,
-        taskIds: newStartTaskIds,
+        applicationCardIds: newStartTaskIds,
       };
 
       setBoardData((prevData) => ({
@@ -65,7 +65,7 @@ const Board: React.FC<BoardProps> = ({ data = {} }) => {
       }));
     } else {
       const endColumn = boardData.columns[destination.droppableId];
-      const newEndTaskIds = Array.from(endColumn.taskIds);
+      const newEndTaskIds = Array.from(endColumn.applicationCardIds);
       newEndTaskIds.splice(destination.index, 0, result.draggableId);
 
       setBoardData((prevData) => ({
@@ -74,11 +74,11 @@ const Board: React.FC<BoardProps> = ({ data = {} }) => {
           ...prevData.columns,
           [startColumn.id]: {
             ...startColumn,
-            taskIds: newStartTaskIds,
+            applicationCardIds: newStartTaskIds,
           },
           [endColumn.id]: {
             ...endColumn,
-            taskIds: newEndTaskIds,
+            applicationCardIds: newEndTaskIds,
           },
         },
       }));
@@ -90,7 +90,9 @@ const Board: React.FC<BoardProps> = ({ data = {} }) => {
       <div className="flex justify-between p-4">
         {boardData.columnOrder.map((columnId) => {
           const column = boardData.columns[columnId];
-          const tasks = column.taskIds.map((taskId) => boardData.tasks[taskId]);
+          const applicationCards = column.applicationCardIds.map(
+            (taskId) => boardData.applicationCards[taskId]
+          );
           return (
             <div key={column.id} className="w-1/4 p-2">
               <h2 className="mb-4 text-lg font-bold text-gray-700">
@@ -103,8 +105,12 @@ const Board: React.FC<BoardProps> = ({ data = {} }) => {
                     {...provided.droppableProps}
                     className="bg-gray-100 rounded p-4"
                   >
-                    {tasks.map((task, index) => (
-                      <Task key={task.id} task={task} index={index} />
+                    {applicationCards.map((applicationCard, index) => (
+                      <ApplicationCard
+                        key={applicationCard.id}
+                        cardData={applicationCard}
+                        index={index}
+                      />
                     ))}
                     {provided.placeholder}
                   </div>
