@@ -1,6 +1,5 @@
-import { PrismaClient, User, PasswordResetToken, Post } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { User, PasswordResetToken, Post } from "@prisma/client";
+import { prisma } from "@/app/utils";
 
 /**
  * Create a new user.
