@@ -1,3 +1,4 @@
+//ts-nocheck
 "use client";
 
 import { useState } from "react";
@@ -12,7 +13,7 @@ interface ApplicationCardProps {
     jobDescription: string;
     salary: string | number;
     applicationLink: string;
-    applicationDate: Date;
+    applicationDate: string;
     notes: string;
   };
   status: string;

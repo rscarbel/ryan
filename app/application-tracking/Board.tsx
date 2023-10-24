@@ -89,7 +89,7 @@ const Board: React.FC = ({ cards = [] }) => {
                     {column.title}
                   </h2>
                   <Droppable droppableId={column.id}>
-                    {(provided, snapshot) => (
+                    {(provided) => (
                       <div
                         ref={provided.innerRef}
                         {...provided.droppableProps}
