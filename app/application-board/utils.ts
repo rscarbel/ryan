@@ -94,3 +94,34 @@ export const truncateText = (
   if (text.length <= maxLength) return text;
   return `${text.substring(0, maxLength)}...`;
 };
+
+export const handleSameColumnMove = (
+  startColumn,
+  source,
+  destination,
+  draggableId
+) => {
+  const newTaskIds = Array.from(startColumn.applicationCardIds);
+  newTaskIds.splice(source.index, 1);
+  newTaskIds.splice(destination.index, 0, draggableId);
+  return { ...startColumn, applicationCardIds: newTaskIds };
+};
+
+export const handleDifferentColumnMove = (
+  startColumn,
+  endColumn,
+  source,
+  destination,
+  draggableId
+) => {
+  const newStartTaskIds = Array.from(startColumn.applicationCardIds);
+  newStartTaskIds.splice(source.index, 1);
+
+  const newEndTaskIds = Array.from(endColumn.applicationCardIds);
+  newEndTaskIds.splice(destination.index, 0, draggableId);
+
+  return {
+    [startColumn.id]: { ...startColumn, applicationCardIds: newStartTaskIds },
+    [endColumn.id]: { ...endColumn, applicationCardIds: newEndTaskIds },
+  };
+};

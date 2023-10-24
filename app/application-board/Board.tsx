@@ -3,43 +3,16 @@
 
 import React, { useState } from "react";
 import { DragDropContext } from "@hello-pangea/dnd";
-import { initializeBoardData } from "./utils";
+import {
+  initializeBoardData,
+  handleDifferentColumnMove,
+  handleSameColumnMove,
+} from "./utils";
 import SingleColumn from "./SingleColumn";
 import DoubleColumn from "./DoubleColumn";
 
 const Board: React.FC = ({ cards = [] }) => {
   const [boardData, setBoardData] = useState(initializeBoardData(cards));
-
-  const handleSameColumnMove = (
-    startColumn,
-    source,
-    destination,
-    draggableId
-  ) => {
-    const newTaskIds = Array.from(startColumn.applicationCardIds);
-    newTaskIds.splice(source.index, 1);
-    newTaskIds.splice(destination.index, 0, draggableId);
-    return { ...startColumn, applicationCardIds: newTaskIds };
-  };
-
-  const handleDifferentColumnMove = (
-    startColumn,
-    endColumn,
-    source,
-    destination,
-    draggableId
-  ) => {
-    const newStartTaskIds = Array.from(startColumn.applicationCardIds);
-    newStartTaskIds.splice(source.index, 1);
-
-    const newEndTaskIds = Array.from(endColumn.applicationCardIds);
-    newEndTaskIds.splice(destination.index, 0, draggableId);
-
-    return {
-      [startColumn.id]: { ...startColumn, applicationCardIds: newStartTaskIds },
-      [endColumn.id]: { ...endColumn, applicationCardIds: newEndTaskIds },
-    };
-  };
 
   const onDragEnd = (result) => {
     const { source, destination, draggableId } = result;
