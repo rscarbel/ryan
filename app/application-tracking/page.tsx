@@ -7,7 +7,7 @@ const DynamicTextEditor = dynamic(() => import("./Board"), {
 });
 
 const Job: React.FC = () => {
-  return <DynamicTextEditor data={dummyData} />;
+  return <DynamicTextEditor cards={dummyData} />;
 };
 
 export default Job;

@@ -1,3 +1,5 @@
+import { columnOrder, columns } from "./columnData";
+
 export const getStatusColor = (status: string) => {
   switch (status) {
     case "applied":
@@ -15,4 +17,28 @@ export const getStatusColor = (status: string) => {
     default:
       return "bg-gray-200";
   }
+};
+
+export const initializeBoardData = (applicationCards: any[]) => {
+  const generatedColumns = columns.reduce((acc, column) => {
+    const columnApplicationCards = applicationCards.filter(
+      (applicationCard) => applicationCard.status === column.id
+    );
+    acc[column.id] = {
+      ...column,
+      applicationCardIds: columnApplicationCards.map(
+        (applicationCard) => applicationCard.id
+      ),
+    };
+    return acc;
+  }, {});
+
+  return {
+    applicationCards: applicationCards.reduce((acc, card) => {
+      acc[card.id] = card;
+      return acc;
+    }, {}),
+    columns: generatedColumns,
+    columnOrder: columnOrder,
+  };
 };

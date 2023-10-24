@@ -54,6 +54,9 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
           >
             Application Link
           </a>
+          <div className="mb-2 text-sm text-gray-500">
+            Date Applied: {cardData.applicationDate}
+          </div>
           <div className="mt-4 text-sm text-gray-500">
             Notes: {cardData.notes}
           </div>
