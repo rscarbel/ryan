@@ -13,7 +13,7 @@ CREATE TYPE "ApplicationStatus" AS ENUM ('applied', 'interview', 'offer', 'rejec
 -- CreateTable
 CREATE TABLE "ApplicationCard" (
     "id" SERIAL NOT NULL,
-    "applicationDate" TEXT NOT NULL,
+    "applicationDate" TIMESTAMP(3) NOT NULL,
     "applicationLink" TEXT NOT NULL,
     "companyName" TEXT NOT NULL,
     "jobDescription" TEXT NOT NULL,
@@ -67,7 +67,8 @@ CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
     "passwordHash" TEXT,
-    "name" TEXT NOT NULL,
+    "firstName" TEXT NOT NULL,
+    "lastName" TEXT NOT NULL,
     "roles" "UserRole"[] DEFAULT ARRAY['USER']::"UserRole"[],
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

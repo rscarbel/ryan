@@ -39,7 +39,7 @@ enum ApplicationStatus {
 
 model ApplicationCard {
   id                 Int               @id @default(autoincrement())
-  applicationDate    String
+  applicationDate    DateTime
   applicationLink    String
   companyName        String
   jobDescription     String
@@ -88,7 +88,8 @@ model User {
   id                  Int                  @id @default(autoincrement())
   email               String               @unique
   passwordHash        String?
-  name                String
+  firstName           String
+  lastName            String
   roles               UserRole[]           @default([USER])
   oAuth               OAuth[]
   passwordResetTokens PasswordResetToken[]
