@@ -45,7 +45,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          className="p-4 mb-4 bg-white shadow-md rounded-lg border border-gray-200 relative"
+          className="p-4 mb-4 bg-white claymorphic-shadow rounded-lg border border-gray-200 relative"
         >
           <div
             className={`absolute top-1 right-1 rounded-full px-2 py-0.3 text-xs font-medium ${getStatusColor(
