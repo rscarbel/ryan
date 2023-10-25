@@ -10,6 +10,7 @@ import {
   MAX_CHARACTERS,
 } from "./utils";
 import Description from "./Description";
+import { useEditCard } from "./EditCardContext";
 
 interface ApplicationCardProps {
   id: string;
@@ -33,6 +34,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
   applicationLink,
   applicationDate,
   status,
+  notes,
   index,
 }) => {
   const [isDescriptionExpanded, setDescriptionExpanded] = useState(false);
@@ -44,6 +46,8 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
     )}`,
   };
 
+  const { onEditClick } = useEditCard();
+
   return (
     <Draggable draggableId={String(id)} index={index}>
       {(provided) => (
@@ -52,6 +56,19 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           className={cardStyles.base}
+          onClick={() =>
+            onEditClick({
+              id,
+              companyName,
+              jobTitle,
+              jobDescription,
+              salary,
+              applicationLink,
+              applicationDate,
+              notes,
+              status,
+            })
+          }
         >
           <div className={cardStyles.status}>{status}</div>
           <div className="mb-2 mt-1 text-lg font-bold text-gray-700">

@@ -8,15 +8,20 @@ import {
   handleSameColumnMove,
 } from "./utils";
 import { Toast } from "primereact/toast";
-import { updateCardStatus } from "./network";
+import { updateCardStatus, updateCard } from "./network";
 import ColumnRenderer from "./ColumnRenderer";
+import EditCardFormModal from "./EditCardFormModal";
+import { EditCardContext } from "./EditCardContext";
 
 const MILLISECONDS_FOR_MESSAGES = 2000;
 
 const Board: React.FC = ({ cards = [] }) => {
   const [boardData, setBoardData] = useState(initializeBoardData(cards));
-  const { columns, applicationCards, columnOrder } = boardData;
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [editingCard, setEditingCard] = useState(null);
   const toast = useRef<Toast | null>(null);
+
+  const { columns, applicationCards, columnOrder } = boardData;
 
   const showSuccess = () => {
     toast.current?.show({
@@ -34,6 +39,26 @@ const Board: React.FC = ({ cards = [] }) => {
       detail: errorMessage,
       life: MILLISECONDS_FOR_MESSAGES,
     });
+  };
+
+  const handleEditClick = (cardData) => {
+    setEditingCard(cardData);
+    setModalVisible(true);
+  };
+
+  const handleSubmitChanges = async (updatedData) => {
+    try {
+      const { response, data } = await updateCard(updatedData);
+      showSuccess();
+      if (!response.ok) {
+        showError(data.error);
+      }
+    } catch (error) {
+      showError((error as Error).message);
+    } finally {
+      setEditingCard(null);
+      setModalVisible(false);
+    }
   };
 
   const onDragEnd = async (result) => {
@@ -81,8 +106,23 @@ const Board: React.FC = ({ cards = [] }) => {
   };
 
   return (
-    <>
+    <EditCardContext.Provider
+      value={{
+        onEditClick: handleEditClick,
+        editingCardData: editingCard,
+        setEditingCardData: setEditingCard,
+        isModalVisible,
+        setModalVisible,
+      }}
+    >
       <Toast ref={toast} />
+
+      <EditCardFormModal
+        visible={isModalVisible}
+        onHide={() => setModalVisible(false)}
+        cardData={editingCard}
+        onSubmit={handleSubmitChanges}
+      />
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="flex flex-wrap p-4">
           {columnOrder.map((columnId) => (
@@ -95,7 +135,7 @@ const Board: React.FC = ({ cards = [] }) => {
           ))}
         </div>
       </DragDropContext>
-    </>
+    </EditCardContext.Provider>
   );
 };
 

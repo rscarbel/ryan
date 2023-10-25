@@ -10,6 +10,7 @@ import { Toast } from "primereact/toast";
 import { FileUpload } from "primereact/fileupload";
 import { SelectButton } from "primereact/selectbutton";
 import React, { useState, useRef, FormEvent } from "react";
+import { STYLE_CLASSES } from "../utils";
 import TagInput from "./TagInput";
 import "primereact/resources/themes/saga-blue/theme.css";
 import "primereact/resources/primereact.min.css";
@@ -129,7 +130,7 @@ const BlogPostForm: React.FC = () => {
             <span className="text-sm font-medium text-gray-700">Title:</span>
             <InputText
               placeholder="Enter your blog post title"
-              className="mt-1 w-full p-2 shadow-sm border border-gray-300 rounded"
+              className={STYLE_CLASSES.FORM_BASIC_INPUT}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
@@ -141,7 +142,7 @@ const BlogPostForm: React.FC = () => {
             </span>
             <InputTextarea
               placeholder="Short summary of the post"
-              className="mt-1 w-full p-2 shadow-sm border border-gray-300 rounded"
+              className={STYLE_CLASSES.FORM_BASIC_INPUT}
               value={postSummary}
               onChange={(e) => setPostSummary(e.target.value)}
             />
@@ -175,7 +176,7 @@ const BlogPostForm: React.FC = () => {
             <span className="text-sm font-medium text-gray-700">Alt Text:</span>
             <InputText
               placeholder="Description for the image"
-              className="mt-1 w-full p-2 shadow-sm border border-gray-300 rounded"
+              className={STYLE_CLASSES.FORM_BASIC_INPUT}
               value={altText}
               onChange={(e) => setAltText(e.target.value)}
             />
@@ -204,7 +205,7 @@ const BlogPostForm: React.FC = () => {
                 timeFormat="hh:mm"
                 showTime={true}
                 hourFormat="12"
-                className="mt-1 w-full p-2 shadow-sm border border-gray-300 rounded"
+                className={STYLE_CLASSES.FORM_BASIC_INPUT}
                 showIcon
               />
             </label>
@@ -215,7 +216,7 @@ const BlogPostForm: React.FC = () => {
             model={options}
             type="button"
             onClick={handleSubmit}
-            className="w-full p-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded hover:from-blue-600 hover:to-blue-800 focus:outline-none focus:border-blue-700 focus:ring focus:ring-blue-200 active:from-blue-700 active:to-blue-900 transition-transform transform hover:-translate-y-0.5"
+            className={STYLE_CLASSES.FORM_BASIC_SUBMIT_BUTTON}
           />
         </div>
       </form>
