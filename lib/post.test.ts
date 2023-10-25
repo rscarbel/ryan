@@ -16,7 +16,7 @@ import {
 } from "./post";
 import { UserRole, PrismaClient } from "@prisma/client";
 
-export const prisma = new PrismaClient();
+const prisma = new PrismaClient();
 
 async function seedDatabase() {
   const author = await prisma.user.create({

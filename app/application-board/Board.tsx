@@ -12,6 +12,7 @@ import { updateCardStatus, updateCard } from "./network";
 import ColumnRenderer from "./ColumnRenderer";
 import EditCardFormModal from "./EditCardFormModal";
 import { EditCardContext } from "./EditCardContext";
+import { da } from "@faker-js/faker";
 
 const MILLISECONDS_FOR_MESSAGES = 2000;
 
@@ -49,7 +50,11 @@ const Board: React.FC = ({ cards = [] }) => {
   const handleSubmitChanges = async (updatedData) => {
     try {
       const { response, data } = await updateCard(updatedData);
+      const cards = data.cards;
+
+      console.log(data);
       showSuccess();
+      setBoardData(initializeBoardData(cards));
       if (!response.ok) {
         showError(data.error);
       }

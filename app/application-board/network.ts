@@ -1,5 +1,3 @@
-import { revalidatePath } from "next/cache";
-
 export const updateCardStatus = async (cardId: string, newStatus: string) => {
   const response = await fetch("/api/applicationBoard/updateStatus", {
     method: "POST",

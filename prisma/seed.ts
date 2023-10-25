@@ -6,7 +6,7 @@ const {
 } = require("@prisma/client");
 const { faker } = require("@faker-js/faker");
 
-export const prisma = new PrismaClient();
+const prisma = new PrismaClient();
 
 const NUM_APPLICATION_CARDS = 10;
 

@@ -1,18 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-
-export const prisma = new PrismaClient();
-
-/**
-              id,
-              companyName,
-              jobTitle,
-              jobDescription,
-              salary,
-              applicationLink,
-              applicationDate,
-              notes,
-              status,
- */
+const prisma = new PrismaClient();
 
 export async function POST(request) {
   const res = await request.json();
@@ -42,7 +29,11 @@ export async function POST(request) {
       },
     });
 
-    return new Response(JSON.stringify({ error: null, card: updatedCard }), {
+    const cards = await prisma.applicationCard.findMany({
+      where: { applicationBoardId: updatedCard.applicationBoardId },
+    });
+
+    return new Response(JSON.stringify({ error: null, cards: cards }), {
       status: 200,
     });
   } catch (error) {
