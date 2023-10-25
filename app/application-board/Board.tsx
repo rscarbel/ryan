@@ -7,9 +7,9 @@ import {
   handleDifferentColumnMove,
   handleSameColumnMove,
 } from "./utils";
-import SingleColumn from "./SingleColumn";
-import DoubleColumn from "./DoubleColumn";
 import { Toast } from "primereact/toast";
+import { updateCardStatus } from "./network";
+import ColumnRenderer from "./ColumnRenderer";
 
 const MILLISECONDS_FOR_MESSAGES = 2000;
 
@@ -63,18 +63,7 @@ const Board: React.FC = ({ cards = [] }) => {
     const newStatus = destination.droppableId;
 
     try {
-      const response = await fetch("/api/applicationBoard/update", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: cardId,
-          status: newStatus,
-        }),
-      });
-
-      const data = await response.json();
+      const { response, data } = await updateCardStatus(cardId, newStatus);
 
       setBoardData((prevData) => ({
         ...prevData,
@@ -91,52 +80,19 @@ const Board: React.FC = ({ cards = [] }) => {
     }
   };
 
-  const renderColumn = (columnId) => {
-    const doubleColumns = {
-      offer: "accepted",
-      rejected: "passed",
-    };
-
-    if (doubleColumns[columnId]) {
-      const column = columns[columnId];
-      const pairedColumn = columns[doubleColumns[columnId]];
-      return (
-        <DoubleColumn
-          key={`${columnId}-${doubleColumns[columnId]}-group`}
-          column1={column}
-          column2={pairedColumn}
-          applicationCards1={column.applicationCardIds.map(
-            (taskId) => applicationCards[taskId]
-          )}
-          applicationCards2={pairedColumn.applicationCardIds.map(
-            (taskId) => applicationCards[taskId]
-          )}
-        />
-      );
-    }
-
-    if (!Object.values(doubleColumns).includes(columnId)) {
-      const column = columns[columnId];
-      return (
-        <SingleColumn
-          key={columnId}
-          column={column}
-          applicationCards={column.applicationCardIds.map(
-            (taskId) => applicationCards[taskId]
-          )}
-        />
-      );
-    }
-
-    return null;
-  };
-
   return (
     <>
       <Toast ref={toast} />
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="flex flex-wrap p-4">
-          {columnOrder.map((columnId) => renderColumn(columnId))}
+          {columnOrder.map((columnId) => (
+            <ColumnRenderer
+              key={columnId}
+              columnId={columnId}
+              columns={columns}
+              applicationCards={applicationCards}
+            />
+          ))}
         </div>
       </DragDropContext>
     </>

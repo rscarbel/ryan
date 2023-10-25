@@ -65,26 +65,6 @@ export const prettifyDate = (date: Date) => {
   return new Intl.DateTimeFormat("en-US").format(dateObj);
 };
 
-export const updateCardStatus = async (cardId, newStatus) => {
-  try {
-    const response = await fetch("/api/applicationBoard/updateStatus", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id: cardId, status: newStatus }),
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to update card status");
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Error updating card status:", error);
-  }
-};
-
 export const truncateText = (
   text: string,
   maxLength: number = MAX_CHARACTERS
@@ -125,3 +105,5 @@ export const handleDifferentColumnMove = (
     [endColumn.id]: { ...endColumn, applicationCardIds: newEndTaskIds },
   };
 };
+
+
