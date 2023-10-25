@@ -8,6 +8,9 @@ CREATE TYPE "OAuthService" AS ENUM ('GOOGLE', 'FACEBOOK', 'TWITTER');
 CREATE TYPE "SiteContentFormat" AS ENUM ('HTML', 'MARKDOWN', 'PLAIN_TEXT');
 
 -- CreateEnum
+CREATE TYPE "WorkMode" AS ENUM ('onsite', 'remote', 'hybrid');
+
+-- CreateEnum
 CREATE TYPE "ApplicationStatus" AS ENUM ('applied', 'interview', 'offer', 'rejected', 'accepted', 'passed');
 
 -- CreateEnum
@@ -21,8 +24,8 @@ CREATE TABLE "ApplicationCard" (
     "companyId" INTEGER NOT NULL,
     "jobId" INTEGER NOT NULL,
     "notes" TEXT,
-    "payAmountCents" INTEGER,
-    "payFrequency" "PayFrequency",
+    "payAmountCents" INTEGER NOT NULL DEFAULT 0,
+    "payFrequency" "PayFrequency" DEFAULT 'hourly',
     "status" "ApplicationStatus" NOT NULL DEFAULT 'applied',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -36,6 +39,7 @@ CREATE TABLE "Job" (
     "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT,
+    "workMode" "WorkMode" NOT NULL DEFAULT 'onsite',
     "companyId" INTEGER NOT NULL,
     "locationId" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

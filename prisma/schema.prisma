@@ -29,6 +29,12 @@ enum SiteContentFormat {
   PLAIN_TEXT
 }
 
+enum WorkMode {
+  onsite
+  remote
+  hybrid
+}
+
 enum ApplicationStatus {
   applied
   interview
@@ -68,6 +74,7 @@ model Job {
   id           Int               @id @default(autoincrement())
   title        String
   description  String?
+  workMode     WorkMode          @default(onsite)
   company      Company           @relation(fields: [companyId], references: [id])
   companyId    Int
   applications ApplicationCard[]
