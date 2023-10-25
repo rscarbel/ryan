@@ -78,13 +78,16 @@ const EditCardFormModal = ({ visible, onHide, cardData, onSubmit }) => {
           <label className="block mt-6" htmlFor="salary">
             Salary
           </label>
-          <InputText
-            className={STYLE_CLASSES.FORM_BASIC_INPUT}
-            id="salary"
-            name="salary"
-            value={formData.salary}
-            onChange={handleInputChange}
-          />
+          <div className="flex items-center">
+            <p className="mr-1">$</p>
+            <InputText
+              className={`${STYLE_CLASSES.FORM_BASIC_INPUT} flex-1`}
+              id="salary"
+              name="salary"
+              value={formData.salary}
+              onChange={handleInputChange}
+            />
+          </div>
         </div>
 
         <div className="p-field">
