@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { DragDropContext } from "@hello-pangea/dnd";
 import {
   initializeBoardData,
@@ -9,10 +9,32 @@ import {
 } from "./utils";
 import SingleColumn from "./SingleColumn";
 import DoubleColumn from "./DoubleColumn";
+import { Toast } from "primereact/toast";
+
+const MILLISECONDS_FOR_MESSAGES = 2000;
 
 const Board: React.FC = ({ cards = [] }) => {
   const [boardData, setBoardData] = useState(initializeBoardData(cards));
   const { columns, applicationCards, columnOrder } = boardData;
+  const toast = useRef<Toast | null>(null);
+
+  const showSuccess = () => {
+    toast.current?.show({
+      severity: "success",
+      summary: "Success",
+      detail: `Status updated`,
+      life: MILLISECONDS_FOR_MESSAGES,
+    });
+  };
+
+  const showError = (errorMessage: string) => {
+    toast.current?.show({
+      severity: "error",
+      summary: "Error",
+      detail: errorMessage,
+      life: MILLISECONDS_FOR_MESSAGES,
+    });
+  };
 
   const onDragEnd = async (result) => {
     const { source, destination, draggableId } = result;
@@ -59,11 +81,13 @@ const Board: React.FC = ({ cards = [] }) => {
         columns: { ...prevData.columns, ...updatedColumns },
       }));
 
+      showSuccess();
+
       if (!response.ok) {
-        throw new Error(data.error);
+        showError(data.error);
       }
     } catch (error) {
-      console.error("Failed to update the application card:", error);
+      showError((error as Error).message);
     }
   };
 
@@ -108,11 +132,14 @@ const Board: React.FC = ({ cards = [] }) => {
   };
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <div className="flex flex-wrap p-4">
-        {columnOrder.map((columnId) => renderColumn(columnId))}
-      </div>
-    </DragDropContext>
+    <>
+      <Toast ref={toast} />
+      <DragDropContext onDragEnd={onDragEnd}>
+        <div className="flex flex-wrap p-4">
+          {columnOrder.map((columnId) => renderColumn(columnId))}
+        </div>
+      </DragDropContext>
+    </>
   );
 };
 

@@ -1,5 +1,7 @@
 import dynamic from "next/dynamic";
 import { PrismaClient } from "@prisma/client";
+import "primereact/resources/themes/saga-blue/theme.css";
+import "primereact/resources/primereact.min.css";
 
 const DynamicTextEditor = dynamic(() => import("./Board"), {
   ssr: false,
