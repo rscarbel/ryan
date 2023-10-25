@@ -7,6 +7,7 @@ import { Calendar } from "primereact/calendar";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
 import { STYLE_CLASSES } from "../utils";
+import { payFrequencyOptions } from "./utils";
 
 const EditCardFormModal = ({ visible, onHide, cardData, onSubmit }) => {
   const [formData, setFormData] = useState(cardData || {});
@@ -17,8 +18,17 @@ const EditCardFormModal = ({ visible, onHide, cardData, onSubmit }) => {
   }, [cardData]);
 
   const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
+
+  const handlePayAmountChange = (e) => {
+    const { value } = e.target;
+    const cents = Math.round(parseFloat(value) * 100);
+    setFormData({ ...formData, payAmountCents: cents });
+  };
+
+  const formatCents = (cents) => (cents / 100).toFixed(2);
 
   const handleHide = () => {
     setFormData({});
@@ -75,17 +85,27 @@ const EditCardFormModal = ({ visible, onHide, cardData, onSubmit }) => {
         </div>
 
         <div className="p-field">
-          <label className="block mt-6" htmlFor="salary">
-            Salary
+          <label className="block mt-6" htmlFor="pay">
+            Pay Amount and Frequency
           </label>
           <div className="flex items-center">
             <p className="mr-1">$</p>
             <InputText
-              className={`${STYLE_CLASSES.FORM_BASIC_INPUT} flex-1`}
-              id="salary"
-              name="salary"
-              value={formData.salary}
+              className={`${STYLE_CLASSES.FORM_BASIC_INPUT} flex-1 mr-2`}
+              id="payAmountCents"
+              name="payAmountCents"
+              value={formatCents(formData.payAmountCents)}
+              onChange={handlePayAmountChange}
+              placeholder="Amount"
+            />
+            <Dropdown
+              id="payFrequency"
+              name="payFrequency"
+              value={formData.payFrequency}
+              options={payFrequencyOptions}
               onChange={handleInputChange}
+              placeholder="Frequency"
+              className={`${STYLE_CLASSES.FORM_BASIC_INPUT} flex-1`}
             />
           </div>
         </div>

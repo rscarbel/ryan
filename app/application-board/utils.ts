@@ -20,6 +20,22 @@ export const getStatusColor = (status: string) => {
   }
 };
 
+export const payFrequencyOptions = [
+  { label: "per hour", value: "hourly" },
+  { label: "per week", value: "weekly" },
+  { label: "biweekly", value: "biweekly" },
+  { label: "per month", value: "monthly" },
+  { label: "per year", value: "yearly" },
+];
+
+export const humanizedPayFrequency = {
+  hourly: "per hour",
+  weekly: "per week",
+  biweekly: "biweekly",
+  monthly: "per month",
+  yearly: "per year",
+};
+
 export const initializeBoardData = (applicationCards: any[]) => {
   const generatedColumns = columns.reduce((acc, column) => {
     const columnApplicationCards = applicationCards.filter(
@@ -44,20 +60,19 @@ export const initializeBoardData = (applicationCards: any[]) => {
   };
 };
 
-export const prettifySalary = (salary: string | number) => {
-  if (typeof salary === "number") {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(salary);
+export const prettifyPay = (pay: string | number) => {
+  let payInteger = typeof pay === "number" ? pay : parseInt(pay);
+
+  const prettifiedPay = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(payInteger);
+
+  if (prettifiedPay.slice(-3) === ".00") {
+    return prettifiedPay.slice(0, -3);
   }
-  if (typeof salary === "string") {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(parseInt(salary));
-  }
-  return salary;
+
+  return prettifiedPay;
 };
 
 export const prettifyDate = (date: Date) => {

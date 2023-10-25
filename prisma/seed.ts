@@ -2,6 +2,7 @@ const {
   UserRole,
   OAuthService,
   ApplicationStatus,
+  PayFrequency,
   PrismaClient,
 } = require("@prisma/client");
 const { faker } = require("@faker-js/faker");
@@ -43,6 +44,37 @@ async function main() {
   });
 
   for (let i = 0; i < NUM_APPLICATION_CARDS; i++) {
+    const company = await prisma.company.create({
+      data: {
+        name: faker.company.name(),
+        user: {
+          connect: {
+            id: user1.id,
+          },
+        },
+      },
+    });
+
+    const job = await prisma.job.create({
+      data: {
+        title: faker.person.jobTitle(),
+        description: faker.lorem.sentences(3),
+        company: {
+          connect: {
+            id: company.id,
+          },
+        },
+        location: {
+          create: {
+            city: faker.location.city(),
+            state: faker.location.state(),
+            country: faker.location.country(),
+            postalCode: faker.location.zipCode(),
+          },
+        },
+      },
+    });
+
     await prisma.applicationCard.create({
       data: {
         applicationDate: faker.date.past({
@@ -50,13 +82,27 @@ async function main() {
           refDate: new Date(),
         }),
         applicationLink: faker.internet.url(),
-        companyName: faker.company.name(),
-        jobDescription: faker.lorem.sentences(3),
-        jobTitle: faker.person.jobTitle(),
+        company: {
+          connect: {
+            id: company.id,
+          },
+        },
+        job: {
+          connect: {
+            id: job.id,
+          },
+        },
         notes: faker.lorem.paragraph(),
-        salary: faker.finance.amount(30000, 100000, 0),
+        payAmountCents: Math.round(
+          faker.finance.amount(30000, 100000, 0) * 100
+        ),
+        payFrequency: "yearly",
         status: randomApplicationStatus(),
-        applicationBoardId: board1.id,
+        applicationBoard: {
+          connect: {
+            id: board1.id,
+          },
+        },
       },
     });
   }

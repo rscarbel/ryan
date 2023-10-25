@@ -21,8 +21,24 @@ const getCardsForUser = async (email: string) => {
 
   const cards = await prisma.applicationCard.findMany({
     where: { applicationBoardId: board.id },
+    include: {
+      company: true,
+      job: true,
+    },
   });
-  return cards;
+
+  return cards.map((card) => ({
+    id: card.id,
+    companyName: card.company.name,
+    jobTitle: card.job?.title,
+    jobDescription: card.job?.description,
+    payAmountCents: card.payAmountCents,
+    payFrequency: card.payFrequency,
+    applicationLink: card.applicationLink,
+    applicationDate: card.applicationDate,
+    notes: card.notes,
+    status: card.status,
+  }));
 };
 
 const Job: React.FC = async () => {

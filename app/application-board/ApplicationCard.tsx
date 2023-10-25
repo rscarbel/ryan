@@ -4,10 +4,9 @@ import { useState } from "react";
 import { Draggable } from "@hello-pangea/dnd";
 import {
   getStatusColor,
-  prettifySalary,
+  prettifyPay,
   prettifyDate,
-  truncateText,
-  MAX_CHARACTERS,
+  humanizedPayFrequency,
 } from "./utils";
 import Description from "./Description";
 import { useEditCard } from "./EditCardContext";
@@ -18,7 +17,8 @@ const ApplicationCard: React.FC<ApplicationCardInterface> = ({
   companyName,
   jobTitle,
   jobDescription,
-  salary,
+  payAmountCents,
+  payFrequency,
   applicationLink,
   applicationDate,
   status,
@@ -33,6 +33,9 @@ const ApplicationCard: React.FC<ApplicationCardInterface> = ({
       status
     )}`,
   };
+
+  const payAmountDisplay = prettifyPay(payAmountCents / 100);
+  const payFrequencyDisplay = humanizedPayFrequency[payFrequency];
 
   const { onEditClick } = useEditCard();
 
@@ -50,7 +53,8 @@ const ApplicationCard: React.FC<ApplicationCardInterface> = ({
               companyName,
               jobTitle,
               jobDescription,
-              salary,
+              payAmountCents,
+              payFrequency,
               applicationLink,
               applicationDate,
               notes,
@@ -70,9 +74,7 @@ const ApplicationCard: React.FC<ApplicationCardInterface> = ({
             isExpanded={isDescriptionExpanded}
             toggle={() => setDescriptionExpanded(!isDescriptionExpanded)}
           />
-          <div className="mb-1 text-gray-600">
-            Salary: {prettifySalary(salary)}
-          </div>
+          <div className="mb-1 text-gray-600">{`${payAmountDisplay} ${payFrequencyDisplay}`}</div>
           <a
             href={applicationLink}
             target="_blank"
