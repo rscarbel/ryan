@@ -1,6 +1,12 @@
-const { UserRole, OAuthService, ApplicationStatus } = require("@prisma/client");
+const {
+  UserRole,
+  OAuthService,
+  ApplicationStatus,
+  PrismaClient,
+} = require("@prisma/client");
 const { faker } = require("@faker-js/faker");
-import { prisma } from "@/app/utils";
+
+export const prisma = new PrismaClient();
 
 const NUM_APPLICATION_CARDS = 10;
 

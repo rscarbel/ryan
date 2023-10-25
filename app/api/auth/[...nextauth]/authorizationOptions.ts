@@ -9,7 +9,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { findUserByEmail } from "@/lib/user";
 import verifyPassword from "@/lib/auth/verifyPassword";
 
-const options: AuthOptions = {
+const authorizationOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Email and Password",
@@ -111,4 +111,4 @@ const options: AuthOptions = {
   session: { strategy: "jwt" },
 };
 
-export default options;
+export default authorizationOptions;

@@ -14,9 +14,9 @@ import {
   restoreDeletedPost,
   hardDeletePostById,
 } from "./post";
-import { UserRole } from "@prisma/client";
+import { UserRole, PrismaClient } from "@prisma/client";
 
-import { prisma } from "@/app/utils";
+export const prisma = new PrismaClient();
 
 async function seedDatabase() {
   const author = await prisma.user.create({

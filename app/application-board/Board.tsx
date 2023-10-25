@@ -14,7 +14,7 @@ const Board: React.FC = ({ cards = [] }) => {
   const [boardData, setBoardData] = useState(initializeBoardData(cards));
   const { columns, applicationCards, columnOrder } = boardData;
 
-  const onDragEnd = (result) => {
+  const onDragEnd = async (result) => {
     const { source, destination, draggableId } = result;
 
     if (
@@ -37,10 +37,34 @@ const Board: React.FC = ({ cards = [] }) => {
             draggableId
           );
 
-    setBoardData((prevData) => ({
-      ...prevData,
-      columns: { ...prevData.columns, ...updatedColumns },
-    }));
+    const cardId = draggableId;
+    const newStatus = destination.droppableId;
+
+    try {
+      const response = await fetch("/api/applicationBoard/update", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: cardId,
+          status: newStatus,
+        }),
+      });
+
+      const data = await response.json();
+
+      setBoardData((prevData) => ({
+        ...prevData,
+        columns: { ...prevData.columns, ...updatedColumns },
+      }));
+
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+    } catch (error) {
+      console.error("Failed to update the application card:", error);
+    }
   };
 
   const renderColumn = (columnId) => {
