@@ -55,8 +55,6 @@ const Board: React.FC<BoardProps> = ({ cards = [] }) => {
     try {
       const { response, data } = await updateCard(updatedData);
       const cards = data.cards;
-
-      console.log(cards);
       showSuccess();
       setBoardData(initializeBoardData(cards));
       if (!response.ok) {
@@ -97,12 +95,12 @@ const Board: React.FC<BoardProps> = ({ cards = [] }) => {
     const newStatus = destination.droppableId;
 
     try {
-      const { response, data } = await updateCardStatus(cardId, newStatus);
-
       setBoardData((prevData) => ({
         ...prevData,
         columns: { ...prevData.columns, ...updatedColumns },
       }));
+
+      const { response, data } = await updateCardStatus(cardId, newStatus);
 
       showSuccess();
 
