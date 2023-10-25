@@ -1,23 +1,27 @@
 import { User, PasswordResetToken, Post } from "@prisma/client";
-import { prisma } from "@/app/utils";
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 
 /**
  * Create a new user.
  *
  * @param email User's email.
  * @param passwordHash Hashed password.
- * @param name User's name.
+ * @param firstName User's first name.
+ * @param lastName User's last name.
  */
 export async function createUser(
   email: string,
   passwordHash: string,
-  name: string
+  firstName: string,
+  lastName: string
 ): Promise<User> {
   return prisma.user.create({
     data: {
       email: email,
       passwordHash: passwordHash,
-      name: name,
+      firstName: firstName,
+      lastName: lastName,
     },
   });
 }

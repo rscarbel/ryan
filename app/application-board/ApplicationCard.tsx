@@ -11,21 +11,9 @@ import {
 } from "./utils";
 import Description from "./Description";
 import { useEditCard } from "./EditCardContext";
+import { ApplicationCardInterface } from "./types";
 
-interface ApplicationCardProps {
-  id: string;
-  companyName: string;
-  jobTitle: string;
-  jobDescription: string;
-  salary: string | number;
-  applicationLink: string;
-  applicationDate: Date;
-  notes: string;
-  status: string;
-  index: number;
-}
-
-const ApplicationCard: React.FC<ApplicationCardProps> = ({
+const ApplicationCard: React.FC<ApplicationCardInterface> = ({
   id,
   companyName,
   jobTitle,

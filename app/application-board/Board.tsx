@@ -12,11 +12,15 @@ import { updateCardStatus, updateCard } from "./network";
 import ColumnRenderer from "./ColumnRenderer";
 import EditCardFormModal from "./EditCardFormModal";
 import { EditCardContext } from "./EditCardContext";
-import { da } from "@faker-js/faker";
+import { BoardCardInterface } from "./types";
 
 const MILLISECONDS_FOR_MESSAGES = 2000;
 
-const Board: React.FC = ({ cards = [] }) => {
+interface BoardProps {
+  cards: BoardCardInterface[];
+}
+
+const Board: React.FC<BoardProps> = ({ cards = [] }) => {
   const [boardData, setBoardData] = useState(initializeBoardData(cards));
   const [isModalVisible, setModalVisible] = useState(false);
   const [editingCard, setEditingCard] = useState(null);
@@ -52,7 +56,7 @@ const Board: React.FC = ({ cards = [] }) => {
       const { response, data } = await updateCard(updatedData);
       const cards = data.cards;
 
-      console.log(data);
+      console.log(cards);
       showSuccess();
       setBoardData(initializeBoardData(cards));
       if (!response.ok) {
