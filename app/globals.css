@@ -2,9 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
-@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@100;200;400&display=swap');
-
 :root {
   --white: #ffffff;
   --light-gray: #dfdfdf;
