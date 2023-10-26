@@ -27,8 +27,15 @@ const EditCardFormModal = ({ visible, onHide, cardData, onSubmit }) => {
 
   const handlePayAmountChange = (e) => {
     const { value } = e.target;
-    const cents = Math.round(parseFloat(value) * 100);
+    const cents = Math.round(parseFloat(value) * 100) || 0;
     setFormData({ ...formData, payAmountCents: cents });
+  };
+
+  const onCountryChange = (country) => {
+    const currencySymbol = getCurrencySymbol(country);
+    const countryData = { country: country, currency: currencySymbol };
+    console.log(countryData);
+    setFormData({ ...formData, ...countryData });
   };
 
   const payFormAmount = formData?.payAmountCents / 100;
@@ -192,7 +199,7 @@ const EditCardFormModal = ({ visible, onHide, cardData, onSubmit }) => {
 
           <CountriesField
             selectedCountry={formData.country}
-            onChange={handleInputChange}
+            onChange={onCountryChange}
           />
         </div>
 

@@ -21,6 +21,8 @@ export async function POST(request) {
     notes,
   } = await request.json();
 
+  console.log(request.json());
+
   const currentCard = await prisma.applicationCard.findUnique({
     where: { id: parseInt(id) },
   });
