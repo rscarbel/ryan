@@ -40,7 +40,7 @@ CREATE TABLE "Job" (
     "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT,
-    "workMode" "WorkMode" NOT NULL DEFAULT 'onsite',
+    "workMode" "WorkMode",
     "companyId" INTEGER NOT NULL,
     "locationId" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -110,7 +110,7 @@ CREATE TABLE "ContactAttribute" (
 -- CreateTable
 CREATE TABLE "Location" (
     "id" SERIAL NOT NULL,
-    "address" TEXT,
+    "streetAddress" TEXT,
     "city" TEXT NOT NULL,
     "state" TEXT,
     "country" TEXT,

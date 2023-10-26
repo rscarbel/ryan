@@ -75,7 +75,7 @@ model Job {
   id           Int               @id @default(autoincrement())
   title        String
   description  String?
-  workMode     WorkMode          @default(onsite)
+  workMode     WorkMode?
   company      Company           @relation(fields: [companyId], references: [id])
   companyId    Int
   applications ApplicationCard[]
@@ -152,20 +152,20 @@ model ContactAttribute {
 }
 
 model Location {
-  id         Int       @id @default(autoincrement())
-  address    String?
-  city       String
-  state      String?
-  country    String?
-  postalCode String?
-  fromDate   DateTime  @default(now())
-  toDate     DateTime?
-  companies  Company[]
-  contacts   Contact[]
-  users      User[]
-  jobs       Job[]
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @default(now()) @updatedAt
+  id            Int       @id @default(autoincrement())
+  streetAddress String?
+  city          String
+  state         String?
+  country       String?
+  postalCode    String?
+  fromDate      DateTime  @default(now())
+  toDate        DateTime?
+  companies     Company[]
+  contacts      Contact[]
+  users         User[]
+  jobs          Job[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now()) @updatedAt
 }
 
 model Email {

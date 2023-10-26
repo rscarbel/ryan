@@ -17,6 +17,12 @@ const ApplicationCard: React.FC<ApplicationCardInterface> = ({
   companyName,
   jobTitle,
   jobDescription,
+  workMode,
+  streetAddress,
+  city,
+  state,
+  country,
+  postalCode,
   payAmountCents,
   payFrequency,
   applicationLink,
@@ -36,6 +42,7 @@ const ApplicationCard: React.FC<ApplicationCardInterface> = ({
 
   const payAmountDisplay = prettifyPay(payAmountCents / 100);
   const payFrequencyDisplay = humanizedPayFrequency[payFrequency];
+  const workModeDisplay = workMode ? `(${workMode})` : "";
 
   const { onEditClick } = useEditCard();
 
@@ -53,6 +60,12 @@ const ApplicationCard: React.FC<ApplicationCardInterface> = ({
               companyName,
               jobTitle,
               jobDescription,
+              workMode,
+              streetAddress,
+              city,
+              state,
+              country,
+              postalCode,
               payAmountCents,
               payFrequency,
               applicationLink,
@@ -74,7 +87,9 @@ const ApplicationCard: React.FC<ApplicationCardInterface> = ({
             isExpanded={isDescriptionExpanded}
             toggle={() => setDescriptionExpanded(!isDescriptionExpanded)}
           />
-          <div className="mb-1 text-gray-600">{`${payAmountDisplay} ${payFrequencyDisplay}`}</div>
+          <div className="mb-1 text-gray-600">
+            {`${payAmountDisplay} ${payFrequencyDisplay} ${workModeDisplay}`}
+          </div>
           <a
             href={applicationLink}
             target="_blank"

@@ -24,7 +24,11 @@ const getCardsForUser = async (email: string) => {
     where: { applicationBoardId: board.id },
     include: {
       company: true,
-      job: true,
+      job: {
+        include: {
+          location: true,
+        },
+      },
     },
     orderBy: {
       positionIndex: "asc",
@@ -37,6 +41,12 @@ const getCardsForUser = async (email: string) => {
     index: card.positionIndex,
     jobTitle: card.job?.title,
     jobDescription: card.job?.description,
+    workMode: card.job?.workMode,
+    streetAddress: card.job?.location?.streetAddress,
+    city: card.job?.location?.city,
+    state: card.job?.location?.state,
+    country: card.job?.location?.country,
+    postalCode: card.job?.location?.postalCode,
     payAmountCents: card.payAmountCents,
     payFrequency: card.payFrequency,
     applicationLink: card.applicationLink,
