@@ -14,7 +14,7 @@ import EditCardFormModal from "./EditCardFormModal";
 import { EditCardContext } from "./EditCardContext";
 import { BoardCardInterface } from "./types";
 
-const MILLISECONDS_FOR_MESSAGES = 2000;
+const MILLISECONDS_FOR_MESSAGES = 3000;
 
 interface BoardProps {
   cards: BoardCardInterface[];
