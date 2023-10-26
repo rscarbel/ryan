@@ -13,6 +13,7 @@ import { payFrequencyOptions } from "./utils";
 const EditCardFormModal = ({ visible, onHide, cardData, onSubmit }) => {
   const [formData, setFormData] = useState(cardData || {});
   const hasDataChanged = JSON.stringify(cardData) !== JSON.stringify(formData);
+  const isDataValid = formData.companyName && formData.jobTitle;
 
   useEffect(() => {
     setFormData(cardData || {});
@@ -139,6 +140,7 @@ const EditCardFormModal = ({ visible, onHide, cardData, onSubmit }) => {
             onChange={handleInputChange}
           />
         </div>
+
         <div className="flex items-center">
           <div className="p-field flex-1 mr-2">
             <label className="block mt-8" htmlFor="city">
@@ -265,7 +267,7 @@ const EditCardFormModal = ({ visible, onHide, cardData, onSubmit }) => {
             : STYLE_CLASSES.FORM_BASIC_SUBMIT_BUTTON_DISABLED
         }
         onClick={() => onSubmit(formData)}
-        disabled={!hasDataChanged}
+        disabled={!hasDataChanged || !isDataValid}
       >
         Submit
       </button>

@@ -156,7 +156,7 @@ model Location {
   streetAddress String?
   city          String
   state         String?
-  country       String?
+  country       String?   @default("United States")
   postalCode    String?
   fromDate      DateTime  @default(now())
   toDate        DateTime?
