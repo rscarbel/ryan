@@ -11,6 +11,8 @@ import {
 import Description from "./Description";
 import { useEditCard } from "./EditCardContext";
 import { ApplicationCardInterface } from "./types";
+import { InputNumber } from "primereact/inputnumber";
+import { formatCurrency } from "../utils";
 
 const ApplicationCard: React.FC<ApplicationCardInterface> = ({
   id,
@@ -41,7 +43,7 @@ const ApplicationCard: React.FC<ApplicationCardInterface> = ({
     )}`,
   };
 
-  const payAmountDisplay = prettifyPay(payAmountCents / 100);
+  const payAmountDisplay = formatCurrency(payAmountCents, country);
   const payFrequencyDisplay = humanizedPayFrequency[payFrequency];
   const workModeDisplay = workMode ? `(${workMode})` : "";
 
@@ -72,6 +74,7 @@ const ApplicationCard: React.FC<ApplicationCardInterface> = ({
               currency,
               applicationLink,
               applicationDate,
+              positionIndex: index,
               notes,
               status,
             })

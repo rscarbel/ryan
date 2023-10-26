@@ -7,6 +7,18 @@ const {
   PrismaClient,
 } = require("@prisma/client");
 const { faker } = require("@faker-js/faker");
+const { currenciesList } = require("./data/currenciesList");
+const { countrySymbols } = require("./data/countrySymbols");
+
+const getCountryCode = (country) => {
+  const countrySymbol = countrySymbols[country];
+  return countrySymbol || "US";
+};
+
+const getCurrencySymbol = (country) => {
+  const countryCode = getCountryCode(country);
+  return currenciesList[countryCode] || "USD";
+};
 
 const prisma = new PrismaClient();
 
@@ -104,6 +116,7 @@ async function main() {
 
     const currentStatus = randomApplicationStatus();
     const { frequency, amountCents } = randomPayDetails();
+    const country = faker.location.country();
 
     const job = await prisma.job.create({
       data: {
@@ -117,12 +130,12 @@ async function main() {
         },
         payAmountCents: amountCents,
         payFrequency: frequency,
-        currency: "USD",
+        currency: country,
         location: {
           create: {
             city: faker.location.city(),
             state: faker.location.state(),
-            country: faker.location.country(),
+            country: country,
             postalCode: faker.location.zipCode(),
           },
         },

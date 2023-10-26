@@ -2,21 +2,23 @@
 
 import React, { useState } from "react";
 import { AutoComplete } from "primereact/autocomplete";
-import countriesList from "./countriesList";
-import countrySymbols from "./countrySymbols";
-import currenciesList from "./currenciesList";
+import { COUNTRIES_LIST } from "@/app/constants";
+import { getCurrencySymbol } from "@/app/utils";
 import { STYLE_CLASSES } from "../../utils";
+import { on } from "events";
 
 const CountriesField = ({ selectedCountry, onChange }) => {
   const [filteredCountries, setFilteredCountries] = useState(null);
+  const [selectedCountryTemp, setSelectedCountryTemp] =
+    useState(selectedCountry);
 
   const search = (event) => {
     let filtered;
 
     if (!event.query.trim().length) {
-      filtered = [...countriesList];
+      filtered = [...COUNTRIES_LIST];
     } else {
-      filtered = countriesList.filter((country) => {
+      filtered = COUNTRIES_LIST.filter((country) => {
         return country.toLowerCase().startsWith(event.query.toLowerCase());
       });
     }
@@ -25,19 +27,21 @@ const CountriesField = ({ selectedCountry, onChange }) => {
   };
 
   const handleAutoCompleteChange = (e) => {
+    setSelectedCountryTemp(e.value);
+  };
+
+  const handleAutoCompleteBlur = () => {
     onChange({
       target: {
         name: "country",
-        value: e.value,
+        value: selectedCountryTemp,
       },
     });
-
-    const countrySymbol = countrySymbols[e.value] || "US";
-    const currencySymbol = currenciesList[countrySymbol] || "USD";
+    const currencySymbol = getCurrencySymbol(selectedCountryTemp);
     onChange({
       target: {
         name: "currency",
-        value: e.value,
+        value: currencySymbol,
       },
     });
   };
@@ -48,11 +52,12 @@ const CountriesField = ({ selectedCountry, onChange }) => {
         Country
       </label>
       <AutoComplete
-        value={selectedCountry}
+        value={selectedCountryTemp}
         className={STYLE_CLASSES.FORM_BASIC_INPUT}
         suggestions={filteredCountries}
         completeMethod={search}
         onChange={handleAutoCompleteChange}
+        onBlur={handleAutoCompleteBlur}
         placeholder="United States"
       />
     </div>

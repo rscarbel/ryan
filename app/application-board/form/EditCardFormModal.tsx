@@ -7,11 +7,9 @@ import { Calendar } from "primereact/calendar";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
 import { InputNumber } from "primereact/inputnumber";
-import { STYLE_CLASSES } from "../../utils";
+import { STYLE_CLASSES, getCountryCode, getCurrencySymbol } from "@/app/utils";
 import { payFrequencyOptions } from "../utils";
 import CountriesField from "./CountriesField";
-import countrySymbols from "./countrySymbols";
-import currenciesList from "./currenciesList";
 
 const EditCardFormModal = ({ visible, onHide, cardData, onSubmit }) => {
   const [formData, setFormData] = useState(cardData || {});
@@ -40,8 +38,8 @@ const EditCardFormModal = ({ visible, onHide, cardData, onSubmit }) => {
     onHide();
   };
 
-  const countrySymbol = countrySymbols[formData.country] || "US";
-  const currencySymbol = currenciesList[countrySymbol] || "USD";
+  const countrySymbol = getCountryCode(formData.country);
+  const currencySymbol = getCurrencySymbol(formData.country);
 
   return (
     <Dialog

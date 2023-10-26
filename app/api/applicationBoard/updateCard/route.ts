@@ -17,6 +17,7 @@ export async function POST(request) {
     country,
     applicationLink,
     applicationDate,
+    positionIndex,
     notes,
   } = await request.json();
 
@@ -80,8 +81,7 @@ export async function POST(request) {
         applicationDate: applicationDate,
         notes: notes,
         status: status,
-        positionIndex:
-          currentCard.status !== status ? 0 : currentCard.positionIndex,
+        positionIndex: currentCard.status !== status ? 0 : positionIndex,
       },
       include: {
         company: true,

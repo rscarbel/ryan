@@ -122,5 +122,3 @@ export const handleDifferentColumnMove = (
     [endColumn.id]: { ...endColumn, applicationCardIds: newEndTaskIds },
   };
 };
-
-
