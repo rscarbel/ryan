@@ -7,8 +7,8 @@ import { Calendar } from "primereact/calendar";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
 import { InputNumber } from "primereact/inputnumber";
-import { STYLE_CLASSES } from "../utils";
-import { payFrequencyOptions } from "./utils";
+import { STYLE_CLASSES } from "../../utils";
+import { payFrequencyOptions } from "../utils";
 
 const EditCardFormModal = ({ visible, onHide, cardData, onSubmit }) => {
   const [formData, setFormData] = useState(cardData || {});

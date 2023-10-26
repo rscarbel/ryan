@@ -10,7 +10,7 @@ import {
 import { Toast } from "primereact/toast";
 import { updateCardStatus, updateCard } from "./network";
 import ColumnRenderer from "./ColumnRenderer";
-import EditCardFormModal from "./EditCardFormModal";
+import EditCardFormModal from "./form/EditCardFormModal";
 import { EditCardContext } from "./EditCardContext";
 import { BoardCardInterface } from "./types";
 
