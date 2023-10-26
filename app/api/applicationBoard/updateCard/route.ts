@@ -2,7 +2,6 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export async function POST(request) {
-  const res = await request.json();
   const {
     id,
     status,
@@ -13,7 +12,41 @@ export async function POST(request) {
     applicationLink,
     applicationDate,
     notes,
-  } = res;
+  } = await request.json();
+
+  const currentCard = await prisma.applicationCard.findUnique({
+    where: { id: parseInt(id) },
+  });
+
+  // If the status has changed, adjust position indices accordingly
+  if (currentCard.status !== status) {
+    // Adjust for the old column
+    await prisma.applicationCard.updateMany({
+      where: {
+        status: currentCard.status,
+        positionIndex: {
+          gte: currentCard.positionIndex + 1,
+        },
+      },
+      data: {
+        positionIndex: {
+          decrement: 1,
+        },
+      },
+    });
+
+    // Adjust for the new column (move everything down)
+    await prisma.applicationCard.updateMany({
+      where: {
+        status: status,
+      },
+      data: {
+        positionIndex: {
+          increment: 1,
+        },
+      },
+    });
+  }
 
   try {
     const updatedCard = await prisma.applicationCard.update({
@@ -31,6 +64,8 @@ export async function POST(request) {
         applicationDate: applicationDate,
         notes: notes,
         status: status,
+        positionIndex:
+          currentCard.status !== status ? 0 : currentCard.positionIndex,
       },
       include: {
         company: true,
@@ -55,6 +90,7 @@ export async function POST(request) {
       payFrequency: card.payFrequency,
       applicationLink: card.applicationLink,
       applicationDate: card.applicationDate,
+      index: card.positionIndex,
       notes: card.notes,
       status: card.status,
     }));
@@ -69,10 +105,9 @@ export async function POST(request) {
     return new Response(
       JSON.stringify({
         error: error.message,
-        card: null,
+        cards: null,
       }),
       { status: 500 }
     );
   }
 }
-

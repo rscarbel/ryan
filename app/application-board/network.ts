@@ -1,4 +1,8 @@
-export const updateCardStatus = async (cardId: string, newStatus: string) => {
+export const updateCardStatus = async (
+  cardId: string,
+  newStatus: string,
+  index: string
+) => {
   const response = await fetch("/api/applicationBoard/updateStatus", {
     method: "POST",
     headers: {
@@ -7,6 +11,7 @@ export const updateCardStatus = async (cardId: string, newStatus: string) => {
     body: JSON.stringify({
       id: cardId,
       status: newStatus,
+      newPositionIndex: index,
     }),
   });
 

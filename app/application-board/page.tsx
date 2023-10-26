@@ -25,11 +25,15 @@ const getCardsForUser = async (email: string) => {
       company: true,
       job: true,
     },
+    orderBy: {
+      positionIndex: "asc",
+    },
   });
 
   return cards.map((card) => ({
     id: card.id,
     companyName: card.company.name,
+    index: card.positionIndex,
     jobTitle: card.job?.title,
     jobDescription: card.job?.description,
     payAmountCents: card.payAmountCents,

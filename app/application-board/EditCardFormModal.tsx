@@ -6,6 +6,7 @@ import { InputText } from "primereact/inputtext";
 import { Calendar } from "primereact/calendar";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
+import { InputNumber } from "primereact/inputnumber";
 import { STYLE_CLASSES } from "../utils";
 import { payFrequencyOptions } from "./utils";
 
@@ -28,7 +29,7 @@ const EditCardFormModal = ({ visible, onHide, cardData, onSubmit }) => {
     setFormData({ ...formData, payAmountCents: cents });
   };
 
-  const formatCents = (cents) => (cents / 100).toFixed(2);
+  const payFormAmount = formData?.payAmountCents / 100;
 
   const handleHide = () => {
     setFormData({});
@@ -89,14 +90,15 @@ const EditCardFormModal = ({ visible, onHide, cardData, onSubmit }) => {
             Pay Amount and Frequency
           </label>
           <div className="flex items-center">
-            <p className="mr-1">$</p>
-            <InputText
+            <InputNumber
+              inputId="currency-us"
+              value={payFormAmount}
               className={`${STYLE_CLASSES.FORM_BASIC_INPUT} flex-1 mr-2`}
-              id="payAmountCents"
-              name="payAmountCents"
-              value={formatCents(formData.payAmountCents)}
-              onChange={handlePayAmountChange}
-              placeholder="Amount"
+              onValueChange={handlePayAmountChange}
+              placeholder="0.00"
+              mode="currency"
+              currency="USD"
+              locale="en-US"
             />
             <Dropdown
               id="payFrequency"
@@ -105,7 +107,7 @@ const EditCardFormModal = ({ visible, onHide, cardData, onSubmit }) => {
               options={payFrequencyOptions}
               onChange={handleInputChange}
               placeholder="Frequency"
-              className={`${STYLE_CLASSES.FORM_BASIC_INPUT} flex-1`}
+              className={`${STYLE_CLASSES.FORM_BASIC_INPUT} flex-1 p-0`}
             />
           </div>
         </div>

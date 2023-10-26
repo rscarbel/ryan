@@ -99,7 +99,9 @@ export const handleSameColumnMove = (
   const newTaskIds = Array.from(startColumn.applicationCardIds);
   newTaskIds.splice(source.index, 1);
   newTaskIds.splice(destination.index, 0, draggableId);
-  return { ...startColumn, applicationCardIds: newTaskIds };
+  return {
+    [startColumn.id]: { ...startColumn, applicationCardIds: newTaskIds },
+  };
 };
 
 export const handleDifferentColumnMove = (

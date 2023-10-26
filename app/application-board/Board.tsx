@@ -93,22 +93,31 @@ const Board: React.FC<BoardProps> = ({ cards = [] }) => {
 
     const cardId = draggableId;
     const newStatus = destination.droppableId;
+    const index = destination.index;
+
+    const previousBoardData = { ...boardData };
+
+    setBoardData((prevData) => ({
+      ...prevData,
+      columns: { ...prevData.columns, ...updatedColumns },
+    }));
 
     try {
-      setBoardData((prevData) => ({
-        ...prevData,
-        columns: { ...prevData.columns, ...updatedColumns },
-      }));
-
-      const { response, data } = await updateCardStatus(cardId, newStatus);
+      const { response, data } = await updateCardStatus(
+        cardId,
+        newStatus,
+        index
+      );
 
       showSuccess();
 
       if (!response.ok) {
         showError(data.error);
+        setBoardData(previousBoardData);
       }
     } catch (error) {
       showError((error as Error).message);
+      setBoardData(previousBoardData);
     }
   };
 

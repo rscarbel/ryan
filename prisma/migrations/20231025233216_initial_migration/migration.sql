@@ -23,6 +23,7 @@ CREATE TABLE "ApplicationCard" (
     "applicationLink" TEXT,
     "companyId" INTEGER NOT NULL,
     "jobId" INTEGER NOT NULL,
+    "positionIndex" INTEGER NOT NULL,
     "notes" TEXT,
     "payAmountCents" INTEGER NOT NULL DEFAULT 0,
     "payFrequency" "PayFrequency" DEFAULT 'hourly',

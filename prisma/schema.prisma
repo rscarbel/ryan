@@ -60,6 +60,7 @@ model ApplicationCard {
   companyId          Int
   job                Job               @relation(fields: [jobId], references: [id])
   jobId              Int
+  positionIndex      Int
   notes              String?
   payAmountCents     Int               @default(0)
   payFrequency       PayFrequency?     @default(hourly)
