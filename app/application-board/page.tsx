@@ -1,11 +1,12 @@
 import dynamic from "next/dynamic";
 import { PrismaClient } from "@prisma/client";
+import BoardSkeleton from "./boardSkeleton";
 import "primereact/resources/themes/saga-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 
 const DynamicTextEditor = dynamic(() => import("./Board"), {
   ssr: false,
-  loading: () => <div>Loading board...</div>,
+  loading: () => <BoardSkeleton />,
 });
 
 const prisma = new PrismaClient();
