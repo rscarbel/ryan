@@ -9,7 +9,9 @@ import { Dropdown } from "primereact/dropdown";
 import { InputNumber } from "primereact/inputnumber";
 import { STYLE_CLASSES } from "../../utils";
 import { payFrequencyOptions } from "../utils";
-import EditCardFormFields from "./EditCardFormFields";
+import CountriesField from "./CountriesField";
+import countrySymbols from "./countrySymbols";
+import currenciesList from "./currenciesList";
 
 const EditCardFormModal = ({ visible, onHide, cardData, onSubmit }) => {
   const [formData, setFormData] = useState(cardData || {});
@@ -37,6 +39,9 @@ const EditCardFormModal = ({ visible, onHide, cardData, onSubmit }) => {
     setFormData({});
     onHide();
   };
+
+  const countrySymbol = countrySymbols[formData.country] || "US";
+  const currencySymbol = currenciesList[countrySymbol] || "USD";
 
   return (
     <Dialog
@@ -91,16 +96,20 @@ const EditCardFormModal = ({ visible, onHide, cardData, onSubmit }) => {
           <label className="block mt-8" htmlFor="pay">
             Job pay
           </label>
+          <small id={`currency-${countrySymbol.toLowerCase()}-help`}>
+            * If the job posting is a pay range, enter the pay you think you
+            will get within that range.
+          </small>
           <div className="flex items-center">
             <InputNumber
-              inputId="currency-us"
+              inputId={`currency-${countrySymbol.toLowerCase()}`}
               value={payFormAmount}
               className={`${STYLE_CLASSES.FORM_BASIC_INPUT} flex-1 mr-2 p-4`}
               onValueChange={handlePayAmountChange}
               placeholder="0.00"
               mode="currency"
-              currency="USD"
-              locale="en-US"
+              currency={currencySymbol}
+              locale={`en-${countrySymbol}`}
             />
             <Dropdown
               id="payFrequency"
@@ -183,18 +192,10 @@ const EditCardFormModal = ({ visible, onHide, cardData, onSubmit }) => {
             />
           </div>
 
-          <div className="p-field flex-1">
-            <label className="block mt-8" htmlFor="country">
-              Country
-            </label>
-            <InputText
-              className={STYLE_CLASSES.FORM_BASIC_INPUT}
-              id="country"
-              name="country"
-              value={formData.country}
-              onChange={handleInputChange}
-            />
-          </div>
+          <CountriesField
+            selectedCountry={formData.country}
+            onChange={handleInputChange}
+          />
         </div>
 
         <div className="p-field">

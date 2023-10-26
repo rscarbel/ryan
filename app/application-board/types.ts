@@ -11,6 +11,7 @@ export interface ApplicationCardInterface {
   country?: string;
   payAmountCents?: number;
   payFrequency?: string;
+  currency?: string;
   applicationLink?: string;
   applicationDate?: Date;
   notes?: string;

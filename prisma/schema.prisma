@@ -62,8 +62,6 @@ model ApplicationCard {
   jobId              Int
   positionIndex      Int
   notes              String?
-  payAmountCents     Int               @default(0)
-  payFrequency       PayFrequency?     @default(hourly)
   status             ApplicationStatus @default(applied)
   createdAt          DateTime          @default(now())
   updatedAt          DateTime          @default(now()) @updatedAt
@@ -72,17 +70,20 @@ model ApplicationCard {
 }
 
 model Job {
-  id           Int               @id @default(autoincrement())
-  title        String
-  description  String?
-  workMode     WorkMode?
-  company      Company           @relation(fields: [companyId], references: [id])
-  companyId    Int
-  applications ApplicationCard[]
-  location     Location?         @relation(fields: [locationId], references: [id])
-  locationId   Int?
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @default(now()) @updatedAt
+  id             Int               @id @default(autoincrement())
+  title          String
+  description    String?
+  workMode       WorkMode?
+  company        Company           @relation(fields: [companyId], references: [id])
+  companyId      Int
+  applications   ApplicationCard[]
+  location       Location?         @relation(fields: [locationId], references: [id])
+  locationId     Int?
+  payAmountCents Int               @default(0)
+  payFrequency   PayFrequency?     @default(hourly)
+  currency       String?           @default("USD")
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @default(now()) @updatedAt
 }
 
 model ApplicationBoard {

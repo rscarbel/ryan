@@ -10,12 +10,12 @@ const DoubleColumn = ({
     <SingleColumn
       column={column1}
       applicationCards={applicationCards1}
-      isFullSizeOnly={true}
+      isHalfSizeOnly={true}
     />
     <SingleColumn
       column={column2}
       applicationCards={applicationCards2}
-      isFullSizeOnly={true}
+      isHalfSizeOnly={true}
     />
   </div>
 );

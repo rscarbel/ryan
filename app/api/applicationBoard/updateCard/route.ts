@@ -9,6 +9,12 @@ export async function POST(request) {
     jobDescription,
     payAmountCents,
     payFrequency,
+    currency,
+    streetAddress,
+    city,
+    state,
+    postalCode,
+    country,
     applicationLink,
     applicationDate,
     notes,
@@ -56,10 +62,20 @@ export async function POST(request) {
           update: {
             title: jobTitle,
             description: jobDescription,
+            payAmountCents: payAmountCents,
+            payFrequency: payFrequency,
+            currency: currency,
+            location: {
+              update: {
+                streetAddress: streetAddress,
+                city: city,
+                state: state,
+                postalCode: postalCode,
+                country: country,
+              },
+            },
           },
         },
-        payAmountCents: payAmountCents,
-        payFrequency: payFrequency,
         applicationLink: applicationLink,
         applicationDate: applicationDate,
         notes: notes,
@@ -69,7 +85,11 @@ export async function POST(request) {
       },
       include: {
         company: true,
-        job: true,
+        job: {
+          include: {
+            location: true,
+          },
+        },
       },
     });
 
@@ -77,7 +97,11 @@ export async function POST(request) {
       where: { applicationBoardId: updatedCard.applicationBoardId },
       include: {
         company: true,
-        job: true,
+        job: {
+          include: {
+            location: true,
+          },
+        },
       },
     });
 
@@ -86,8 +110,14 @@ export async function POST(request) {
       companyName: card.company.name,
       jobTitle: card.job?.title,
       jobDescription: card.job?.description,
-      payAmountCents: card.payAmountCents,
-      payFrequency: card.payFrequency,
+      payAmountCents: card.job?.payAmountCents,
+      payFrequency: card.job?.payFrequency,
+      currency: card.job?.currency,
+      streetAddress: card.job?.location.streetAddress,
+      city: card.job?.location.city,
+      state: card.job?.location.state,
+      postalCode: card.job?.location.postalCode,
+      country: card.job?.location.country,
       applicationLink: card.applicationLink,
       applicationDate: card.applicationDate,
       index: card.positionIndex,

@@ -83,35 +83,9 @@ export async function POST(request) {
       where: { id: parseInt(id) },
       data: { status: status, positionIndex: newPositionIndex },
     });
-
-    const cards = await prisma.applicationCard.findMany({
-      where: { applicationBoardId: updatedCard.applicationBoardId },
-      include: {
-        company: true,
-        job: true,
-      },
+    return new Response(JSON.stringify({ error: null, card: updatedCard }), {
+      status: 200,
     });
-
-    const formattedCards = cards.map((card) => ({
-      id: card.id,
-      companyName: card.company.name,
-      jobTitle: card.job?.title,
-      jobDescription: card.job?.description,
-      payAmountCents: card.payAmountCents,
-      payFrequency: card.payFrequency,
-      applicationLink: card.applicationLink,
-      applicationDate: card.applicationDate,
-      index: card.positionIndex,
-      notes: card.notes,
-      status: card.status,
-    }));
-
-    return new Response(
-      JSON.stringify({ error: null, cards: formattedCards }),
-      {
-        status: 200,
-      }
-    );
   } catch (error) {
     return new Response(
       JSON.stringify({

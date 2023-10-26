@@ -102,6 +102,9 @@ async function main() {
       },
     });
 
+    const currentStatus = randomApplicationStatus();
+    const { frequency, amountCents } = randomPayDetails();
+
     const job = await prisma.job.create({
       data: {
         title: faker.person.jobTitle(),
@@ -112,6 +115,9 @@ async function main() {
             id: company.id,
           },
         },
+        payAmountCents: amountCents,
+        payFrequency: frequency,
+        currency: "USD",
         location: {
           create: {
             city: faker.location.city(),
@@ -122,9 +128,6 @@ async function main() {
         },
       },
     });
-
-    const currentStatus = randomApplicationStatus();
-    const { frequency, amountCents } = randomPayDetails();
 
     await prisma.applicationCard.create({
       data: {
@@ -144,8 +147,6 @@ async function main() {
           },
         },
         notes: faker.lorem.paragraph(),
-        payAmountCents: amountCents,
-        payFrequency: frequency,
         status: currentStatus,
         positionIndex: statusIndices[currentStatus],
         applicationBoard: {
