@@ -37,7 +37,7 @@ const ApplicationCard: React.FC<ApplicationCardInterface> = ({
   const [isDescriptionExpanded, setDescriptionExpanded] = useState(false);
 
   const cardStyles = {
-    base: "p-4 mb-4 bg-white claymorphic-shadow rounded-lg border border-gray-200 relative",
+    base: "p-4 mb-4 bg-white claymorphic-shadow claymorphic-shadow-hover rounded-lg border border-gray-200 relative",
     status: `absolute top-1 right-5 rounded-full px-2 py-0.3 text-xs font-medium ${getStatusColor(
       status
     )}`,

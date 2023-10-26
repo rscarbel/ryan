@@ -12,7 +12,7 @@ const SingleColumn = ({ column, applicationCards, isHalfSizeOnly = false }) => {
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            className={`bg-gray-200 rounded p-4 ${maxColumnHeight} overflow-y-auto concave-container-shadow`}
+            className={`bg-gray-200 rounded p-6 ${maxColumnHeight} overflow-y-auto concave-container-shadow`}
           >
             {applicationCards.map((applicationCard, index) => (
               <ApplicationCard
