@@ -1,8 +1,8 @@
 import dynamic from "next/dynamic";
 import { PrismaClient } from "@prisma/client";
 import BoardSkeleton from "./boardSkeleton";
-import "primereact/resources/themes/saga-blue/theme.css";
-import "primereact/resources/primereact.min.css";
+import TopMenu from "./TopMenu";
+import "primereact/resources/themes/viva-light/theme.css";
 
 const DynamicTextEditor = dynamic(() => import("./Board"), {
   ssr: false,
@@ -60,7 +60,12 @@ const getCardsForUser = async (email: string) => {
 const Job: React.FC = async () => {
   const cards = await getCardsForUser("user1@example.com");
 
-  return <DynamicTextEditor cards={cards} />;
+  return (
+    <>
+      <TopMenu />
+      <DynamicTextEditor cards={cards} />
+    </>
+  );
 };
 
 export default Job;

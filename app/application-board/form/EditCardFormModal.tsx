@@ -7,11 +7,19 @@ import { Calendar } from "primereact/calendar";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
 import { InputNumber } from "primereact/inputnumber";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { Button } from "primereact/button";
 import { STYLE_CLASSES, getCountryCode, getCurrencySymbol } from "@/app/utils";
 import { payFrequencyOptions } from "../utils";
 import CountriesField from "./CountriesField";
 
-const EditCardFormModal = ({ visible, onHide, cardData, onSubmit }) => {
+const EditCardFormModal = ({
+  visible,
+  onHide,
+  cardData,
+  onSaveChanges,
+  onDelete,
+}) => {
   const [formData, setFormData] = useState(cardData || {});
   const hasDataChanged = JSON.stringify(cardData) !== JSON.stringify(formData);
   const isDataValid = formData.companyName && formData.jobTitle;
@@ -34,7 +42,6 @@ const EditCardFormModal = ({ visible, onHide, cardData, onSubmit }) => {
   const onCountryChange = (country) => {
     const currencySymbol = getCurrencySymbol(country);
     const countryData = { country: country, currency: currencySymbol };
-    console.log(countryData);
     setFormData({ ...formData, ...countryData });
   };
 
@@ -47,6 +54,26 @@ const EditCardFormModal = ({ visible, onHide, cardData, onSubmit }) => {
 
   const countrySymbol = getCountryCode(formData.country);
   const currencySymbol = getCurrencySymbol(formData.country);
+  const isReadyForSubmission = !hasDataChanged || !isDataValid;
+  const primaryActionText = isReadyForSubmission ? "Close" : "Save Changes";
+
+  const handleFormSubmission = () => {
+    if (isReadyForSubmission) {
+      handleHide();
+    } else {
+      onSaveChanges(formData);
+    }
+  };
+
+  const confirmDelete = () => {
+    confirmDialog({
+      message: "Are you sure you want to delete this job application?",
+      header: "Delete Confirmation",
+      icon: "pi pi-info-circle",
+      acceptClassName: "p-button-danger",
+      accept: () => onDelete(cardData.id),
+    });
+  };
 
   return (
     <Dialog
@@ -267,17 +294,21 @@ const EditCardFormModal = ({ visible, onHide, cardData, onSubmit }) => {
           />
         </div>
       </div>
-      <button
-        className={
-          hasDataChanged
-            ? STYLE_CLASSES.FORM_BASIC_SUBMIT_BUTTON
-            : STYLE_CLASSES.FORM_BASIC_SUBMIT_BUTTON_DISABLED
-        }
-        onClick={() => onSubmit(formData)}
-        disabled={!hasDataChanged || !isDataValid}
-      >
-        Submit
-      </button>
+      <ConfirmDialog />
+      <div className="flex flex-wrap gap-2 justify-content-center align-items-center">
+        <Button
+          onClick={handleFormSubmission}
+          icon="pi pi-check"
+          label={primaryActionText}
+          className="mr-2 pr-10 pl-10"
+        />
+        <Button
+          className="p-button-danger p-button-outlined p-button p-component"
+          onClick={confirmDelete}
+          icon="pi pi-times"
+          label="Delete"
+        />
+      </div>
     </Dialog>
   );
 };

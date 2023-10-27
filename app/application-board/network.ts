@@ -31,3 +31,16 @@ export const updateCard = async (card) => {
   const data = await response.json();
   return { response, data };
 };
+
+export const deleteCard = async (cardId: string) => {
+  const response = await fetch("/api/applicationBoard/deleteCard", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ id: cardId }),
+  });
+
+  const data = await response.json();
+  return { response, data };
+};

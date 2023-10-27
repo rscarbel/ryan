@@ -8,7 +8,7 @@ import {
   handleSameColumnMove,
 } from "./utils";
 import { Toast } from "primereact/toast";
-import { updateCardStatus, updateCard } from "./network";
+import { updateCardStatus, updateCard, deleteCard } from "./network";
 import ColumnRenderer from "./ColumnRenderer";
 import EditCardFormModal from "./form/EditCardFormModal";
 import { EditCardContext } from "./EditCardContext";
@@ -46,17 +46,42 @@ const Board: React.FC<BoardProps> = ({ cards = [] }) => {
     });
   };
 
+  const showDeleteSuccess = () => {
+    toast.current?.show({
+      severity: "warn",
+      summary: "Application deleted",
+      life: MILLISECONDS_FOR_MESSAGES,
+    });
+  };
+
   const handleEditClick = (cardData) => {
     setEditingCard(cardData);
     setModalVisible(true);
   };
 
-  const handleSubmitChanges = async (updatedData) => {
+  const handleSaveChanges = async (updatedData) => {
     try {
       const { response, data } = await updateCard(updatedData);
       const cards = data.cards;
       showSuccess();
       setBoardData(initializeBoardData(cards));
+      if (!response.ok) {
+        showError(data.error);
+      }
+    } catch (error) {
+      showError((error as Error).message);
+    } finally {
+      setEditingCard(null);
+      setModalVisible(false);
+    }
+  };
+
+  const handleDelete = async (cardId) => {
+    try {
+      const { response, data } = await deleteCard(cardId);
+      const cards = data.cards;
+      setBoardData(initializeBoardData(cards));
+      showDeleteSuccess();
       if (!response.ok) {
         showError(data.error);
       }
@@ -137,7 +162,8 @@ const Board: React.FC<BoardProps> = ({ cards = [] }) => {
         visible={isModalVisible}
         onHide={() => setModalVisible(false)}
         cardData={editingCard}
-        onSubmit={handleSubmitChanges}
+        onSaveChanges={handleSaveChanges}
+        onDelete={handleDelete}
       />
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="flex flex-wrap p-4">
