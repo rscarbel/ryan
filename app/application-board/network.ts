@@ -44,3 +44,16 @@ export const deleteCard = async (cardId: string) => {
   const data = await response.json();
   return { response, data };
 };
+
+export const createCard = async (card) => {
+  const response = await fetch("/api/applicationBoard/createCard", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(card),
+  });
+
+  const data = await response.json();
+  return { response, data };
+};

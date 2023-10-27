@@ -29,7 +29,7 @@ const CountriesField = ({ selectedCountry, onChange }) => {
       </label>
       <AutoComplete
         value={selectedCountry}
-        className={STYLE_CLASSES.FORM_BASIC_INPUT}
+        className="mt-1 w-full rounded  focus:border-blue-500 focus:ring focus:ring-blue-200"
         suggestions={filteredCountries}
         completeMethod={search}
         onChange={(e) => onChange(e.value)}

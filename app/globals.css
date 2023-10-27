@@ -23,7 +23,7 @@
   backdrop-filter: blur(10px);
 }
 
-.claymorphic-shadow:hover {
+.claymorphic-shadow-hover:hover {
   transform: translateY(-5px);
   box-shadow: 30px 30px 60px 0px rgba(112, 112, 112, 0.5), inset -5px -5px 10px 0px rgba(112, 112, 112, 0.6), inset 0px 7px 18px 0px rgb(255, 255, 255);
   backdrop-filter: blur(10px);
