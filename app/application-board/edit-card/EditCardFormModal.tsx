@@ -75,6 +75,7 @@ const EditCardFormModal = ({
       visible={visible}
       onHide={handleHide}
       header="Edit Application"
+      dismissableMask
     >
       <FormFields
         {...formData}
