@@ -131,6 +131,11 @@ async function main() {
         payAmountCents: amountCents,
         payFrequency: frequency,
         currency: country,
+        user: {
+          connect: {
+            id: user1.id,
+          },
+        },
         location: {
           create: {
             city: faker.location.city(),
@@ -149,11 +154,6 @@ async function main() {
           refDate: new Date(),
         }),
         applicationLink: faker.internet.url(),
-        company: {
-          connect: {
-            id: company.id,
-          },
-        },
         job: {
           connect: {
             id: job.id,
@@ -162,6 +162,11 @@ async function main() {
         notes: faker.lorem.paragraph(),
         status: currentStatus,
         positionIndex: statusIndices[currentStatus],
+        user: {
+          connect: {
+            id: user1.id,
+          },
+        },
         applicationBoard: {
           connect: {
             id: board1.id,

@@ -59,6 +59,11 @@ export async function POST(request) {
     const updatedCard = await prisma.applicationCard.update({
       where: { id: parseInt(id) },
       data: {
+        company: {
+          update: {
+            name: companyName,
+          },
+        },
         job: {
           update: {
             title: jobTitle,

@@ -20,81 +20,9 @@ export async function POST(request) {
     positionIndex,
     notes,
   } = await request.json();
-
   try {
-    const jobData = {
-      title: jobTitle,
-      payAmountCents: payAmountCents,
-      payFrequency: payFrequency,
-    };
-
-    if (jobDescription) jobData.description = jobDescription;
-    if (currency) jobData.currency = currency;
-
-    const locationData = {};
-    if (streetAddress) locationData.streetAddress = streetAddress;
-    if (city) locationData.city = city;
-    if (state) locationData.state = state;
-    if (postalCode) locationData.postalCode = postalCode;
-    if (country) locationData.country = country;
-
-    if (Object.keys(locationData).length > 0) {
-      jobData.location = { create: locationData };
-    }
-
-    const cardData = {
-      job: { create: jobData },
-      status: status,
-      positionIndex: 0,
-    };
-
-    if (applicationLink) cardData.applicationLink = applicationLink;
-    if (applicationDate) cardData.applicationDate = applicationDate;
-    if (notes) cardData.notes = notes;
-
-    console.log("cardData", cardData);
-    const existingCardsWithStatus = await prisma.applicationCard.findMany({
-      where: { status: status },
-    });
-    console.log("existingCardsWithStatus", existingCardsWithStatus.length);
-
-    let transactionQueries = [];
-
-    if (existingCardsWithStatus.length) {
-      transactionQueries.push(
-        prisma.applicationCard.updateMany({
-          where: {
-            status: status,
-          },
-          data: {
-            positionIndex: {
-              increment: 1,
-            },
-          },
-        })
-      );
-    }
-    console.log("transactionQueries", transactionQueries.length);
-
-    transactionQueries.push(
-      prisma.applicationCard.create({
-        data: {
-          ...cardData,
-          company: companyName ? { create: { name: companyName } } : undefined,
-        },
-        include: {
-          company: true,
-          job: {
-            include: {
-              location: true,
-            },
-          },
-        },
-      })
-    );
-
-    const newCard = await prisma.$transaction([
-      prisma.applicationCard.updateMany({
+    await prisma.$transaction(async (client) => {
+      await client.applicationCard.updateMany({
         where: {
           status: status,
         },
@@ -103,27 +31,94 @@ export async function POST(request) {
             increment: 1,
           },
         },
-      }),
-      prisma.applicationCard.create({
+      });
+
+      const company = await client.company.create({
         data: {
-          ...cardData,
-          company: { create: { name: companyName } },
-          job: { create: jobData },
+          name: companyName,
+          userId: 1,
         },
-        include: {
-          company: true,
-          job: {
-            name: true,
-            include: {
-              location: true,
+      });
+
+      let location = {
+        id: null,
+        streetAddress: streetAddress,
+        city: city,
+        state: state,
+        postalCode: postalCode,
+        country: country,
+      };
+
+      if (city) {
+        location = await client.location.upsert({
+          where: {
+            streetAddress_city_state_postalCode_country: {
+              streetAddress: streetAddress,
+              city: city,
+              state: state,
+              postalCode: postalCode,
+              country: country,
+            },
+          },
+          create: {
+            streetAddress: streetAddress,
+            city: city,
+            state: state,
+            postalCode: postalCode,
+            country: country,
+          },
+          update: {},
+        });
+      }
+
+      const job = await client.job.upsert({
+        where: {
+          title: jobTitle,
+          companyId: company.id,
+        },
+        create: {
+          title: jobTitle,
+          description: jobDescription,
+          payAmountCents: payAmountCents,
+          payFrequency: payFrequency,
+          currency: currency,
+          locationId: location.id,
+          company: {
+            connect: {
+              id: company.id,
             },
           },
         },
-      }),
-    ]);
+        update: {},
+      });
 
-    console.log("newCard", newCard);
+      const card = await client.applicationCard.create({
+        data: {
+          applicationBoard: {
+            connect: {
+              id: "1",
+            },
+          },
+          company: {
+            connect: {
+              id: company.id,
+            },
+          },
+          job: {
+            connect: {
+              id: job.id,
+            },
+          },
+          applicationLink: applicationLink,
+          applicationDate: applicationDate,
+          notes: notes,
+          status: status,
+          positionIndex: positionIndex,
+        },
+      });
 
+      return card;
+    });
     return new Response(null, {
       status: 302,
       headers: {
