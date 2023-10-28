@@ -16,6 +16,7 @@ export async function POST(request) {
     postalCode,
     country,
     applicationLink,
+    workMode,
     applicationDate,
     positionIndex,
     notes,
@@ -40,57 +41,54 @@ export async function POST(request) {
         },
       });
 
-      let location = {
-        id: null,
-        streetAddress: streetAddress,
-        city: city,
-        state: state,
-        postalCode: postalCode,
-        country: country,
-      };
-
-      if (city) {
-        location = await client.location.upsert({
-          where: {
-            streetAddress_city_state_postalCode_country: {
-              streetAddress: streetAddress,
-              city: city,
-              state: state,
-              postalCode: postalCode,
-              country: country,
+      const locationData = city
+        ? {
+            location: {
+              create: {
+                city: city,
+                state: state,
+                country: country,
+                streetAddress: streetAddress,
+                postalCode: postalCode,
+              },
             },
-          },
-          create: {
-            streetAddress: streetAddress,
-            city: city,
-            state: state,
-            postalCode: postalCode,
-            country: country,
-          },
-          update: {},
-        });
-      }
+          }
+        : {};
 
-      const job = await client.job.upsert({
+      const existingJob = await client.job.findUnique({
         where: {
-          title: jobTitle,
-          companyId: company.id,
-        },
-        create: {
-          title: jobTitle,
-          description: jobDescription,
-          payAmountCents: payAmountCents,
-          payFrequency: payFrequency,
-          currency: currency,
-          locationId: location.id,
-          company: {
-            connect: {
-              id: company.id,
-            },
+          title_companyId_locationId_workMode: {
+            title: jobTitle,
+            companyId: company.id,
+            locationId: locationData.location?.id,
+            workMode: workMode,
           },
         },
-        update: {},
       });
+
+      const job = existingJob
+        ? existingJob
+        : await client.job.create({
+            data: {
+              title: jobTitle,
+              description: jobDescription,
+              workMode: workMode,
+              company: {
+                connect: {
+                  id: company.id,
+                },
+              },
+              payAmountCents: payAmountCents,
+              payFrequency: payFrequency,
+              currency: currency,
+              user: {
+                connect: {
+                  id: 1,
+                },
+              },
+              ...locationData,
+            },
+          });
 
       const card = await client.applicationCard.create({
         data: {
