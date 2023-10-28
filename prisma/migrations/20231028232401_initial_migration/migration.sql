@@ -40,7 +40,11 @@ CREATE TABLE "Job" (
     "description" TEXT,
     "workMode" "WorkMode",
     "companyId" INTEGER NOT NULL,
-    "locationId" INTEGER,
+    "streetAddress" TEXT,
+    "city" TEXT,
+    "state" TEXT,
+    "country" TEXT DEFAULT 'United States',
+    "postalCode" TEXT,
     "userId" INTEGER NOT NULL,
     "payAmountCents" INTEGER NOT NULL DEFAULT 0,
     "payFrequency" "PayFrequency" DEFAULT 'hourly',
@@ -90,7 +94,8 @@ CREATE TABLE "Company" (
 -- CreateTable
 CREATE TABLE "Contact" (
     "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
+    "firstName" TEXT NOT NULL,
+    "lastName" TEXT NOT NULL,
     "phone" TEXT,
     "email" TEXT,
     "companyId" INTEGER NOT NULL,
@@ -111,19 +116,21 @@ CREATE TABLE "ContactAttribute" (
 );
 
 -- CreateTable
-CREATE TABLE "Location" (
+CREATE TABLE "Address" (
     "id" SERIAL NOT NULL,
     "streetAddress" TEXT,
-    "city" TEXT NOT NULL,
+    "city" TEXT,
     "state" TEXT,
     "country" TEXT DEFAULT 'United States',
     "postalCode" TEXT,
     "fromDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "toDate" TIMESTAMP(3),
+    "userId" INTEGER,
+    "contactId" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "Location_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Address_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -258,26 +265,8 @@ CREATE TABLE "PasswordResetToken" (
     CONSTRAINT "PasswordResetToken_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
-CREATE TABLE "_CompanyToLocation" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL
-);
-
--- CreateTable
-CREATE TABLE "_ContactToLocation" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL
-);
-
--- CreateTable
-CREATE TABLE "_LocationToUser" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL
-);
-
 -- CreateIndex
-CREATE UNIQUE INDEX "Job_title_companyId_locationId_workMode_key" ON "Job"("title", "companyId", "locationId", "workMode");
+CREATE UNIQUE INDEX "Job_title_companyId_userId_city_workMode_key" ON "Job"("title", "companyId", "userId", "city", "workMode");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "ApplicationBoard_name_userId_key" ON "ApplicationBoard"("name", "userId");
@@ -309,24 +298,6 @@ CREATE UNIQUE INDEX "PostToTag_postId_tagId_key" ON "PostToTag"("postId", "tagId
 -- CreateIndex
 CREATE UNIQUE INDEX "PasswordResetToken_token_key" ON "PasswordResetToken"("token");
 
--- CreateIndex
-CREATE UNIQUE INDEX "_CompanyToLocation_AB_unique" ON "_CompanyToLocation"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_CompanyToLocation_B_index" ON "_CompanyToLocation"("B");
-
--- CreateIndex
-CREATE UNIQUE INDEX "_ContactToLocation_AB_unique" ON "_ContactToLocation"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_ContactToLocation_B_index" ON "_ContactToLocation"("B");
-
--- CreateIndex
-CREATE UNIQUE INDEX "_LocationToUser_AB_unique" ON "_LocationToUser"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_LocationToUser_B_index" ON "_LocationToUser"("B");
-
 -- AddForeignKey
 ALTER TABLE "ApplicationCard" ADD CONSTRAINT "ApplicationCard_jobId_fkey" FOREIGN KEY ("jobId") REFERENCES "Job"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -338,9 +309,6 @@ ALTER TABLE "ApplicationCard" ADD CONSTRAINT "ApplicationCard_applicationBoardId
 
 -- AddForeignKey
 ALTER TABLE "Job" ADD CONSTRAINT "Job_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "Company"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Job" ADD CONSTRAINT "Job_locationId_fkey" FOREIGN KEY ("locationId") REFERENCES "Location"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Job" ADD CONSTRAINT "Job_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -359,6 +327,12 @@ ALTER TABLE "Contact" ADD CONSTRAINT "Contact_userId_fkey" FOREIGN KEY ("userId"
 
 -- AddForeignKey
 ALTER TABLE "ContactAttribute" ADD CONSTRAINT "ContactAttribute_contactId_fkey" FOREIGN KEY ("contactId") REFERENCES "Contact"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Address" ADD CONSTRAINT "Address_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Address" ADD CONSTRAINT "Address_contactId_fkey" FOREIGN KEY ("contactId") REFERENCES "Contact"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Email" ADD CONSTRAINT "Email_contactId_fkey" FOREIGN KEY ("contactId") REFERENCES "Contact"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -404,21 +378,3 @@ ALTER TABLE "Comment" ADD CONSTRAINT "Comment_userId_fkey" FOREIGN KEY ("userId"
 
 -- AddForeignKey
 ALTER TABLE "PasswordResetToken" ADD CONSTRAINT "PasswordResetToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_CompanyToLocation" ADD CONSTRAINT "_CompanyToLocation_A_fkey" FOREIGN KEY ("A") REFERENCES "Company"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_CompanyToLocation" ADD CONSTRAINT "_CompanyToLocation_B_fkey" FOREIGN KEY ("B") REFERENCES "Location"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_ContactToLocation" ADD CONSTRAINT "_ContactToLocation_A_fkey" FOREIGN KEY ("A") REFERENCES "Contact"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_ContactToLocation" ADD CONSTRAINT "_ContactToLocation_B_fkey" FOREIGN KEY ("B") REFERENCES "Location"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_LocationToUser" ADD CONSTRAINT "_LocationToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "Location"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_LocationToUser" ADD CONSTRAINT "_LocationToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

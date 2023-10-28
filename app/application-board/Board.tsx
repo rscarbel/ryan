@@ -79,6 +79,7 @@ const Board: React.FC<BoardProps> = ({ cards = [] }) => {
   const handleDelete = async (cardId) => {
     try {
       const { response, data } = await deleteCard(cardId);
+      console.log(data);
       const cards = data.cards;
       setBoardData(initializeBoardData(cards));
       showDeleteSuccess();

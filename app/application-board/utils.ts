@@ -44,7 +44,7 @@ export const initializeBoardData = (applicationCards: any[]) => {
     acc[column.id] = {
       ...column,
       applicationCardIds: columnApplicationCards.map(
-        (applicationCard) => applicationCard.id
+        (applicationCard) => applicationCard.cardId
       ),
     };
     return acc;
@@ -52,7 +52,7 @@ export const initializeBoardData = (applicationCards: any[]) => {
 
   return {
     applicationCards: applicationCards.reduce((acc, card) => {
-      acc[card.id] = card;
+      acc[card.cardId] = card;
       return acc;
     }, {}),
     columns: generatedColumns,
@@ -73,11 +73,6 @@ export const prettifyPay = (pay: string | number) => {
   }
 
   return prettifiedPay;
-};
-
-export const prettifyDate = (date: Date) => {
-  const dateObj = new Date(date);
-  return new Intl.DateTimeFormat("en-US").format(dateObj);
 };
 
 export const truncateText = (

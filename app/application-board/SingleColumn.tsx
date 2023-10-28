@@ -3,7 +3,7 @@ import { Droppable } from "@hello-pangea/dnd";
 
 const SingleColumn = ({ column, applicationCards, isHalfSizeOnly = false }) => {
   const sizingClasses = isHalfSizeOnly ? "" : "sm:w-1/2 md:w-1/3 lg:w-1/4";
-  const maxColumnHeight = isHalfSizeOnly ? "max-h-[400px]" : "max-h-[600px]";
+  const maxColumnHeight = isHalfSizeOnly ? "max-h-[400px]" : "max-h-[650px]";
   return (
     <div className={`w-full ${sizingClasses} p-2`}>
       <h2 className="mb-4 text-lg font-bold text-gray-700">{column.title}</h2>
@@ -12,11 +12,11 @@ const SingleColumn = ({ column, applicationCards, isHalfSizeOnly = false }) => {
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            className={`bg-gray-200 rounded p-6 ${maxColumnHeight} overflow-y-auto concave-container-shadow`}
+            className={`bg-white rounded p-6 ${maxColumnHeight} overflow-y-auto concave-container-shadow`}
           >
             {applicationCards.map((applicationCard, index) => (
               <ApplicationCard
-                key={String(applicationCard.id)}
+                key={String(applicationCard.cardId)}
                 {...applicationCard}
                 index={index}
                 status={column.title.toLowerCase()}

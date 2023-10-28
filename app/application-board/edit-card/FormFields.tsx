@@ -3,30 +3,24 @@ import { Calendar } from "primereact/calendar";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
 import { InputNumber } from "primereact/inputnumber";
+import { Tooltip } from "primereact/tooltip";
 import { STYLE_CLASSES } from "@/app/utils";
 import { payFrequencyOptions } from "../utils";
 import CountriesField from "./CountriesField";
 import CompaniesField from "./CompaniesField";
 
 const FormFields = ({
-  applicationCardId,
-  company: { name: companyName = null, id: companyId = null },
-  job: {
-    id: jobId = null,
-    title: jobTitle = null,
-    description: jobDescription = null,
-    workMode = null,
-    payAmountCents = null,
-    payFrequency = null,
-    location: {
-      id: locationId = null,
-      streetAddress = null,
-      city = null,
-      state = null,
-      country = null,
-      postalCode = null,
-    },
-  },
+  company: { name: companyName = null, companyId: companyId = null },
+  jobTitle = null,
+  jobDescription = null,
+  workMode = null,
+  payAmountCents = null,
+  payFrequency = null,
+  streetAddress = null,
+  city = null,
+  state = null,
+  country = null,
+  postalCode = null,
   applicationLink,
   applicationDate,
   notes,
@@ -35,30 +29,76 @@ const FormFields = ({
   onPayChange,
   onCountryChange,
   onCompanyChange,
-  onJobChange,
+  onJobBlur,
+  existingJobData,
   countrySymbol,
   currencySymbol,
   isDisabled = false,
 }) => {
+  const previousBoardName =
+    existingJobData?.lastApplicationToJobInOtherBoard?.boardName;
+  const previousBoardDate =
+    existingJobData?.lastApplicationToJobInOtherBoard?.date;
+
+  const previousApplicationDateOnThisBoard =
+    existingJobData?.lastApplicationToJobInThisBoard;
+
+  const sameJobMessage = () => {
+    if (previousApplicationDateOnThisBoard) {
+      return (
+        <div className="ml-2">
+          <span
+            className="pi pi-exclamation-triangle mt-2 text-lg cursor-pointer "
+            style={{ color: "#ff9800" }}
+            data-pr-tooltip={`An application already exists with this job title at ${companyName}. You applied on ${previousApplicationDateOnThisBoard}. Make sure this is intentional.`}
+          ></span>
+          <Tooltip
+            target=".pi.pi-exclamation-triangle"
+            tooltipOptions={{ position: "top" }}
+          />
+        </div>
+      );
+    } else if (previousBoardName) {
+      return (
+        <div className="p-4 border rounded-lg bg-blue-50 border-blue-200 shadow-sm">
+          <div className="flex items-center">
+            <span
+              className="pi pi-info-circle text-lg cursor-pointer mr-2 text-blue-600"
+              data-pr-tooltip={`You applied for ${jobTitle} at ${companyName} on ${previousBoardDate} on the board, ${previousBoardName}.`}
+            ></span>
+            <p className="text-blue-700">Information</p>
+          </div>
+          <Tooltip
+            target=".pi.pi-info-circle"
+            tooltipOptions={{ position: "top" }}
+          />
+        </div>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <div className="p-fluid">
       <div className="p-field">
         <CompaniesField
-          selectedCompany={{ name: companyName, id: companyId }}
+          selectedCompany={{ name: companyName, companyId: companyId }}
           onChange={onCompanyChange}
           isDisabled={isDisabled}
         />
       </div>
 
       <div className="p-field">
-        <label className="block mt-8" htmlFor="jobTitle">
-          Job Title
+        <label className="block mt-8 flex items-center" htmlFor="jobTitle">
+          Job Title {sameJobMessage()}
         </label>
         <InputText
           className={STYLE_CLASSES.FORM_BASIC_INPUT}
           id="jobTitle"
           name="jobTitle"
           value={jobTitle}
+          onBlur={onJobBlur}
           onChange={onInputChange}
           disabled={isDisabled}
         />

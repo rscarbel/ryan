@@ -32,7 +32,7 @@ export const updateCard = async (card) => {
   return { response, data };
 };
 
-export const deleteCard = async (cardId: string) => {
+export const deleteCard = async (cardId) => {
   const response = await fetch("/api/applicationBoard/deleteCard", {
     method: "POST",
     headers: {
@@ -60,9 +60,23 @@ export const createCard = async (card) => {
 
 export const findCompanies = async (userId: number) => {
   const response = await fetch(
-    `/api/applicationBoard/findCompanies?userId=${userId}`
+    `/api/applicationBoard/find/companies?userId=${userId}`
   );
   const text = await response.text();
   const data = JSON.parse(text);
   return data?.body || [];
+};
+
+export const findJobTitle = async ({
+  userId,
+  companyId,
+  jobTitle,
+  boardId,
+}) => {
+  const response = await fetch(
+    `/api/applicationBoard/find/jobTitle?userId=${userId}&companyId=${companyId}&jobTitle=${jobTitle}&boardId=${boardId}`
+  );
+  const text = await response.text();
+  const data = JSON.parse(text);
+  return data?.body || null;
 };

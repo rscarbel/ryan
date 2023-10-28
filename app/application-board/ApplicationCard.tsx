@@ -2,32 +2,27 @@
 
 import { useState } from "react";
 import { Draggable } from "@hello-pangea/dnd";
-import { getStatusColor, prettifyDate, humanizedPayFrequency } from "./utils";
+import { getStatusColor, humanizedPayFrequency } from "./utils";
 import Description from "./Description";
 import { useEditCard } from "./EditCardContext";
 import { ApplicationCardInterface } from "./types";
-import { formatCurrency } from "@/app/utils";
+import { formatCurrency, prettifyDate } from "@/app/utils";
 
 const ApplicationCard: React.FC<ApplicationCardInterface> = ({
-  id,
-  company: { id: companyId, name: companyName },
-  job: {
-    id: jobId,
-    title: jobTitle,
-    description: jobDescription,
-    workMode,
-    payAmountCents,
-    payFrequency,
-    currency,
-    location: {
-      id: locationId,
-      streetAddress,
-      city,
-      state,
-      country,
-      postalCode,
-    },
-  },
+  cardId,
+  boardId,
+  company: { companyId: companyId, name: companyName },
+  title: jobTitle,
+  description: jobDescription,
+  workMode,
+  payAmountCents,
+  payFrequency,
+  currency,
+  streetAddress,
+  city,
+  state,
+  country,
+  postalCode,
   applicationLink,
   applicationDate,
   status,
@@ -50,7 +45,7 @@ const ApplicationCard: React.FC<ApplicationCardInterface> = ({
   const { onEditClick } = useEditCard();
 
   return (
-    <Draggable draggableId={String(id)} index={index}>
+    <Draggable draggableId={String(cardId)} index={index}>
       {(provided) => (
         <div
           ref={provided.innerRef}
@@ -59,25 +54,20 @@ const ApplicationCard: React.FC<ApplicationCardInterface> = ({
           className={cardStyles.base}
           onClick={() =>
             onEditClick({
-              applicationCardId: id,
-              company: { id: companyId, name: companyName },
-              job: {
-                id: jobId,
-                title: jobTitle,
-                description: jobDescription,
-                workMode,
-                payAmountCents,
-                payFrequency,
-                currency,
-                location: {
-                  id: locationId,
-                  streetAddress,
-                  city,
-                  state,
-                  country,
-                  postalCode,
-                },
-              },
+              applicationCardId: cardId,
+              boardId,
+              company: { companyId, name: companyName },
+              jobTitle,
+              jobDescription,
+              workMode,
+              payAmountCents,
+              payFrequency,
+              currency,
+              streetAddress,
+              city,
+              state,
+              country,
+              postalCode,
               applicationLink,
               applicationDate,
               positionIndex: index,

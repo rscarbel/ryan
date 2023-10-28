@@ -1,11 +1,11 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/services/globalPrismaClient";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { prettifyDate, humanizedPayFrequency } from "../utils";
-import { formatCurrency } from "@/app/utils";
+import { humanizedPayFrequency } from "../utils";
+import { formatCurrency, prettifyDate } from "@/app/utils";
 import TopMenu from "../TopMenu";
 import "primereact/resources/themes/viva-light/theme.css";
-const prisma = new PrismaClient();
+import "primeicons/primeicons.css";
 
 const getCardsForUser = async (email: string) => {
   const user = await prisma.user.findUnique({ where: { email } });

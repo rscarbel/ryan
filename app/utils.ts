@@ -29,3 +29,12 @@ export const formatCurrency = (amountCents: number, country: string) => {
     currency: currencyCode,
   }).format(amount);
 };
+
+export const prettifyDate = (date: Date) => {
+  try {
+    const dateObj = new Date(date);
+    return new Intl.DateTimeFormat("en-US").format(dateObj) || "";
+  } catch (error) {
+    return "";
+  }
+};

@@ -6,29 +6,28 @@ import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Button } from "primereact/button";
 import { getCountryCode, getCurrencySymbol } from "@/app/utils";
 import FormFields from "./FormFields";
+import { findJobTitle } from "../network";
+
+const PLACEHOLDER_USER_ID = 1;
 
 const defaultFormData = {
+  applicationCardId: null,
+  boardId: null,
   company: {
-    id: null,
+    companyId: null,
     name: null,
   },
-  job: {
-    id: null,
-    title: null,
-    description: null,
-    workMode: null,
-    payAmountCents: null,
-    payFrequency: null,
-    currency: null,
-    location: {
-      id: null,
-      streetAddress: null,
-      city: null,
-      state: null,
-      country: null,
-      postalCode: null,
-    },
-  },
+  jobTitle: null,
+  description: null,
+  workMode: null,
+  payAmountCents: null,
+  payFrequency: null,
+  currency: null,
+  streetAddress: null,
+  city: null,
+  state: null,
+  country: null,
+  postalCode: null,
   applicationLink: null,
   applicationDate: null,
   notes: null,
@@ -43,11 +42,14 @@ const EditCardFormModal = ({
   onDelete,
 }) => {
   const [formData, setFormData] = useState(cardData || defaultFormData);
+  const [existingJobData, setExistingJobData] = useState(null);
+  const [initialJobTitle, setInitialJobTitle] = useState(null);
   const hasDataChanged = JSON.stringify(cardData) !== JSON.stringify(formData);
-  const isDataValid = formData.company.name && formData.job.title;
+  const isDataValid = formData.company.name && formData.jobTitle;
 
   useEffect(() => {
     setFormData(cardData || defaultFormData);
+    setInitialJobTitle(cardData?.jobTitle);
   }, [cardData]);
 
   const handleInputChange = (e) => {
@@ -55,6 +57,18 @@ const EditCardFormModal = ({
     setFormData((prev) => {
       return { ...prev, [name]: value };
     });
+  };
+
+  const checkIfJobExists = async () => {
+    // if (formData.jobTitle === initialJobTitle) return;
+
+    const jobData = await findJobTitle({
+      userId: PLACEHOLDER_USER_ID,
+      jobTitle: formData.jobTitle,
+      companyId: formData.company.companyId,
+      boardId: formData.boardId,
+    });
+    setExistingJobData(jobData);
   };
 
   const handlePayAmountChange = (e) => {
@@ -68,55 +82,23 @@ const EditCardFormModal = ({
 
   const handleCountryChange = (country) => {
     const currencySymbol = getCurrencySymbol(country);
-    setFormData((prev) => ({
-      ...prev,
-      job: {
-        ...prev.job,
-        location: {
-          ...prev.job.location,
-          country: country,
-        },
-      },
-      currency: currencySymbol,
-    }));
-  };
-
-  const handleJobChange = (job) => {
-    setFormData((prev) => ({
-      ...prev,
-      job: {
-        id: job.id,
-        title: job.title,
-        description: job.description,
-        workMode: job.workMode,
-        payAmountCents: job.payAmountCents,
-        payFrequency: job.payFrequency,
-        currency: job.currency,
-        location: {
-          id: job.location.id,
-          streetAddress: job.location.streetAddress,
-          city: job.location.city,
-          state: job.location.state,
-          country: job.location.country,
-          postalCode: job.location.postalCode,
-        },
-      },
-    }));
+    const countryData = { country: country, currency: currencySymbol };
+    setFormData({ ...formData, ...countryData });
   };
 
   const handleCompanyChange = (company) => {
     setFormData((prev) => ({
       ...prev,
       company: {
-        id: company.id,
+        companyId: company.companyId,
         name: company.name,
       },
     }));
   };
 
-  const payFormAmount = formData.job.payAmountCents / 100;
-  const countrySymbol = getCountryCode(formData.job.location.country);
-  const currencySymbol = getCurrencySymbol(formData.job.location.country);
+  const payFormAmount = formData.payAmountCents / 100;
+  const countrySymbol = getCountryCode(formData.country);
+  const currencySymbol = getCurrencySymbol(formData.country);
   const isReadyForSubmission = !hasDataChanged || !isDataValid;
   const primaryActionText = isReadyForSubmission ? "Close" : "Save Changes";
 
@@ -139,7 +121,7 @@ const EditCardFormModal = ({
       header: "Delete Confirmation",
       icon: "pi pi-info-circle",
       acceptClassName: "p-button-danger",
-      accept: () => onDelete(cardData.id),
+      accept: () => onDelete(cardData.applicationCardId),
     });
   };
 
@@ -155,12 +137,13 @@ const EditCardFormModal = ({
         {...formData}
         onInputChange={handleInputChange}
         onCountryChange={handleCountryChange}
-        onJobChange={handleJobChange}
         onPayChange={handlePayAmountChange}
         onCompanyChange={handleCompanyChange}
         countrySymbol={countrySymbol}
         currencySymbol={currencySymbol}
         payFormAmount={payFormAmount}
+        onJobBlur={checkIfJobExists}
+        existingJobData={existingJobData}
       />
       <ConfirmDialog />
       <div className="flex flex-wrap gap-2 justify-content-center align-items-center">
