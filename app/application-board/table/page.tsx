@@ -17,11 +17,11 @@ const getCardsForUser = async (email: string) => {
   if (!board) return [];
 
   const cards = await prisma.applicationCard.findMany({
-    where: { applicationBoardId: board.id },
+    where: { applicationBoardId: board.id, userId: user.id },
     include: {
-      company: true,
       job: {
         include: {
+          company: true,
           location: true,
         },
       },
@@ -32,8 +32,8 @@ const getCardsForUser = async (email: string) => {
   });
 
   return cards.map((card) => ({
-    companyName: card.company.name,
-    jobTitle: card.job?.title,
+    companyName: card.job.company.name,
+    jobTitle: card.job.title,
     workMode: card.job?.workMode,
     city: card.job?.location?.city,
     payAmountCents: formatCurrency(

@@ -3,9 +3,8 @@
 import React, { useState } from "react";
 import { AutoComplete } from "primereact/autocomplete";
 import { COUNTRIES_LIST } from "@/app/constants";
-import { STYLE_CLASSES } from "../../utils";
 
-const CountriesField = ({ selectedCountry, onChange }) => {
+const CountriesField = ({ selectedCountry, onChange, isDisabled = false }) => {
   const [filteredCountries, setFilteredCountries] = useState(null);
 
   const search = (event) => {
@@ -34,6 +33,7 @@ const CountriesField = ({ selectedCountry, onChange }) => {
         completeMethod={search}
         onChange={(e) => onChange(e.value)}
         placeholder="United States"
+        disabled={isDisabled}
       />
     </div>
   );

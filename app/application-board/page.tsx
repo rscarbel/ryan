@@ -23,10 +23,10 @@ const getCardsForUser = async (email: string) => {
   const cards = await prisma.applicationCard.findMany({
     where: { applicationBoardId: board.id },
     include: {
-      company: true,
       job: {
         include: {
           location: true,
+          company: true,
         },
       },
     },
@@ -37,19 +37,28 @@ const getCardsForUser = async (email: string) => {
 
   return cards.map((card) => ({
     id: card.id,
-    companyName: card.company.name,
+    company: {
+      name: card.job.company.name,
+      id: card.job.company.id,
+    },
+    job: {
+      id: card.job.id,
+      title: card.job.title,
+      description: card.job.description,
+      workMode: card.job.workMode,
+      location: {
+        id: card.job.location.id,
+        streetAddress: card.job.location.streetAddress,
+        city: card.job.location.city,
+        state: card.job.location.state,
+        country: card.job.location.country,
+        postalCode: card.job.location.postalCode,
+      },
+      payAmountCents: card.job.payAmountCents,
+      payFrequency: card.job.payFrequency,
+      currency: card.job.currency,
+    },
     index: card.positionIndex,
-    jobTitle: card.job?.title,
-    jobDescription: card.job?.description,
-    workMode: card.job?.workMode,
-    streetAddress: card.job?.location?.streetAddress,
-    city: card.job?.location?.city,
-    state: card.job?.location?.state,
-    country: card.job?.location?.country,
-    postalCode: card.job?.location?.postalCode,
-    payAmountCents: card.job?.payAmountCents,
-    payFrequency: card.job?.payFrequency,
-    currency: card.job?.currency,
     applicationLink: card.applicationLink,
     applicationDate: card.applicationDate,
     notes: card.notes,

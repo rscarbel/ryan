@@ -57,3 +57,12 @@ export const createCard = async (card) => {
   const data = await response.json();
   return { response, data };
 };
+
+export const findCompanies = async (userId: number) => {
+  const response = await fetch(
+    `/api/applicationBoard/findCompanies?userId=${userId}`
+  );
+  const text = await response.text();
+  const data = JSON.parse(text);
+  return data?.body || [];
+};

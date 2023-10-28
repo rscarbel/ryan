@@ -6,19 +6,27 @@ import { InputNumber } from "primereact/inputnumber";
 import { STYLE_CLASSES } from "@/app/utils";
 import { payFrequencyOptions } from "../utils";
 import CountriesField from "./CountriesField";
+import CompaniesField from "./CompaniesField";
 
 const FormFields = ({
-  companyName,
-  jobTitle,
-  jobDescription,
-  payFormAmount,
-  payFrequency,
-  workMode,
-  streetAddress,
-  city,
-  state,
-  postalCode,
-  country,
+  applicationCardId,
+  company: { name: companyName = null, id: companyId = null },
+  job: {
+    id: jobId = null,
+    title: jobTitle = null,
+    description: jobDescription = null,
+    workMode = null,
+    payAmountCents = null,
+    payFrequency = null,
+    location: {
+      id: locationId = null,
+      streetAddress = null,
+      city = null,
+      state = null,
+      country = null,
+      postalCode = null,
+    },
+  },
   applicationLink,
   applicationDate,
   notes,
@@ -26,21 +34,19 @@ const FormFields = ({
   onInputChange,
   onPayChange,
   onCountryChange,
+  onCompanyChange,
+  onJobChange,
   countrySymbol,
   currencySymbol,
+  isDisabled = false,
 }) => {
   return (
     <div className="p-fluid">
       <div className="p-field">
-        <label className="block" htmlFor="companyName">
-          Company Name
-        </label>
-        <InputText
-          className={STYLE_CLASSES.FORM_BASIC_INPUT}
-          id="companyName"
-          name="companyName"
-          value={companyName}
-          onChange={onInputChange}
+        <CompaniesField
+          selectedCompany={{ name: companyName, id: companyId }}
+          onChange={onCompanyChange}
+          isDisabled={isDisabled}
         />
       </div>
 
@@ -54,6 +60,7 @@ const FormFields = ({
           name="jobTitle"
           value={jobTitle}
           onChange={onInputChange}
+          disabled={isDisabled}
         />
       </div>
 
@@ -67,6 +74,7 @@ const FormFields = ({
           name="jobDescription"
           value={jobDescription}
           onChange={onInputChange}
+          disabled={isDisabled}
           rows={5}
           cols={30}
         />
@@ -83,13 +91,14 @@ const FormFields = ({
         <div className="flex items-center">
           <InputNumber
             inputId={`currency-${countrySymbol.toLowerCase()}`}
-            value={payFormAmount}
+            value={payAmountCents / 100}
             className={`flex-1 mr-2`}
             onValueChange={onPayChange}
             placeholder="0.00"
             mode="currency"
             currency={currencySymbol}
             locale={`en-${countrySymbol}`}
+            disabled={isDisabled}
           />
           <Dropdown
             id="payFrequency"
@@ -99,6 +108,7 @@ const FormFields = ({
             onChange={onInputChange}
             placeholder="Frequency"
             className="flex-1"
+            disabled={isDisabled}
           />
         </div>
       </div>
@@ -115,6 +125,7 @@ const FormFields = ({
           options={["remote", "onsite", "hybrid"]}
           onChange={onInputChange}
           placeholder="Select a Status"
+          disabled={isDisabled}
         />
       </div>
 
@@ -128,6 +139,7 @@ const FormFields = ({
           name="streetAddress"
           value={streetAddress}
           onChange={onInputChange}
+          disabled={isDisabled}
         />
       </div>
 
@@ -142,6 +154,7 @@ const FormFields = ({
             name="city"
             value={city}
             onChange={onInputChange}
+            disabled={isDisabled}
           />
         </div>
 
@@ -155,6 +168,7 @@ const FormFields = ({
             name="state"
             value={state}
             onChange={onInputChange}
+            disabled={isDisabled}
           />
         </div>
       </div>
@@ -169,10 +183,15 @@ const FormFields = ({
             name="postalCode"
             value={postalCode}
             onChange={onInputChange}
+            disabled={isDisabled}
           />
         </div>
 
-        <CountriesField selectedCountry={country} onChange={onCountryChange} />
+        <CountriesField
+          selectedCountry={country}
+          onChange={onCountryChange}
+          isDisabled={isDisabled}
+        />
       </div>
 
       <div className="p-field">
@@ -185,6 +204,7 @@ const FormFields = ({
           name="applicationLink"
           value={applicationLink}
           onChange={onInputChange}
+          disabled={isDisabled}
         />
       </div>
 
@@ -199,6 +219,7 @@ const FormFields = ({
           value={new Date(applicationDate || Date.now())}
           onChange={onInputChange}
           dateFormat="mm/dd/yy"
+          disabled={isDisabled}
         />
       </div>
 
@@ -214,6 +235,7 @@ const FormFields = ({
           onChange={onInputChange}
           rows={5}
           cols={30}
+          disabled={isDisabled}
         />
       </div>
 
@@ -236,6 +258,7 @@ const FormFields = ({
           ]}
           onChange={onInputChange}
           placeholder="Select a Status"
+          disabled={isDisabled}
         />
       </div>
     </div>

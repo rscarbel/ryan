@@ -5,9 +5,11 @@ import TopMenu from "../TopMenu";
 import { useState, useRef } from "react";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
+import { ProgressSpinner } from "primereact/progressspinner";
 import { getCountryCode, getCurrencySymbol } from "@/app/utils";
 import { createCard } from "../network";
 import "primereact/resources/themes/viva-light/theme.css";
+import "primeicons/primeicons.css";
 
 const MILLISECONDS_FOR_MESSAGES = 5000;
 
@@ -29,6 +31,8 @@ const CreateCard: React.FC = () => {
     notes: "",
     status: "applied",
   });
+  const [loading, setLoading] = useState(false);
+
   const toast = useRef<Toast | null>(null);
   const isDataValid = formData.companyName && formData.jobTitle;
 
@@ -64,11 +68,13 @@ const CreateCard: React.FC = () => {
   const currencySymbol = getCurrencySymbol(formData.country);
 
   const handleFormSubmission = async () => {
+    setLoading(true);
     try {
       await createCard(formData);
     } catch (error) {
       showError((error as Error).message);
     }
+    setLoading(false);
   };
 
   return (
@@ -83,13 +89,14 @@ const CreateCard: React.FC = () => {
           countrySymbol={countrySymbol}
           currencySymbol={currencySymbol}
           payFormAmount={payFormAmount}
+          isDisabled={loading}
         />
         <Button
           onClick={handleFormSubmission}
-          icon="pi pi-check"
-          label="Create Application"
+          icon={loading ? <ProgressSpinner /> : "pi pi-check"}
+          label={loading ? "Saving Application..." : "Create Application"}
           className="mr-2 pr-10 pl-10"
-          disabled={!isDataValid}
+          disabled={!isDataValid || loading}
         />
       </div>
       <Toast ref={toast} />
