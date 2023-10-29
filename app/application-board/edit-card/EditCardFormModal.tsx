@@ -5,7 +5,7 @@ import { Dialog } from "primereact/dialog";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Button } from "primereact/button";
 import { getCountryCode, getCurrencySymbol } from "@/app/utils";
-import FormFields from "./FormFields";
+import FormFields from "../form/FormFields";
 import { findJobTitle } from "../network";
 
 const PLACEHOLDER_USER_ID = 1;

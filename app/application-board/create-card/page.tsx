@@ -1,6 +1,6 @@
 "use client";
 
-import FormFields from "../edit-card/FormFields";
+import FormFields from "../form/FormFields";
 import TopMenu from "../TopMenu";
 import { useState, useRef } from "react";
 import { Button } from "primereact/button";
