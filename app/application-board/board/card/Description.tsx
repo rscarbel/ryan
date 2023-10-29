@@ -1,4 +1,4 @@
-import { MAX_CHARACTERS, truncateText } from "./utils";
+import { MAX_CHARACTERS, truncateText } from "../../utils";
 
 const Description: React.FC<{
   description: string;

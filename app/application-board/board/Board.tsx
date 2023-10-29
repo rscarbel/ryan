@@ -6,13 +6,13 @@ import {
   initializeBoardData,
   handleDifferentColumnMove,
   handleSameColumnMove,
-} from "./utils";
+} from "../utils";
 import { Toast } from "primereact/toast";
-import { updateCardStatus, updateCard, deleteCard } from "./network";
-import ColumnRenderer from "./ColumnRenderer";
-import EditCardFormModal from "./edit-card/EditCardFormModal";
-import { EditCardContext } from "./EditCardContext";
-import { BoardCardInterface } from "./types";
+import { updateCardStatus, updateCard, deleteCard } from "../network";
+import ColumnRenderer from "./column/ColumnRenderer";
+import EditCardFormModal from "../edit-card/EditCardFormModal";
+import { EditCardContext } from "./card/EditCardContext";
+import { BoardCardInterface } from "../types";
 
 const MILLISECONDS_FOR_MESSAGES = 3000;
 

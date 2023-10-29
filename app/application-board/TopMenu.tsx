@@ -10,7 +10,7 @@ const TopMenu: React.FC = ({ activeIndex }) => {
       label: "Board",
       icon: "pi pi-fw pi-home",
       command: () => {
-        window.location.href = "/application-board";
+        window.location.href = "/application-board/board";
       },
     },
     {

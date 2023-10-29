@@ -1,4 +1,4 @@
-import { columnOrder, columns } from "./columnData";
+import { columnOrder, columns } from "./board/column/columnData";
 export const MAX_CHARACTERS = 10;
 
 export const getStatusColor = (status: string) => {

@@ -1,4 +1,4 @@
-import ApplicationCard from "./ApplicationCard";
+import ApplicationCard from "../card/ApplicationCard";
 import { Droppable } from "@hello-pangea/dnd";
 
 const SingleColumn = ({ column, applicationCards, isHalfSizeOnly = false }) => {

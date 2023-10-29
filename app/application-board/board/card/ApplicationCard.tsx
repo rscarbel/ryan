@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { Draggable } from "@hello-pangea/dnd";
-import { getStatusColor, humanizedPayFrequency } from "./utils";
+import { getStatusColor, humanizedPayFrequency } from "../../utils";
 import Description from "./Description";
 import { useEditCard } from "./EditCardContext";
-import { ApplicationCardInterface } from "./types";
+import { ApplicationCardInterface } from "../../types";
 import { formatCurrency, prettifyDate } from "@/app/utils";
 
 const ApplicationCard: React.FC<ApplicationCardInterface> = ({

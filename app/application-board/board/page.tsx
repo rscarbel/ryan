@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 import prisma from "@/services/globalPrismaClient";
 import { getFormattedCardsForBoard } from "@/services/ApplicationCard/applicationCardService";
 import BoardSkeleton from "./boardSkeleton";
-import TopMenu from "./TopMenu";
+import TopMenu from "../TopMenu";
 import "primereact/resources/themes/viva-light/theme.css";
 import "primeicons/primeicons.css";
 
