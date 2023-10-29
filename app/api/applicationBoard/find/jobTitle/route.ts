@@ -4,7 +4,7 @@ import prisma from "@/services/globalPrismaClient";
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const userId = parseInt(searchParams.get("userId"));
-  const companyId = parseInt(searchParams.get("companyId"));
+  const companyName = searchParams.get("companyName");
   const jobTitle = searchParams.get("jobTitle");
   const boardId = parseInt(searchParams.get("boardId"));
 
@@ -15,7 +15,7 @@ export async function GET(request: Request) {
     });
   }
 
-  if (!companyId || isNaN(companyId)) {
+  if (!companyName) {
     return Response.json({
       status: 400,
       body: { error: "Invalid userId" },
@@ -36,10 +36,17 @@ export async function GET(request: Request) {
     });
   }
 
+  const company = await prisma.company.findFirst({
+    where: {
+      name: companyName,
+      userId: userId,
+    },
+  });
+
   const job = await prisma.job.findFirst({
     where: {
       title: jobTitle,
-      companyId: companyId,
+      companyId: company.id,
       userId: userId,
     },
     select: {

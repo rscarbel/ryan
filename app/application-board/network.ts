@@ -67,14 +67,9 @@ export const findCompanies = async (userId: number) => {
   return data?.body || [];
 };
 
-export const findJobTitle = async ({
-  userId,
-  companyId,
-  jobTitle,
-  boardId,
-}) => {
+export const findJobTitle = async ({ userId, companyName, jobTitle, boardId }) => {
   const response = await fetch(
-    `/api/applicationBoard/find/jobTitle?userId=${userId}&companyId=${companyId}&jobTitle=${jobTitle}&boardId=${boardId}`
+    `/api/applicationBoard/find/jobTitle?userId=${userId}&companyName=${companyName}&jobTitle=${jobTitle}&boardId=${boardId}`
   );
   const text = await response.text();
   const data = JSON.parse(text);

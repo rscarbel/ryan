@@ -10,31 +10,42 @@ import { getCountryCode, getCurrencySymbol } from "@/app/utils";
 import { createCard } from "../network";
 import "primereact/resources/themes/viva-light/theme.css";
 import "primeicons/primeicons.css";
+import { findJobTitle } from "../network";
 
 const MILLISECONDS_FOR_MESSAGES = 5000;
+const PLACEHOLDER_USER_ID = 1;
+
+const defaultFormData = {
+  applicationCardId: null,
+  boardId: 1,
+  company: {
+    companyId: null,
+    name: null,
+  },
+  jobTitle: null,
+  description: null,
+  workMode: null,
+  payAmountCents: 0,
+  payFrequency: null,
+  currency: null,
+  streetAddress: null,
+  city: null,
+  state: null,
+  country: null,
+  postalCode: null,
+  applicationLink: null,
+  applicationDate: null,
+  notes: null,
+  status: null,
+};
 
 const CreateCard: React.FC = () => {
-  const [formData, setFormData] = useState({
-    companyName: "",
-    jobTitle: "",
-    jobDescription: "",
-    payAmountCents: 0,
-    payFrequency: "yearly",
-    workMode: "onsite",
-    streetAddress: "",
-    city: "",
-    state: "",
-    postalCode: "",
-    country: "",
-    applicationLink: "",
-    applicationDate: "",
-    notes: "",
-    status: "applied",
-  });
+  const [formData, setFormData] = useState(defaultFormData);
   const [loading, setLoading] = useState(false);
+  const [existingJobData, setExistingJobData] = useState(null);
 
   const toast = useRef<Toast | null>(null);
-  const isDataValid = formData.companyName && formData.jobTitle;
+  const isDataValid = formData.company.name && formData.jobTitle;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -50,20 +61,42 @@ const CreateCard: React.FC = () => {
     });
   };
 
+  const checkIfJobExists = async () => {
+    const jobData = await findJobTitle({
+      userId: PLACEHOLDER_USER_ID,
+      jobTitle: formData.jobTitle,
+      companyName: formData.company.name,
+      boardId: formData.boardId,
+    });
+    setExistingJobData(jobData);
+  };
+
   const handlePayAmountChange = (e) => {
     const { value } = e.target;
     const cents = Math.round(parseFloat(value) * 100) || 0;
-    setFormData({ ...formData, payAmountCents: cents });
+    setFormData((prev) => ({
+      ...prev,
+      job: { ...prev.job, payAmountCents: cents },
+    }));
   };
 
-  const onCountryChange = (country) => {
+  const handleCountryChange = (country) => {
     const currencySymbol = getCurrencySymbol(country);
     const countryData = { country: country, currency: currencySymbol };
     setFormData({ ...formData, ...countryData });
   };
 
-  const payFormAmount = formData?.payAmountCents / 100;
+  const handleCompanyChange = (company) => {
+    setFormData((prev) => ({
+      ...prev,
+      company: {
+        companyId: company.companyId,
+        name: company.name,
+      },
+    }));
+  };
 
+  const payFormAmount = formData?.payAmountCents / 100;
   const countrySymbol = getCountryCode(formData.country);
   const currencySymbol = getCurrencySymbol(formData.country);
 
@@ -84,11 +117,14 @@ const CreateCard: React.FC = () => {
         <FormFields
           {...formData}
           onInputChange={handleInputChange}
-          onCountryChange={onCountryChange}
+          onCountryChange={handleCountryChange}
           onPayChange={handlePayAmountChange}
+          onCompanyChange={handleCompanyChange}
           countrySymbol={countrySymbol}
           currencySymbol={currencySymbol}
           payFormAmount={payFormAmount}
+          onJobBlur={checkIfJobExists}
+          existingJobData={existingJobData}
           isDisabled={loading}
         />
         <Button

@@ -51,7 +51,7 @@ const FormFields = ({
           <span
             className="pi pi-exclamation-triangle mt-2 text-lg cursor-pointer "
             style={{ color: "#ff9800" }}
-            data-pr-tooltip={`An application already exists with this job title at ${companyName}. You applied on ${previousApplicationDateOnThisBoard}. Make sure this is intentional.`}
+            data-pr-tooltip={`An application already exists with this job title at ${companyName}. You applied on ${previousApplicationDateOnThisBoard}.`}
           ></span>
           <Tooltip
             target=".pi.pi-exclamation-triangle"

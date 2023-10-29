@@ -13,6 +13,7 @@ const PLACEHOLDER_USER_ID = 1;
 const defaultFormData = {
   applicationCardId: null,
   boardId: null,
+  jobId: null,
   company: {
     companyId: null,
     name: null,
@@ -60,12 +61,12 @@ const EditCardFormModal = ({
   };
 
   const checkIfJobExists = async () => {
-    // if (formData.jobTitle === initialJobTitle) return;
+    if (formData.jobTitle === initialJobTitle) return;
 
     const jobData = await findJobTitle({
       userId: PLACEHOLDER_USER_ID,
       jobTitle: formData.jobTitle,
-      companyId: formData.company.companyId,
+      companyName: formData.company.name,
       boardId: formData.boardId,
     });
     setExistingJobData(jobData);
