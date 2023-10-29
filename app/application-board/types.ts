@@ -1,25 +1,16 @@
 export interface ApplicationCardInterface {
   cardId: number;
   boardId: number;
-  company: {
-    companyId: number;
-    name: string;
-  };
-  jobId: number;
+  companyName: string;
   title: string;
-  description?: string;
   payAmountCents: number;
   payFrequency: string;
-  currency?: string;
+  currency: string;
   workMode: string;
-  streetAddress?: string;
   city: string;
-  state?: string;
-  country?: string;
-  postalCode?: string;
+  country: string;
   applicationLink?: string;
-  applicationDate: Date;
-  notes?: string;
+  applicationDate: string;
   status: string;
   index: number;
 }

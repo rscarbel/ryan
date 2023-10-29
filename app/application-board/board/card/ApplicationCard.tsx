@@ -1,37 +1,26 @@
-"use client";
-
-import { useState } from "react";
 import { Draggable } from "@hello-pangea/dnd";
 import { getStatusColor, humanizedPayFrequency } from "../../utils";
-import Description from "./Description";
 import { useEditCard } from "./EditCardContext";
 import { ApplicationCardInterface } from "../../types";
-import { formatCurrency, prettifyDate } from "@/app/utils";
+import { formatCurrency } from "@/app/utils";
+import { findCard } from "../../network";
 
 const ApplicationCard: React.FC<ApplicationCardInterface> = ({
   cardId,
   boardId,
-  jobId,
-  company: { companyId: companyId, name: companyName },
+  companyName,
   title: jobTitle,
-  description: jobDescription,
   workMode,
   payAmountCents,
   payFrequency,
   currency,
-  streetAddress,
   city,
-  state,
   country,
-  postalCode,
   applicationLink,
   applicationDate,
   status,
-  notes,
   index,
 }) => {
-  const [isDescriptionExpanded, setDescriptionExpanded] = useState(false);
-
   const cardStyles = {
     base: "p-4 mb-4 bg-white claymorphic-shadow claymorphic-shadow-hover rounded-lg border border-gray-200 relative",
     status: `absolute top-2 right-3 rounded-full px-2 py-0.3 text-xs font-medium ${getStatusColor(
@@ -39,11 +28,12 @@ const ApplicationCard: React.FC<ApplicationCardInterface> = ({
     )}`,
   };
 
-  const payAmountDisplay = formatCurrency(payAmountCents, country);
+  const payAmountDisplay = formatCurrency(payAmountCents, country, currency);
   const payFrequencyDisplay = humanizedPayFrequency[payFrequency];
   const hasPay = payAmountCents > 0;
   const payDisplay = `${payAmountDisplay} ${payFrequencyDisplay} (${workMode})`;
   const jobValueDisplay = hasPay ? payDisplay : workMode;
+  const jobTitleDisplay = city ? `${jobTitle} - ${city}` : jobTitle;
 
   const { onEditClick } = useEditCard();
 
@@ -55,43 +45,21 @@ const ApplicationCard: React.FC<ApplicationCardInterface> = ({
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           className={cardStyles.base}
-          onClick={() =>
+          onClick={async () => {
+            const card = await findCard(cardId);
             onEditClick({
-              applicationCardId: cardId,
+              ...card,
               boardId,
-              jobId,
-              company: { companyId, name: companyName },
-              jobTitle,
-              jobDescription,
-              workMode,
-              payAmountCents,
-              payFrequency,
-              currency,
-              streetAddress,
-              city,
-              state,
-              country,
-              postalCode,
-              applicationLink,
-              applicationDate,
-              positionIndex: index,
-              notes,
-              status,
-            })
-          }
+            });
+          }}
         >
           <div className={cardStyles.status}>{status}</div>
           <div className="mb-2 mt-1 text-lg font-bold text-gray-700">
-            {companyName}
+            {jobTitleDisplay}
           </div>
           <div className="mb-1 text-md font-medium text-gray-600">
-            {jobTitle}
+            {companyName}
           </div>
-          <Description
-            description={jobDescription}
-            isExpanded={isDescriptionExpanded}
-            toggle={() => setDescriptionExpanded(!isDescriptionExpanded)}
-          />
           <div className="mb-1 text-gray-600">{jobValueDisplay}</div>
           {applicationLink && (
             <a
@@ -104,7 +72,7 @@ const ApplicationCard: React.FC<ApplicationCardInterface> = ({
             </a>
           )}
           <div className="mb-2 text-sm text-gray-500">
-            Date Applied: {prettifyDate(applicationDate)}
+            Date Applied: {applicationDate}
           </div>
         </div>
       )}

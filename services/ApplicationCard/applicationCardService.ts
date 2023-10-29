@@ -1,4 +1,5 @@
 import prisma from "@/services/globalPrismaClient";
+import { prettifyDate } from "@/app/utils";
 
 export const getFormattedCardData = async (
   applicationCardId,
@@ -28,20 +29,21 @@ export const getFormattedCardData = async (
       companyId: applicationCard.job.company.id,
       name: applicationCard.job.company.name,
     },
-    title: applicationCard.job.title,
-    description: applicationCard.job.description,
+    jobTitle: applicationCard.job.title,
+    jobDescription: applicationCard.job.description,
     workMode: applicationCard.job.workMode,
     payAmountCents: applicationCard.job.payAmountCents,
     payFrequency: applicationCard.job.payFrequency,
     currency: applicationCard.job.currency,
-    streetAddress: applicationCard.job.streetAddress || null,
-    city: applicationCard.job.city || null,
-    state: applicationCard.job.state || null,
-    country: applicationCard.job.country || null,
-    postalCode: applicationCard.job.postalCode || null,
+    streetAddress: applicationCard.job.streetAddress,
+    city: applicationCard.job.city,
+    state: applicationCard.job.state,
+    country: applicationCard.job.country,
+    postalCode: applicationCard.job.postalCode,
     applicationLink: applicationCard.applicationLink,
     applicationDate: applicationCard.applicationDate,
     status: applicationCard.status,
+    positionIndex: applicationCard.positionIndex,
     notes: applicationCard.notes,
   };
 };
@@ -65,27 +67,17 @@ export const getFormattedCardsForBoard = async (boardId, client = prisma) => {
 
   return applicationCards.map((card) => ({
     cardId: card.id,
-    boardId: card.applicationBoardId,
-    jobId: card.jobId,
-    company: {
-      companyId: card.job.company.id,
-      name: card.job.company.name,
-    },
+    companyName: card.job.company.name,
     title: card.job.title,
-    description: card.job.description,
     workMode: card.job.workMode,
     payAmountCents: card.job.payAmountCents,
     payFrequency: card.job.payFrequency,
     currency: card.job.currency,
-    streetAddress: card.job.streetAddress || null,
-    city: card.job.city || null,
-    state: card.job.state || null,
-    country: card.job.country || null,
-    postalCode: card.job.postalCode || null,
+    city: card.job.city,
+    country: card.job.country,
     applicationLink: card.applicationLink,
-    applicationDate: card.applicationDate,
+    applicationDate: prettifyDate(card.applicationDate),
     status: card.status,
-    notes: card.notes,
   }));
 };
 

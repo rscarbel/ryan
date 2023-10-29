@@ -1,5 +1,3 @@
-import { CLIENT_RENEG_WINDOW } from "tls";
-
 export const updateCardStatus = async (
   cardId: string,
   newStatus: string,
@@ -94,4 +92,19 @@ export const findJobTitle = async ({
     //todo report to bugsnag
   }
   return data?.body || null;
+};
+
+export const findCard = async (cardId: number) => {
+  const response = await fetch(
+    `/api/applicationBoard/find/card?cardId=${cardId}`
+  );
+  let data;
+  try {
+    const text = await response.text();
+    const responseData = JSON.parse(text);
+    data = JSON.parse(responseData.body);
+  } catch (error) {
+    //todo report to bugsnag
+  }
+  return data;
 };

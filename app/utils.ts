@@ -19,14 +19,17 @@ export const getCurrencySymbol = (country: string) => {
   return CURRENCIES_LIST[countryCode] || "USD";
 };
 
-export const formatCurrency = (amountCents: number, country: string) => {
+export const formatCurrency = (
+  amountCents: number,
+  country,
+  currencySymbol: string
+) => {
   const amount = amountCents / 100;
-  const currencyCode = getCurrencySymbol(country);
   const locale = `en-${getCountryCode(country)}`;
 
   return new Intl.NumberFormat(locale, {
     style: "currency",
-    currency: currencyCode,
+    currency: currencySymbol,
   }).format(amount);
 };
 
