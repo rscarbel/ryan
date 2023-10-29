@@ -14,8 +14,9 @@ export const findOrCreateJob = async ({
   state,
   country,
   postalCode,
+  client = prisma,
 }) => {
-  const existingJob = await prisma.job.findFirst({
+  const existingJob = await client.job.findFirst({
     where: {
       title: jobTitle,
       companyId: companyId,
@@ -28,7 +29,7 @@ export const findOrCreateJob = async ({
   if (existingJob) {
     return existingJob;
   } else {
-    return prisma.job.create({
+    return client.job.create({
       data: {
         title: jobTitle,
         userId: userId,
@@ -62,8 +63,9 @@ export const createOrUpdateJob = async ({
   state,
   country,
   postalCode,
+  client = prisma,
 }) => {
-  const existingJob = await prisma.job.findFirst({
+  const existingJob = await client.job.findFirst({
     where: {
       title: jobTitle,
       companyId: companyId,
@@ -74,7 +76,7 @@ export const createOrUpdateJob = async ({
   });
 
   if (existingJob) {
-    return prisma.job.update({
+    return client.job.update({
       where: { id: existingJob.id },
       data: {
         description: jobDescription,
@@ -89,7 +91,7 @@ export const createOrUpdateJob = async ({
       },
     });
   } else {
-    return prisma.job.create({
+    return client.job.create({
       data: {
         title: jobTitle,
         userId: userId,
@@ -122,8 +124,9 @@ export const updateJob = async ({
   state,
   country,
   postalCode,
+  client = prisma,
 }) => {
-  const job = await prisma.job.findFirst({
+  const job = await client.job.findFirst({
     where: {
       id: jobId,
     },
@@ -133,7 +136,7 @@ export const updateJob = async ({
     throw new Error("Job not found");
   }
 
-  return await prisma.job.update({
+  return await client.job.update({
     where: {
       id: jobId,
     },

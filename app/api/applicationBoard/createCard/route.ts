@@ -56,10 +56,9 @@ export async function POST(request) {
 
       const existingJob = await client.job.findUnique({
         where: {
-          title_companyId_locationId_workMode: {
+          title_companyId_workMode: {
             title: jobTitle,
             companyId: company.id,
-            locationId: locationData.location?.id,
             workMode: workMode,
           },
         },

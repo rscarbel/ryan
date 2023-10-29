@@ -63,11 +63,10 @@ const Board: React.FC<BoardProps> = ({ cards = [] }) => {
     try {
       const { response, data } = await updateCard(updatedData);
       const cards = data.cards;
-      console.log(data.cards);
-      setBoardData(initializeBoardData(cards));
       if (!response.ok) {
         showError(data.error);
       } else {
+        setBoardData(initializeBoardData(cards));
         showSuccess();
       }
     } catch (error) {
@@ -81,7 +80,6 @@ const Board: React.FC<BoardProps> = ({ cards = [] }) => {
   const handleDelete = async (cardId) => {
     try {
       const { response, data } = await deleteCard(cardId);
-      console.log(data);
       const cards = data.cards;
       setBoardData(initializeBoardData(cards));
       showDeleteSuccess();

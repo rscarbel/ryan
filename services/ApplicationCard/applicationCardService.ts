@@ -1,7 +1,10 @@
 import prisma from "@/services/globalPrismaClient";
 
-export const getFormattedCardData = async (applicationCardId) => {
-  const applicationCard = await prisma.applicationCard.findUnique({
+export const getFormattedCardData = async (
+  applicationCardId,
+  client = prisma
+) => {
+  const applicationCard = await client.applicationCard.findUnique({
     where: {
       id: applicationCardId,
     },
@@ -43,8 +46,8 @@ export const getFormattedCardData = async (applicationCardId) => {
   };
 };
 
-export const getFormattedCardsForBoard = async (boardId) => {
-  const applicationCards = await prisma.applicationCard.findMany({
+export const getFormattedCardsForBoard = async (boardId, client = prisma) => {
+  const applicationCards = await client.applicationCard.findMany({
     where: {
       applicationBoardId: boardId,
     },
@@ -86,8 +89,13 @@ export const getFormattedCardsForBoard = async (boardId) => {
   }));
 };
 
-export const incrementCardsAfterIndex = async ({ boardId, status, index }) => {
-  await prisma.applicationCard.updateMany({
+export const incrementCardsAfterIndex = async ({
+  boardId,
+  status,
+  index,
+  client = prisma,
+}) => {
+  await client.applicationCard.updateMany({
     where: {
       applicationBoardId: boardId,
       status: status,
@@ -103,8 +111,13 @@ export const incrementCardsAfterIndex = async ({ boardId, status, index }) => {
   });
 };
 
-export const decrementCardsAfterIndex = async ({ boardId, status, index }) => {
-  await prisma.applicationCard.updateMany({
+export const decrementCardsAfterIndex = async ({
+  boardId,
+  status,
+  index,
+  client = prisma,
+}) => {
+  await client.applicationCard.updateMany({
     where: {
       applicationBoardId: boardId,
       status: status,
@@ -120,8 +133,8 @@ export const decrementCardsAfterIndex = async ({ boardId, status, index }) => {
   });
 };
 
-export const deleteCard = async (cardId) => {
-  const cardToDelete = await prisma.applicationCard.findUnique({
+export const deleteCard = async (cardId, client = prisma) => {
+  const cardToDelete = await client.applicationCard.findUnique({
     where: {
       id: cardId,
     },
@@ -136,18 +149,18 @@ export const deleteCard = async (cardId) => {
     throw new Error("Card not found");
   }
 
-  await prisma.applicationCard.delete({
+  await client.applicationCard.delete({
     where: { id: cardId },
   });
 
-  const otherApplicationsForJob = await prisma.applicationCard.findFirst({
+  const otherApplicationsForJob = await client.applicationCard.findFirst({
     where: {
       jobId: job.id,
     },
   });
 
   if (!otherApplicationsForJob) {
-    await prisma.job.delete({
+    await client.job.delete({
       where: {
         id: job.id,
       },

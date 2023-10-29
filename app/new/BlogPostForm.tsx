@@ -45,23 +45,11 @@ const BlogPostForm: React.FC = () => {
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     try {
-      console.log({
-        title,
-        content,
-        imageUrl,
-        altText,
-        tags,
-        publishDate,
-        isCommentAllowed,
-        isScheduled,
-        status,
-      });
       toast.current.show({
         severity: "success",
         summary: successToastMessages[status],
       });
     } catch (error) {
-      console.error("Error sending content:", error);
       toast.current.show({
         severity: "error",
         summary: errorToastMessages[status],
