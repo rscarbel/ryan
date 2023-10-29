@@ -4,19 +4,19 @@ export const MAX_CHARACTERS = 10;
 export const getStatusColor = (status: string) => {
   switch (status) {
     case "applied":
-      return "bg-blue-200";
+      return "bg-blue-100";
     case "interview":
-      return "bg-green-300";
+      return "bg-green-100";
     case "offer":
-      return "bg-blue-700 text-slate-50";
+      return "bg-blue-300";
     case "rejected":
-      return "bg-red-700 text-slate-50";
+      return "bg-red-300";
     case "passed":
-      return "bg-black text-slate-50";
+      return "bg-gray-300";
     case "accepted":
-      return "bg-green-700 text-slate-50";
+      return "bg-green-300";
     default:
-      return "bg-gray-200";
+      return "bg-gray-100";
   }
 };
 

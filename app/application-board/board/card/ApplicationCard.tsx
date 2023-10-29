@@ -41,7 +41,9 @@ const ApplicationCard: React.FC<ApplicationCardInterface> = ({
 
   const payAmountDisplay = formatCurrency(payAmountCents, country);
   const payFrequencyDisplay = humanizedPayFrequency[payFrequency];
-  const workModeDisplay = workMode ? `(${workMode})` : "";
+  const hasPay = payAmountCents > 0;
+  const payDisplay = `${payAmountDisplay} ${payFrequencyDisplay} (${workMode})`;
+  const jobValueDisplay = hasPay ? payDisplay : workMode;
 
   const { onEditClick } = useEditCard();
 
@@ -90,17 +92,17 @@ const ApplicationCard: React.FC<ApplicationCardInterface> = ({
             isExpanded={isDescriptionExpanded}
             toggle={() => setDescriptionExpanded(!isDescriptionExpanded)}
           />
-          <div className="mb-1 text-gray-600">
-            {`${payAmountDisplay} ${payFrequencyDisplay} ${workModeDisplay}`}
-          </div>
-          <a
-            href={applicationLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mb-2 text-blue-500 underline"
-          >
-            Application Link
-          </a>
+          <div className="mb-1 text-gray-600">{jobValueDisplay}</div>
+          {applicationLink && (
+            <a
+              href={applicationLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mb-2 text-blue-500 underline"
+            >
+              Application Link
+            </a>
+          )}
           <div className="mb-2 text-sm text-gray-500">
             Date Applied: {prettifyDate(applicationDate)}
           </div>
