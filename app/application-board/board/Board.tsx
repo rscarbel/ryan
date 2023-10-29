@@ -10,19 +10,21 @@ import EditCardFormModal from "../edit-card/EditCardFormModal";
 import { EditCardContext } from "./card/EditCardContext";
 
 const MILLISECONDS_FOR_MESSAGES = 3000;
+const DELAY_FOR_SAVE = 5000;
 
 const Board: React.FC = ({ board }) => {
   const [boardData, setBoardData] = useState(board);
   const [isModalVisible, setModalVisible] = useState(false);
   const [editingCard, setEditingCard] = useState(null);
   const toast = useRef<Toast | null>(null);
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const { columns, applicationCards, columnOrder } = boardData;
 
   const showSuccess = () => {
     toast.current?.show({
       severity: "success",
-      summary: "Success",
+      summary: "Saved",
       detail: `Status updated`,
       life: MILLISECONDS_FOR_MESSAGES,
     });
@@ -118,25 +120,37 @@ const Board: React.FC = ({ board }) => {
       ...prevData,
       columns: { ...prevData.columns, ...updatedColumns },
     }));
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+    saveTimeoutRef.current = setTimeout(async () => {
+      try {
+        const { response, data } = await updateCardStatus(
+          cardId,
+          newStatus,
+          index
+        );
 
-    try {
-      const { response, data } = await updateCardStatus(
-        cardId,
-        newStatus,
-        index
-      );
+        showSuccess();
 
-      showSuccess();
-
-      if (!response.ok) {
-        showError(data.error);
+        if (!response.ok) {
+          showError(data.error);
+          setBoardData(previousBoardData);
+        }
+      } catch (error) {
+        showError((error as Error).message);
         setBoardData(previousBoardData);
       }
-    } catch (error) {
-      showError((error as Error).message);
-      setBoardData(previousBoardData);
-    }
+    }, DELAY_FOR_SAVE);
   };
+
+  useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <EditCardContext.Provider

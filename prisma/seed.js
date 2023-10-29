@@ -22,7 +22,7 @@ const getCurrencySymbol = (country) => {
 
 const prisma = new PrismaClient();
 
-const NUM_APPLICATION_CARDS = 15;
+const NUM_APPLICATION_CARDS = 200;
 
 const randomApplicationStatus = () => {
   const statuses = Object.values(ApplicationStatus);
@@ -107,7 +107,7 @@ async function main() {
   for (let i = 0; i < NUM_APPLICATION_CARDS; i++) {
     const company = await prisma.company.create({
       data: {
-        name: faker.company.name(),
+        name: faker.lorem.sentence(),
         user: {
           connect: {
             id: user1.id,
@@ -194,7 +194,7 @@ async function main() {
 
     await prisma.emailTemplate.create({
       data: {
-        name: faker.lorem.word(),
+        name: faker.lorem.sentence(),
         subject: faker.lorem.sentence(),
         body: faker.lorem.paragraph(),
         user: {
