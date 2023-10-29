@@ -27,13 +27,16 @@ export async function POST(request) {
   const indexToDecrement = cardToDelete.positionIndex + 1;
   const applicationBoardId = cardToDelete.applicationBoardId;
 
-  await decrementCardsAfterIndex({
-    status: cardToDelete.status,
-    index: indexToDecrement,
-    boardId: applicationBoardId,
-  });
   try {
-    await deleteCard(parseInt(id));
+    await prisma.$transaction(async (pris) => {
+      await decrementCardsAfterIndex({
+        status: cardToDelete.status,
+        index: indexToDecrement,
+        boardId: applicationBoardId,
+        client: pris,
+      });
+      await deleteCard(parseInt(id), pris);
+    });
     const formattedCards = await getFormattedCardsForBoard(applicationBoardId);
 
     return new Response(JSON.stringify({ cards: formattedCards }), {
