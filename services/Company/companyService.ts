@@ -8,10 +8,8 @@ export const findOrCreateCompany = async ({
 }) => {
   const company = await client.company.findFirst({
     where: {
-      name_userId: {
-        name: companyName,
-        userId: userId,
-      },
+      name: companyName,
+      userId: userId,
     },
   });
 

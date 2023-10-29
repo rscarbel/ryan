@@ -11,32 +11,37 @@ import { createCard } from "../network";
 import "primereact/resources/themes/viva-light/theme.css";
 import "primeicons/primeicons.css";
 import { findJobTitle } from "../network";
+import { ApplicationStatus, PayFrequency, WorkMode } from "@prisma/client";
 
 const MILLISECONDS_FOR_MESSAGES = 5000;
 const PLACEHOLDER_USER_ID = 1;
 
+const TODAY = new Date().toISOString();
+
 const defaultFormData = {
-  applicationCardId: null,
+  applicationCardId: "",
+  applicationBoardId: 1,
   boardId: 1,
   company: {
-    companyId: null,
-    name: null,
+    companyId: "",
+    name: "",
   },
-  jobTitle: null,
-  description: null,
-  workMode: null,
+  jobTitle: "",
+  description: "",
+  workMode: WorkMode.onsite,
   payAmountCents: 0,
-  payFrequency: null,
-  currency: null,
-  streetAddress: null,
-  city: null,
-  state: null,
-  country: null,
-  postalCode: null,
-  applicationLink: null,
-  applicationDate: null,
-  notes: null,
-  status: null,
+  payFrequency: PayFrequency.hourly,
+  currency: "USD",
+  streetAddress: "",
+  city: "",
+  state: "",
+  country: "United States",
+  postalCode: "",
+  applicationLink: "",
+  applicationDate: TODAY,
+  positionIndex: 0,
+  notes: "",
+  status: ApplicationStatus.applied,
 };
 
 const CreateCard: React.FC = () => {
@@ -103,11 +108,12 @@ const CreateCard: React.FC = () => {
   const handleFormSubmission = async () => {
     setLoading(true);
     try {
-      await createCard(formData);
+      const response = await createCard(formData);
+      window.location.href = "/application-board";
     } catch (error) {
-      showError((error as Error).message);
+      showError(error.message);
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (

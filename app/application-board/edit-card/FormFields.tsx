@@ -9,19 +9,20 @@ import { payFrequencyOptions } from "../utils";
 import CountriesField from "./CountriesField";
 import CompaniesField from "./CompaniesField";
 
+
 const FormFields = ({
-  company: { name: companyName = null, companyId: companyId = null },
-  jobTitle = null,
-  jobId = null,
-  jobDescription = null,
-  workMode = null,
-  payAmountCents = null,
-  payFrequency = null,
-  streetAddress = null,
-  city = null,
-  state = null,
-  country = null,
-  postalCode = null,
+  company,
+  jobTitle,
+  jobId,
+  jobDescription,
+  workMode,
+  payAmountCents,
+  payFrequency,
+  streetAddress,
+  city,
+  state,
+  country,
+  postalCode,
   applicationLink,
   applicationDate,
   notes,
@@ -36,6 +37,9 @@ const FormFields = ({
   currencySymbol,
   isDisabled = false,
 }) => {
+  const companyName = company?.name;
+  const companyId = company?.companyId;
+
   const previousBoardName =
     existingJobData?.lastApplicationToJobInOtherBoard?.boardName;
   const previousBoardDate =
@@ -84,7 +88,10 @@ const FormFields = ({
     <div className="p-fluid">
       <div className="p-field">
         <CompaniesField
-          selectedCompany={{ name: companyName, companyId: companyId }}
+          selectedCompany={{
+            name: companyName || "",
+            companyId: companyId || "",
+          }}
           onChange={onCompanyChange}
           isDisabled={isDisabled}
         />
@@ -132,7 +139,7 @@ const FormFields = ({
         <div className="flex items-center">
           <InputNumber
             inputId={`currency-${countrySymbol.toLowerCase()}`}
-            value={payAmountCents / 100}
+            value={payAmountCents || 0 / 100}
             className={`flex-1 mr-2`}
             onValueChange={onPayChange}
             placeholder="0.00"

@@ -1,3 +1,5 @@
+import { CLIENT_RENEG_WINDOW } from "tls";
+
 export const updateCardStatus = async (
   cardId: string,
   newStatus: string,
@@ -46,32 +48,50 @@ export const deleteCard = async (cardId) => {
 };
 
 export const createCard = async (card) => {
-  const response = await fetch("/api/applicationBoard/createCard", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(card),
-  });
-
-  const data = await response.json();
-  return { response, data };
+  try {
+    const response = await fetch("/api/applicationBoard/createCard", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(card),
+    });
+    const data = await response.json();
+    return { response, data };
+  } catch (error) {
+    //todo report to bugsnag
+  }
 };
 
 export const findCompanies = async (userId: number) => {
   const response = await fetch(
     `/api/applicationBoard/find/companies?userId=${userId}`
   );
-  const text = await response.text();
-  const data = JSON.parse(text);
+  let data;
+  try {
+    const text = await response.text();
+    data = JSON.parse(text);
+  } catch (error) {
+    //todo report to bugsnag
+  }
   return data?.body || [];
 };
 
-export const findJobTitle = async ({ userId, companyName, jobTitle, boardId }) => {
+export const findJobTitle = async ({
+  userId,
+  companyName,
+  jobTitle,
+  boardId,
+}) => {
   const response = await fetch(
     `/api/applicationBoard/find/jobTitle?userId=${userId}&companyName=${companyName}&jobTitle=${jobTitle}&boardId=${boardId}`
   );
-  const text = await response.text();
-  const data = JSON.parse(text);
+  let data;
+  try {
+    const text = await response.text();
+    data = JSON.parse(text);
+  } catch (error) {
+    //todo report to bugsnag
+  }
   return data?.body || null;
 };

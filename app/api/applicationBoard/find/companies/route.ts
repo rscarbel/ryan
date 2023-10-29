@@ -24,7 +24,7 @@ export async function GET(request: Request) {
   return Response.json({
     body: companies.map((company) => ({
       name: company.name,
-      id: company.id,
+      companyId: company.id,
     })),
   });
 }

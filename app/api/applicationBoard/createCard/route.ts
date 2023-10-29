@@ -1,10 +1,15 @@
 import prisma from "@/services/globalPrismaClient";
+import { ApplicationStatus, PayFrequency, WorkMode } from "@prisma/client";
+import { findOrCreateCompany } from "@/services/Company/companyService";
+import { createOrUpdateJob } from "@/services/Job/jobService";
+import { incrementCardsAfterIndex } from "@/services/ApplicationCard/applicationCardService";
 
 export async function POST(request) {
   const {
     status,
+    applicationBoardId,
     jobTitle,
-    companyName,
+    company,
     payAmountCents,
     payFrequency,
     jobDescription,
@@ -22,105 +27,62 @@ export async function POST(request) {
   } = await request.json();
   try {
     await prisma.$transaction(async (client) => {
-      await client.applicationCard.updateMany({
+      const user = await client.user.findFirst({
         where: {
+          id: 1,
+        },
+      });
+
+      const applicationBoard = await client.applicationBoard.findFirst({
+        where: {
+          id: applicationBoardId,
+        },
+      });
+
+      const newCompany = await findOrCreateCompany({
+        companyName: company.name,
+        userId: user.id,
+        client: client,
+      });
+
+      const job = await createOrUpdateJob({
+        jobTitle: jobTitle,
+        userId: user.id,
+        companyId: newCompany.id,
+        jobDescription: jobDescription,
+        workMode: workMode,
+        payAmountCents: payAmountCents,
+        payFrequency: payFrequency,
+        currency: currency,
+        streetAddress: streetAddress,
+        city: city,
+        state: state,
+        postalCode: postalCode,
+        country: country,
+        client: client,
+      });
+
+      await client.applicationCard.create({
+        data: {
           status: status,
-        },
-        data: {
-          positionIndex: {
-            increment: 1,
-          },
-        },
-      });
-
-      const company = await client.company.create({
-        data: {
-          name: companyName,
-          userId: 1,
-        },
-      });
-
-      const locationData = city
-        ? {
-            location: {
-              create: {
-                city: city,
-                state: state,
-                country: country,
-                streetAddress: streetAddress,
-                postalCode: postalCode,
-              },
-            },
-          }
-        : {};
-
-      const existingJob = await client.job.findUnique({
-        where: {
-          title_companyId_workMode: {
-            title: jobTitle,
-            companyId: company.id,
-            workMode: workMode,
-          },
-        },
-      });
-
-      const job = existingJob
-        ? existingJob
-        : await client.job.create({
-            data: {
-              title: jobTitle,
-              description: jobDescription,
-              workMode: workMode,
-              company: {
-                connect: {
-                  id: company.id,
-                },
-              },
-              payAmountCents: payAmountCents,
-              payFrequency: payFrequency,
-              currency: currency,
-              user: {
-                connect: {
-                  id: 1,
-                },
-              },
-              ...locationData,
-            },
-          });
-
-      const card = await client.applicationCard.create({
-        data: {
-          applicationBoard: {
-            connect: {
-              id: "1",
-            },
-          },
-          company: {
-            connect: {
-              id: company.id,
-            },
-          },
-          job: {
-            connect: {
-              id: job.id,
-            },
-          },
           applicationLink: applicationLink,
           applicationDate: applicationDate,
-          notes: notes,
-          status: status,
           positionIndex: positionIndex,
+          notes: notes,
+          applicationBoardId: applicationBoard.id,
+          jobId: job.id,
+          userId: user.id,
         },
       });
 
-      return card;
+      await incrementCardsAfterIndex({
+        boardId: applicationBoard.id,
+        status: status,
+        index: positionIndex,
+        client: client,
+      });
     });
-    return new Response(null, {
-      status: 302,
-      headers: {
-        Location: "/application-board",
-      },
-    });
+    return new Response(null, { status: 200 });
   } catch (error) {
     return new Response(
       JSON.stringify({

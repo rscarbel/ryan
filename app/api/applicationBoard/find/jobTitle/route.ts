@@ -35,73 +35,86 @@ export async function GET(request: Request) {
       body: { error: "Invalid boardId" },
     });
   }
-
-  const company = await prisma.company.findFirst({
-    where: {
-      name: companyName,
-      userId: userId,
-    },
-  });
-
-  const job = await prisma.job.findFirst({
-    where: {
-      title: jobTitle,
-      companyId: company.id,
-      userId: userId,
-    },
-    select: {
-      id: true,
-      title: true,
-    },
-  });
-
-  const lastApplicationToJobInOtherBoard =
-    await prisma.applicationCard.findFirst({
+  try {
+    const company = await prisma.company.findFirst({
       where: {
-        jobId: job.id,
-        applicationBoardId: {
-          not: boardId,
-        },
-      },
-      orderBy: {
-        applicationDate: "desc",
+        name: companyName,
+        userId: userId,
       },
       select: {
-        applicationDate: true,
-        applicationBoard: {
-          select: {
-            name: true,
+        id: true,
+      },
+    });
+
+    const job = await prisma.job.findFirst({
+      where: {
+        title: jobTitle,
+        companyId: company.id,
+        userId: userId,
+      },
+      select: {
+        id: true,
+        title: true,
+      },
+    });
+
+    const lastApplicationToJobInOtherBoard =
+      await prisma.applicationCard.findFirst({
+        where: {
+          jobId: job.id,
+          applicationBoardId: {
+            not: boardId,
           },
         },
+        orderBy: {
+          applicationDate: "desc",
+        },
+        select: {
+          applicationDate: true,
+          applicationBoard: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+
+    const lastApplicationToJobInThisBoard =
+      await prisma.applicationCard.findFirst({
+        where: {
+          jobId: job.id,
+          applicationBoardId: boardId,
+        },
+        orderBy: {
+          applicationDate: "desc",
+        },
+        select: {
+          applicationDate: true,
+        },
+      });
+
+    const payload = {
+      jobTitle: jobTitle,
+      lastApplicationToJobInThisBoard: prettifyDate(
+        lastApplicationToJobInThisBoard?.applicationDate
+      ),
+      lastApplicationToJobInOtherBoard: {
+        date: prettifyDate(lastApplicationToJobInOtherBoard?.applicationDate),
+        boardName: lastApplicationToJobInOtherBoard?.applicationBoard.name,
+      },
+    };
+
+    return Response.json({
+      body: payload,
+    });
+  } catch (error) {
+    return Response.json({
+      status: 404,
+      body: {
+        jobTitle: null,
+        lastApplicationToJobInThisBoard: null,
+        lastApplicationToJobInOtherBoard: null,
       },
     });
-
-  const lastApplicationToJobInThisBoard =
-    await prisma.applicationCard.findFirst({
-      where: {
-        jobId: job.id,
-        applicationBoardId: boardId,
-      },
-      orderBy: {
-        applicationDate: "desc",
-      },
-      select: {
-        applicationDate: true,
-      },
-    });
-
-  const payload = {
-    jobTitle: jobTitle,
-    lastApplicationToJobInThisBoard: prettifyDate(
-      lastApplicationToJobInThisBoard?.applicationDate
-    ),
-    lastApplicationToJobInOtherBoard: {
-      date: prettifyDate(lastApplicationToJobInOtherBoard?.applicationDate),
-      boardName: lastApplicationToJobInOtherBoard?.applicationBoard.name,
-    },
-  };
-
-  return Response.json({
-    body: payload,
-  });
+  }
 }
