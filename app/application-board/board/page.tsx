@@ -5,6 +5,7 @@ import BoardSkeleton from "./boardSkeleton";
 import TopMenu from "../TopMenu";
 import "primereact/resources/themes/viva-light/theme.css";
 import "primeicons/primeicons.css";
+import { calculateBoardStructure } from "@/app/api/applicationBoard/calculateBoardStructure";
 
 const DynamicTextEditor = dynamic(() => import("./Board"), {
   ssr: false,
@@ -24,17 +25,18 @@ const getCardsForUser = async (email: string) => {
   if (!board) return [];
 
   const cards = await getFormattedCardsForBoard(board.id);
+  const boardData = calculateBoardStructure(cards);
 
-  return cards;
+  return boardData;
 };
 
 const Job: React.FC = async () => {
-  const cards = await getCardsForUser("user1@example.com");
+  const board = await getCardsForUser("user1@example.com");
 
   return (
     <>
       <TopMenu />
-      <DynamicTextEditor cards={cards} />
+      <DynamicTextEditor board={board} />
     </>
   );
 };

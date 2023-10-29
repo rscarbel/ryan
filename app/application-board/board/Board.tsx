@@ -1,27 +1,18 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { DragDropContext } from "@hello-pangea/dnd";
-import {
-  initializeBoardData,
-  handleDifferentColumnMove,
-  handleSameColumnMove,
-} from "../utils";
+import { handleDifferentColumnMove, handleSameColumnMove } from "../utils";
 import { Toast } from "primereact/toast";
 import { updateCardStatus, updateCard, deleteCard } from "../network";
 import ColumnRenderer from "./column/ColumnRenderer";
 import EditCardFormModal from "../edit-card/EditCardFormModal";
 import { EditCardContext } from "./card/EditCardContext";
-import { BoardCardInterface } from "../types";
 
 const MILLISECONDS_FOR_MESSAGES = 3000;
 
-interface BoardProps {
-  cards: BoardCardInterface[];
-}
-
-const Board: React.FC<BoardProps> = ({ cards = [] }) => {
-  const [boardData, setBoardData] = useState(initializeBoardData(cards));
+const Board: React.FC = ({ board }) => {
+  const [boardData, setBoardData] = useState(board);
   const [isModalVisible, setModalVisible] = useState(false);
   const [editingCard, setEditingCard] = useState(null);
   const toast = useRef<Toast | null>(null);
@@ -62,11 +53,11 @@ const Board: React.FC<BoardProps> = ({ cards = [] }) => {
   const handleSaveChanges = async (updatedData) => {
     try {
       const { response, data } = await updateCard(updatedData);
-      const cards = data.cards;
+      const board = data.board;
       if (!response.ok) {
         showError(data.error);
       } else {
-        setBoardData(initializeBoardData(cards));
+        setBoardData(board);
         showSuccess();
       }
     } catch (error) {
@@ -80,8 +71,8 @@ const Board: React.FC<BoardProps> = ({ cards = [] }) => {
   const handleDelete = async (cardId) => {
     try {
       const { response, data } = await deleteCard(cardId);
-      const cards = data.cards;
-      setBoardData(initializeBoardData(cards));
+      const board = data.board;
+      setBoardData(board);
       showDeleteSuccess();
       if (!response.ok) {
         showError(data.error);

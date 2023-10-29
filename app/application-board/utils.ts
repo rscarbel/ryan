@@ -1,4 +1,3 @@
-import { columnOrder, columns } from "./board/column/columnData";
 export const MAX_CHARACTERS = 10;
 
 export const getStatusColor = (status: string) => {
@@ -34,30 +33,6 @@ export const humanizedPayFrequency = {
   biweekly: "biweekly",
   monthly: "per month",
   yearly: "per year",
-};
-
-export const initializeBoardData = (applicationCards: any[]) => {
-  const generatedColumns = columns.reduce((acc, column) => {
-    const columnApplicationCards = applicationCards.filter(
-      (applicationCard) => applicationCard.status === column.id
-    );
-    acc[column.id] = {
-      ...column,
-      applicationCardIds: columnApplicationCards.map(
-        (applicationCard) => applicationCard.cardId
-      ),
-    };
-    return acc;
-  }, {});
-
-  return {
-    applicationCards: applicationCards.reduce((acc, card) => {
-      acc[card.cardId] = card;
-      return acc;
-    }, {}),
-    columns: generatedColumns,
-    columnOrder: columnOrder,
-  };
 };
 
 export const prettifyPay = (pay: string | number) => {

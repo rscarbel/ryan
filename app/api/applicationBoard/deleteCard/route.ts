@@ -4,6 +4,7 @@ import {
   deleteCard,
   getFormattedCardsForBoard,
 } from "@/services/ApplicationCard/applicationCardService";
+import { calculateBoardStructure } from "../calculateBoardStructure";
 
 export async function POST(request) {
   const { id } = await request.json();
@@ -38,8 +39,9 @@ export async function POST(request) {
       await deleteCard(parseInt(id), pris);
     });
     const formattedCards = await getFormattedCardsForBoard(applicationBoardId);
+    const board = calculateBoardStructure(formattedCards);
 
-    return new Response(JSON.stringify({ cards: formattedCards }), {
+    return new Response(JSON.stringify({ board }), {
       status: 200,
     });
   } catch (error) {

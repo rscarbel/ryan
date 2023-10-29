@@ -6,6 +6,7 @@ import {
 } from "@/services/ApplicationCard/applicationCardService";
 import { updateCompany } from "@/services/Company/companyService";
 import { updateJob } from "@/services/Job/jobService";
+import { calculateBoardStructure } from "../calculateBoardStructure";
 
 export async function POST(request: Request) {
   const {
@@ -109,18 +110,15 @@ export async function POST(request: Request) {
       });
     });
     const formattedCards = await getFormattedCardsForBoard(boardId);
+    const board = calculateBoardStructure(formattedCards);
 
-    return new Response(
-      JSON.stringify({ error: null, cards: formattedCards }),
-      {
-        status: 200,
-      }
-    );
+    return new Response(JSON.stringify({ board }), {
+      status: 200,
+    });
   } catch (error) {
     return new Response(
       JSON.stringify({
         error: error.message,
-        cards: null,
       }),
       { status: 500 }
     );
