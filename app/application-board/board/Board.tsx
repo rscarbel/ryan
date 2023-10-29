@@ -4,18 +4,24 @@ import React, { useState, useRef, useEffect } from "react";
 import { DragDropContext } from "@hello-pangea/dnd";
 import { handleDifferentColumnMove, handleSameColumnMove } from "../utils";
 import { Toast } from "primereact/toast";
+import { ProgressSpinner } from "primereact/progressspinner";
 import { updateCardStatus, updateCard, deleteCard } from "../network";
 import ColumnRenderer from "./column/ColumnRenderer";
 import EditCardFormModal from "../edit-card/EditCardFormModal";
 import { EditCardContext } from "./card/EditCardContext";
+import Fireworks from "./Fireworks";
+import Confetti from "./Confetti";
 
 const MILLISECONDS_FOR_MESSAGES = 3000;
 const DELAY_FOR_SAVE = 5000;
+const SAVING_LIFE = 10000000;
 
 const Board: React.FC = ({ board }) => {
   const [boardData, setBoardData] = useState(board);
+  const [lastSavedBoardData, setLastSavedBoardData] = useState(board);
   const [isModalVisible, setModalVisible] = useState(false);
   const [editingCard, setEditingCard] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
   const toast = useRef<Toast | null>(null);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -28,6 +34,29 @@ const Board: React.FC = ({ board }) => {
       detail: `Status updated`,
       life: MILLISECONDS_FOR_MESSAGES,
     });
+  };
+
+  const showSaving = () => {
+    if (isSaving) return;
+
+    toast.current?.show({
+      severity: "info",
+      summary: (
+        <div className="flex items-center justify-start">
+          <div className="flex items-center">
+            <ProgressSpinner
+              style={{ width: "24px", height: "24px" }}
+              strokeWidth="6"
+              animationDuration=".5s"
+            />
+            <p className="ml-2">Saving...</p>
+          </div>
+        </div>
+      ),
+      life: SAVING_LIFE,
+    });
+
+    setIsSaving(true);
   };
 
   const showError = (errorMessage: string) => {
@@ -110,19 +139,20 @@ const Board: React.FC = ({ board }) => {
             draggableId
           );
 
-    const cardId = draggableId;
-    const newStatus = destination.droppableId;
-    const index = destination.index;
-
-    const previousBoardData = { ...boardData };
-
     setBoardData((prevData) => ({
       ...prevData,
       columns: { ...prevData.columns, ...updatedColumns },
     }));
+
+    const cardId = draggableId;
+    const newStatus = destination.droppableId;
+    const index = destination.index;
+
+    showSaving();
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
     }
+
     saveTimeoutRef.current = setTimeout(async () => {
       try {
         const { response, data } = await updateCardStatus(
@@ -131,15 +161,24 @@ const Board: React.FC = ({ board }) => {
           index
         );
 
-        showSuccess();
+        toast.current?.clear();
+        setIsSaving(false);
 
         if (!response.ok) {
           showError(data.error);
-          setBoardData(previousBoardData);
+          setBoardData(lastSavedBoardData);
+        } else {
+          showSuccess();
+          setLastSavedBoardData({
+            ...boardData,
+            columns: { ...boardData.columns, ...updatedColumns },
+          });
         }
       } catch (error) {
+        toast.current?.clear();
+        setIsSaving(false);
         showError((error as Error).message);
-        setBoardData(previousBoardData);
+        setBoardData(lastSavedBoardData);
       }
     }, DELAY_FOR_SAVE);
   };
