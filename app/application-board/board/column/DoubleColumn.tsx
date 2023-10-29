@@ -6,7 +6,7 @@ const DoubleColumn = ({
   applicationCards1,
   applicationCards2,
 }) => (
-  <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2 flex flex-col">
+  <div className="w-full sm:w-80 flex flex-col">
     <SingleColumn
       column={column1}
       applicationCards={applicationCards1}

@@ -211,7 +211,7 @@ const Board: React.FC = ({ board }) => {
         onDelete={handleDelete}
       />
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className="flex flex-wrap p-4">
+        <div className="flex flex-wrap sm:flex-nowrap lg:justify-center p-4">
           {columnOrder.map((columnId) => (
             <ColumnRenderer
               key={columnId}
