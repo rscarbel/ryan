@@ -13,16 +13,15 @@ export const findOrCreateJob = async ({
   city,
   state,
   country,
+  postalCode,
 }) => {
-  const existingJob = await prisma.job.findUnique({
+  const existingJob = await prisma.job.findFirst({
     where: {
-      title_companyId_UserId_workMode_city: {
-        title: jobTitle,
-        companyId: companyId,
-        userId: userId,
-        workMode: workMode,
-        city: city,
-      },
+      title: jobTitle,
+      companyId: companyId,
+      userId: userId,
+      workMode: workMode,
+      city: city,
     },
   });
 
@@ -43,6 +42,7 @@ export const findOrCreateJob = async ({
         city: city,
         state: state,
         country: country,
+        postalCode: postalCode,
       },
     });
   }
@@ -61,16 +61,15 @@ export const createOrUpdateJob = async ({
   city,
   state,
   country,
+  postalCode,
 }) => {
-  const existingJob = await prisma.job.findUnique({
+  const existingJob = await prisma.job.findFirst({
     where: {
-      title_companyId_UserId_workMode_city: {
-        title: jobTitle,
-        companyId: companyId,
-        userId: userId,
-        workMode: workMode,
-        city: city,
-      },
+      title: jobTitle,
+      companyId: companyId,
+      userId: userId,
+      workMode: workMode,
+      city: city,
     },
   });
 
@@ -86,6 +85,7 @@ export const createOrUpdateJob = async ({
         city: city,
         state: state,
         country: country,
+        postalCode: postalCode,
       },
     });
   } else {
@@ -103,7 +103,52 @@ export const createOrUpdateJob = async ({
         city: city,
         state: state,
         country: country,
+        postalCode: postalCode,
       },
     });
   }
+};
+
+export const updateJob = async ({
+  jobId,
+  jobTitle,
+  jobDescription,
+  workMode,
+  payAmountCents,
+  payFrequency,
+  currency,
+  streetAddress,
+  city,
+  state,
+  country,
+  postalCode,
+}) => {
+  const job = await prisma.job.findFirst({
+    where: {
+      id: jobId,
+    },
+  });
+
+  if (!job) {
+    throw new Error("Job not found");
+  }
+
+  return await prisma.job.update({
+    where: {
+      id: jobId,
+    },
+    data: {
+      title: jobTitle,
+      description: jobDescription,
+      workMode: workMode,
+      payAmountCents: payAmountCents,
+      payFrequency: payFrequency,
+      currency: currency,
+      streetAddress: streetAddress,
+      city: city,
+      state: state,
+      country: country,
+      postalCode: postalCode,
+    },
+  });
 };

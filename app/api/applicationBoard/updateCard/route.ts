@@ -1,13 +1,20 @@
 import prisma from "@/services/globalPrismaClient";
+import {
+  decrementCardsAfterIndex,
+  incrementCardsAfterIndex,
+  getFormattedCardsForBoard,
+} from "@/services/ApplicationCard/applicationCardService";
+import { updateCompany } from "@/services/Company/companyService";
+import { updateJob } from "@/services/Job/jobService";
 
 export async function POST(request) {
   const {
     applicationCardId,
     boardId,
     company,
+    jobId,
     jobTitle,
     jobDescription,
-    locationId,
     workMode,
     payAmountCents,
     payFrequency,
@@ -19,7 +26,6 @@ export async function POST(request) {
     postalCode,
     applicationLink,
     applicationDate,
-    positionIndex,
     notes,
     status,
   } = await request.json();
@@ -29,13 +35,7 @@ export async function POST(request) {
     boardId,
     company.name,
     jobTitle,
-    locationId && city,
   ].every((value) => !!value);
-
-  const allLocationFieldsEmpty =
-    !city && !state && !country && !streetAddress && !postalCode;
-
-  const isLocationValid = city || allLocationFieldsEmpty;
 
   if (!isNecessaryDataExisting) {
     return new Response(
@@ -47,131 +47,63 @@ export async function POST(request) {
     );
   }
 
-  if (!isLocationValid) {
-    return new Response(
-      JSON.stringify({
-        error:
-          "Invalid location, you must provide a city if you provide any other location data",
-        cards: null,
-      }),
-      { status: 400 }
-    );
-  }
-
   const currentCard = await prisma.applicationCard.findUnique({
     where: { id: applicationCardId },
   });
 
   try {
+    let currentIndex = currentCard.positionIndex;
     // If the status has changed, adjust position indices accordingly
     if (currentCard.status !== status) {
+      const indexToDecrement = currentIndex + 1;
+      currentIndex = 0;
       // Adjust for the old column
-      await prisma.applicationCard.updateMany({
-        where: {
-          applicationBoardId: boardId,
-          status: currentCard.status,
-          positionIndex: {
-            gte: currentCard.positionIndex + 1,
-          },
-        },
-        data: {
-          positionIndex: {
-            decrement: 1,
-          },
-        },
+      await decrementCardsAfterIndex({
+        status: currentCard.status,
+        index: indexToDecrement,
+        boardId: boardId,
       });
 
       // Adjust for the new column (move everything down)
-      await prisma.applicationCard.updateMany({
-        where: {
-          status: status,
-          applicationBoardId: boardId,
-        },
-        data: {
-          positionIndex: {
-            increment: 1,
-          },
-        },
+      await incrementCardsAfterIndex({
+        status: status,
+        index: currentIndex,
+        boardId: boardId,
       });
     }
 
-    const updatedCard = await prisma.applicationCard.update({
-      where: { id: parseInt(applicationCardId) },
+    await updateCompany({
+      companyName: company.name,
+      companyId: company.companyId,
+    });
+
+    await updateJob({
+      jobId: jobId,
+      jobTitle: jobTitle,
+      jobDescription: jobDescription,
+      workMode: workMode,
+      payAmountCents: payAmountCents,
+      payFrequency: payFrequency,
+      currency: currency,
+      streetAddress: streetAddress,
+      city: city,
+      state: state,
+      country: country,
+      postalCode: postalCode,
+    });
+
+    await prisma.applicationCard.update({
+      where: { id: applicationCardId },
       data: {
-        job: {
-          update: {
-            title: jobTitle,
-            description: jobDescription,
-            payAmountCents: payAmountCents,
-            payFrequency: payFrequency,
-            currency: currency,
-            workMode: workMode,
-            company: {
-              update: {
-                name: company.name,
-              },
-            },
-            locationId: locationToUse,
-          },
-        },
         applicationLink: applicationLink,
         applicationDate: applicationDate,
+        positionIndex: currentIndex,
         notes: notes,
         status: status,
-        positionIndex: currentCard.status !== status ? 0 : positionIndex,
-      },
-      include: {
-        job: {
-          company: true,
-          include: {
-            location: true,
-          },
-        },
       },
     });
 
-    const cards = await prisma.applicationCard.findMany({
-      where: { applicationBoardId: updatedCard.applicationBoardId },
-      include: {
-        job: {
-          company: true,
-          include: {
-            location: true,
-          },
-        },
-      },
-    });
-
-    const formattedCards = cards.map((card) => ({
-      cardId: card.id,
-      boardId: card.applicationBoardId,
-      company: {
-        name: card.job.company.name,
-        companyId: card.job.company.id,
-      },
-      job: {
-        jobId: card.job.id,
-        title: card.job.title,
-        description: card.job.description,
-        workMode: card.job.workMode,
-        location: {
-          locationId: card.job.location.id,
-          streetAddress: card.job.location.streetAddress,
-          city: card.job.location.city,
-          state: card.job.location.state,
-          country: card.job.location.country,
-          postalCode: card.job.location.postalCode,
-        },
-        payAmountCents: card.job.payAmountCents,
-        payFrequency: card.job.payFrequency,
-        currency: card.job.currency,
-      },
-      index: card.positionIndex,
-      applicationLink: card.applicationLink,
-      applicationDate: card.applicationDate,
-      notes: card.notes,
-      status: card.status,
-    }));
+    const formattedCards = await getFormattedCardsForBoard(boardId);
 
     return new Response(
       JSON.stringify({ error: null, cards: formattedCards }),

@@ -63,10 +63,12 @@ const Board: React.FC<BoardProps> = ({ cards = [] }) => {
     try {
       const { response, data } = await updateCard(updatedData);
       const cards = data.cards;
-      showSuccess();
+      console.log(data.cards);
       setBoardData(initializeBoardData(cards));
       if (!response.ok) {
         showError(data.error);
+      } else {
+        showSuccess();
       }
     } catch (error) {
       showError((error as Error).message);

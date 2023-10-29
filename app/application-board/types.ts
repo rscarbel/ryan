@@ -16,6 +16,7 @@ export interface ApplicationCardInterface {
   city: string;
   state?: string;
   country?: string;
+  postalCode?: string;
   applicationLink?: string;
   applicationDate: Date;
   notes?: string;

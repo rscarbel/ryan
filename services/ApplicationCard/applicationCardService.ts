@@ -63,6 +63,7 @@ export const getFormattedCardsForBoard = async (boardId) => {
   return applicationCards.map((card) => ({
     cardId: card.id,
     boardId: card.applicationBoardId,
+    jobId: card.jobId,
     company: {
       companyId: card.job.company.id,
       name: card.job.company.name,

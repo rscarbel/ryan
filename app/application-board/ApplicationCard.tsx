@@ -11,6 +11,7 @@ import { formatCurrency, prettifyDate } from "@/app/utils";
 const ApplicationCard: React.FC<ApplicationCardInterface> = ({
   cardId,
   boardId,
+  jobId,
   company: { companyId: companyId, name: companyName },
   title: jobTitle,
   description: jobDescription,
@@ -33,7 +34,7 @@ const ApplicationCard: React.FC<ApplicationCardInterface> = ({
 
   const cardStyles = {
     base: "p-4 mb-4 bg-white claymorphic-shadow claymorphic-shadow-hover rounded-lg border border-gray-200 relative",
-    status: `absolute top-1 right-5 rounded-full px-2 py-0.3 text-xs font-medium ${getStatusColor(
+    status: `absolute top-2 right-3 rounded-full px-2 py-0.3 text-xs font-medium ${getStatusColor(
       status
     )}`,
   };
@@ -56,6 +57,7 @@ const ApplicationCard: React.FC<ApplicationCardInterface> = ({
             onEditClick({
               applicationCardId: cardId,
               boardId,
+              jobId,
               company: { companyId, name: companyName },
               jobTitle,
               jobDescription,

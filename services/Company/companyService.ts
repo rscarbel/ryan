@@ -5,7 +5,7 @@ export const findOrCreateCompany = async ({
   userId,
   notes = null,
 }) => {
-  const company = await prisma.company.findUnique({
+  const company = await prisma.company.findFirst({
     where: {
       name_userId: {
         name: companyName,
@@ -29,16 +29,16 @@ export const findOrCreateCompany = async ({
 
 export const updateCompany = async ({
   companyId,
-  userId,
   companyName,
   notes = undefined,
 }) => {
-  const company = await prisma.company.findUnique({
+  if (!companyId) {
+    throw new Error("companyId is required");
+  }
+
+  const company = await prisma.company.findFirst({
     where: {
-      id_userId: {
-        id: companyId,
-        userId: userId,
-      },
+      id: companyId,
     },
   });
 
@@ -68,7 +68,6 @@ export const createOrUpdateCompany = async ({
   if (companyId) {
     return await updateCompany({
       companyId,
-      userId,
       companyName,
       notes,
     });

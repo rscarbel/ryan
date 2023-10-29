@@ -12,6 +12,7 @@ import CompaniesField from "./CompaniesField";
 const FormFields = ({
   company: { name: companyName = null, companyId: companyId = null },
   jobTitle = null,
+  jobId = null,
   jobDescription = null,
   workMode = null,
   payAmountCents = null,
