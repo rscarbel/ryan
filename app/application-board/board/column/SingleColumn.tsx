@@ -1,3 +1,4 @@
+import { ScrollTop } from "primereact/scrolltop";
 import ApplicationCard from "../card/ApplicationCard";
 import { Droppable } from "@hello-pangea/dnd";
 
@@ -22,6 +23,12 @@ const SingleColumn = ({ column, applicationCards, isHalfSizeOnly = false }) => {
               />
             ))}
             {provided.placeholder}
+            <ScrollTop
+              target="parent"
+              threshold={100}
+              className="w-2rem h-2rem border-round-md bg-primary"
+              icon="pi pi-arrow-up text-base"
+            />
           </div>
         )}
       </Droppable>
