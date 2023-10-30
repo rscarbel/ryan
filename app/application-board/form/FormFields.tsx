@@ -3,17 +3,15 @@ import { Calendar } from "primereact/calendar";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
 import { InputNumber } from "primereact/inputnumber";
-import { Tooltip } from "primereact/tooltip";
 import { STYLE_CLASSES } from "@/app/utils";
 import { payFrequencyOptions } from "../utils";
 import CountriesField from "./CountriesField";
 import CompaniesField from "./CompaniesField";
-
+import SameJobMessage from "./SameJobMessage";
 
 const FormFields = ({
   company,
   jobTitle,
-  jobId,
   jobDescription,
   workMode,
   payAmountCents,
@@ -48,42 +46,6 @@ const FormFields = ({
   const previousApplicationDateOnThisBoard =
     existingJobData?.lastApplicationToJobInThisBoard;
 
-  const sameJobMessage = () => {
-    if (previousApplicationDateOnThisBoard) {
-      return (
-        <div className="ml-2">
-          <span
-            className="pi pi-exclamation-triangle mt-2 text-lg cursor-pointer "
-            style={{ color: "#ff9800" }}
-            data-pr-tooltip={`An application already exists with this job title at ${companyName}. You applied on ${previousApplicationDateOnThisBoard}.`}
-          ></span>
-          <Tooltip
-            target=".pi.pi-exclamation-triangle"
-            tooltipOptions={{ position: "top" }}
-          />
-        </div>
-      );
-    } else if (previousBoardName) {
-      return (
-        <div className="p-4 border rounded-lg bg-blue-50 border-blue-200 shadow-sm">
-          <div className="flex items-center">
-            <span
-              className="pi pi-info-circle text-lg cursor-pointer mr-2 text-blue-600"
-              data-pr-tooltip={`You applied for ${jobTitle} at ${companyName} on ${previousBoardDate} on the board, ${previousBoardName}.`}
-            ></span>
-            <p className="text-blue-700">Information</p>
-          </div>
-          <Tooltip
-            target=".pi.pi-info-circle"
-            tooltipOptions={{ position: "top" }}
-          />
-        </div>
-      );
-    }
-
-    return null;
-  };
-
   return (
     <div className="p-fluid">
       <div className="p-field">
@@ -99,7 +61,16 @@ const FormFields = ({
 
       <div className="p-field">
         <label className="block mt-8 flex items-center" htmlFor="jobTitle">
-          Job Title {sameJobMessage()}
+          Job Title{" "}
+          <SameJobMessage
+            previousApplicationDateOnThisBoard={
+              previousApplicationDateOnThisBoard
+            }
+            companyName={companyName}
+            previousBoardName={previousBoardName}
+            previousBoardDate={previousBoardDate}
+            jobTitle={jobTitle}
+          />
         </label>
         <InputText
           className={STYLE_CLASSES.FORM_BASIC_INPUT}

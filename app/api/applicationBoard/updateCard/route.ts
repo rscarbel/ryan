@@ -10,7 +10,7 @@ import { calculateBoardStructure } from "../calculateBoardStructure";
 
 export async function POST(request: Request) {
   const {
-    applicationCardId,
+    cardId,
     boardId,
     company,
     jobId,
@@ -31,25 +31,28 @@ export async function POST(request: Request) {
     status,
   } = await request.json();
 
-  const isNecessaryDataExisting = [
-    applicationCardId,
-    boardId,
-    company.name,
-    jobTitle,
-  ].every((value) => !!value);
+  const necessaryData = {
+    "Application Card": cardId,
+    Board: boardId,
+    "Company Name": company.name,
+    "Job Title": jobTitle,
+  };
 
-  if (!isNecessaryDataExisting) {
+  const dataMissing = Object.keys(necessaryData).filter(
+    (key) => !necessaryData[key]
+  );
+
+  if (dataMissing.length) {
     return new Response(
       JSON.stringify({
-        error: "Missing necessary data",
-        cards: null,
+        error: `Request is missing ${dataMissing.join(", ")}`,
       }),
       { status: 400 }
     );
   }
 
   const currentCard = await prisma.applicationCard.findUnique({
-    where: { id: applicationCardId },
+    where: { id: cardId },
   });
 
   try {
@@ -99,7 +102,7 @@ export async function POST(request: Request) {
       });
 
       await pris.applicationCard.update({
-        where: { id: applicationCardId },
+        where: { id: cardId },
         data: {
           applicationLink: applicationLink,
           applicationDate: applicationDate,

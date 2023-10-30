@@ -49,7 +49,7 @@ const ApplicationCard: React.FC<ApplicationCardInterface> = ({
             const card = await findCard(cardId);
             onEditClick({
               ...card,
-              boardId,
+              boardId: 1,
             });
           }}
         >

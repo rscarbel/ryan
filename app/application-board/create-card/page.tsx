@@ -108,8 +108,8 @@ const CreateCard: React.FC = () => {
   const handleFormSubmission = async () => {
     setLoading(true);
     try {
-      const response = await createCard(formData);
-      window.location.href = "/application-board";
+      await createCard(formData);
+      window.location.href = "/application-board/board";
     } catch (error) {
       showError(error.message);
       setLoading(false);

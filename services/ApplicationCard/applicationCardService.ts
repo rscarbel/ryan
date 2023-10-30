@@ -25,6 +25,7 @@ export const getFormattedCardData = async (
   return {
     cardId: applicationCard.id,
     boardId: applicationCard.applicationBoardId,
+    jobId: applicationCard.jobId,
     company: {
       companyId: applicationCard.job.company.id,
       name: applicationCard.job.company.name,

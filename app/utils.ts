@@ -19,11 +19,9 @@ export const getCurrencySymbol = (country: string) => {
   return CURRENCIES_LIST[countryCode] || "USD";
 };
 
-export const formatCurrency = (
-  amountCents: number,
-  country,
-  currencySymbol: string
-) => {
+export const formatCurrency = (amountCents, country, currencySymbol: string) => {
+  if (!amountCents) return "";
+
   const amount = amountCents / 100;
   const locale = `en-${getCountryCode(country)}`;
 
