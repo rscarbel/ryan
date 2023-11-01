@@ -77,11 +77,6 @@ model Job {
   company        Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
   companyId      Int
   applications   ApplicationCard[]
-  streetAddress  String?
-  city           String?
-  state          String?
-  country        String?           @default("United States")
-  postalCode     String?
   user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId         Int
   payAmountCents Int               @default(0)
@@ -89,8 +84,10 @@ model Job {
   currency       String?           @default("USD")
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @default(now()) @updatedAt
+  address    Location    @relation(fields: [addressId], references: [id])
+  addressId   Int
 
-  @@unique([title, companyId, userId, city, workMode])
+  @@unique([title, companyId, userId, workMode])
 }
 
 model ApplicationBoard {
@@ -111,7 +108,6 @@ model User {
   passwordHash        String?
   firstName           String
   lastName            String
-  addresses           Address[]
   roles               UserRole[]           @default([USER])
   oAuth               OAuth[]
   passwordResetTokens PasswordResetToken[]
@@ -128,17 +124,23 @@ model User {
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @default(now()) @updatedAt
   deletedAt           DateTime?
+  addresses           Location[]
 }
 
 model Company {
-  id       Int       @id @default(autoincrement())
-  name     String
-  contacts Contact[]
-  notes    String?
-  emails   Email[]
-  jobs     Job[]
-  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId   Int
+  id         Int        @id @default(autoincrement())
+  name       String
+  contacts   Contact[]
+  notes      String?
+  sentEmails Email[]
+  jobs       Job[]
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int
+  locationId Int?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @default(now()) @updatedAt
+  address    Location    @relation(fields: [addressId], references: [id])
+  addressId   Int
 
   @@unique([name, userId])
 }
@@ -149,14 +151,16 @@ model Contact {
   lastName   String
   phone      String?
   email      String?
-  addresses  Address[]
   company    Company            @relation(fields: [companyId], references: [id])
   companyId  Int
   notes      String?
   sentEmails Email[]
   attributes ContactAttribute[]
+  addresses  Location[]
   user       User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     Int
+
+  @@unique([userId, firstName, lastName, email, companyId])
 }
 
 model ContactAttribute {
@@ -165,35 +169,42 @@ model ContactAttribute {
   value     String
   contact   Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
   contactId Int
+
+  @@unique([name, contactId])
 }
 
-model Address {
-  id            Int       @id @default(autoincrement())
-  streetAddress String?
-  city          String?
-  state         String?
-  country       String?   @default("United States")
-  postalCode    String?
-  fromDate      DateTime  @default(now())
-  toDate        DateTime?
-  user          User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId        Int?
-  contact       Contact?  @relation(fields: [contactId], references: [id])
-  contactId     Int?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now()) @updatedAt
+model Location {
+  id                Int       @id @default(autoincrement())
+  streetAddress     String?
+  streetAddress2    String?
+  city              String?
+  state             String?
+  country           String?   @default("United States")
+  postalCode        String?
+  companyLocationId Int?
+  fromDate          DateTime  @default(now())
+  throughDate       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @default(now()) @updatedAt
+  jobs               Job[]
+  user              User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            Int?
+  company           Company[]
+  contact           Contact?  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId         Int?
 }
 
 model Email {
-  id        Int      @id @default(autoincrement())
+  id        Int        @id @default(autoincrement())
   subject   String
   body      String
-  sentAt    DateTime @default(now())
-  contact   Contact? @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  sentAt    DateTime   @default(now())
+  opens     DateTime[]
+  contact   Contact?   @relation(fields: [contactId], references: [id], onDelete: Cascade)
   contactId Int?
-  company   Company? @relation(fields: [companyId], references: [id])
+  company   Company?   @relation(fields: [companyId], references: [id])
   companyId Int?
-  user      User     @relation(fields: [userId], references: [id])
+  user      User       @relation(fields: [userId], references: [id])
   userId    Int
 }
 

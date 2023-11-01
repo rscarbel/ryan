@@ -15,6 +15,7 @@ export async function POST(request) {
     jobDescription,
     currency,
     streetAddress,
+    streetAddress2,
     city,
     state,
     postalCode,
@@ -33,6 +34,15 @@ export async function POST(request) {
         },
       });
 
+      const addressProperties = {
+        streetAddress,
+        streetAddress2: streetAddress2 || "",
+        city,
+        state,
+        postalCode,
+        country,
+      };
+
       const applicationBoard = await client.applicationBoard.findFirst({
         where: {
           id: applicationBoardId,
@@ -43,7 +53,10 @@ export async function POST(request) {
         companyName: company.name,
         userId: user.id,
         client: client,
+        addressProperties,
       });
+
+      console.log(newCompany.id);
 
       const job = await createOrUpdateJob({
         jobTitle: jobTitle,
@@ -54,11 +67,7 @@ export async function POST(request) {
         payAmountCents: payAmountCents,
         payFrequency: payFrequency,
         currency: currency,
-        streetAddress: streetAddress,
-        city: city,
-        state: state,
-        postalCode: postalCode,
-        country: country,
+        addressProperties,
         client: client,
       });
 
@@ -69,9 +78,21 @@ export async function POST(request) {
           applicationDate: applicationDate,
           positionIndex: positionIndex,
           notes: notes,
-          applicationBoardId: applicationBoard.id,
-          jobId: job.id,
-          userId: user.id,
+          applicationBoard: {
+            connect: {
+              id: applicationBoard.id,
+            },
+          },
+          job: {
+            connect: {
+              id: job.id,
+            },
+          },
+          user: {
+            connect: {
+              id: user.id,
+            },
+          },
         },
       });
 

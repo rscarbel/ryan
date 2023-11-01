@@ -1,4 +1,5 @@
 import prisma from "@/services/globalPrismaClient";
+import { WorkMode } from "@prisma/client";
 
 export const findOrCreateJob = async ({
   jobTitle,
@@ -9,11 +10,7 @@ export const findOrCreateJob = async ({
   payAmountCents,
   payFrequency,
   currency,
-  streetAddress,
-  city,
-  state,
-  country,
-  postalCode,
+  addressProperties,
   client = prisma,
 }) => {
   const existingJob = await client.job.findFirst({
@@ -22,28 +19,34 @@ export const findOrCreateJob = async ({
       companyId: companyId,
       userId: userId,
       workMode: workMode,
-      city: city,
     },
   });
-
   if (existingJob) {
     return existingJob;
   } else {
-    return client.job.create({
+    return await client.job.create({
       data: {
         title: jobTitle,
-        userId: userId,
-        companyId: companyId,
         description: jobDescription,
         workMode: workMode,
         payAmountCents: payAmountCents,
         payFrequency: payFrequency,
         currency: currency,
-        streetAddress: streetAddress,
-        city: city,
-        state: state,
-        country: country,
-        postalCode: postalCode,
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+        company: {
+          connect: {
+            id: companyId,
+          },
+        },
+        address: {
+          create: {
+            ...addressProperties,
+          },
+        },
       },
     });
   }
@@ -53,16 +56,12 @@ export const createOrUpdateJob = async ({
   jobTitle,
   userId,
   companyId,
-  jobDescription,
-  workMode,
+  jobDescription = "",
+  workMode = WorkMode.onsite,
   payAmountCents,
   payFrequency,
   currency,
-  streetAddress,
-  city,
-  state,
-  country,
-  postalCode,
+  addressProperties,
   client = prisma,
 }) => {
   const existingJob = await client.job.findFirst({
@@ -71,7 +70,6 @@ export const createOrUpdateJob = async ({
       companyId: companyId,
       userId: userId,
       workMode: workMode,
-      city: city,
     },
   });
 
@@ -83,29 +81,37 @@ export const createOrUpdateJob = async ({
         payAmountCents: payAmountCents,
         payFrequency: payFrequency,
         currency: currency,
-        streetAddress: streetAddress,
-        city: city,
-        state: state,
-        country: country,
-        postalCode: postalCode,
+        address: {
+          update: {
+            ...addressProperties,
+          },
+        },
       },
     });
   } else {
     return client.job.create({
       data: {
         title: jobTitle,
-        userId: userId,
-        companyId: companyId,
         description: jobDescription,
         workMode: workMode,
         payAmountCents: payAmountCents,
         payFrequency: payFrequency,
         currency: currency,
-        streetAddress: streetAddress,
-        city: city,
-        state: state,
-        country: country,
-        postalCode: postalCode,
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+        company: {
+          connect: {
+            id: companyId,
+          },
+        },
+        address: {
+          create: {
+            ...addressProperties,
+          },
+        },
       },
     });
   }
@@ -120,6 +126,7 @@ export const updateJob = async ({
   payFrequency,
   currency,
   streetAddress,
+  streetAddress2,
   city,
   state,
   country,
@@ -147,11 +154,16 @@ export const updateJob = async ({
       payAmountCents: payAmountCents,
       payFrequency: payFrequency,
       currency: currency,
-      streetAddress: streetAddress,
-      city: city,
-      state: state,
-      country: country,
-      postalCode: postalCode,
+      address: {
+        update: {
+          streetAddress: streetAddress,
+          streetAddress2: streetAddress2,
+          city: city,
+          state: state,
+          country: country,
+          postalCode: postalCode,
+        },
+      },
     },
   });
 };

@@ -40,17 +40,13 @@ CREATE TABLE "Job" (
     "description" TEXT,
     "workMode" "WorkMode",
     "companyId" INTEGER NOT NULL,
-    "streetAddress" TEXT,
-    "city" TEXT,
-    "state" TEXT,
-    "country" TEXT DEFAULT 'United States',
-    "postalCode" TEXT,
     "userId" INTEGER NOT NULL,
     "payAmountCents" INTEGER NOT NULL DEFAULT 0,
     "payFrequency" "PayFrequency" DEFAULT 'hourly',
     "currency" TEXT DEFAULT 'USD',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "addressId" INTEGER NOT NULL,
 
     CONSTRAINT "Job_pkey" PRIMARY KEY ("id")
 );
@@ -87,6 +83,10 @@ CREATE TABLE "Company" (
     "name" TEXT NOT NULL,
     "notes" TEXT,
     "userId" INTEGER NOT NULL,
+    "locationId" INTEGER,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "addressId" INTEGER NOT NULL,
 
     CONSTRAINT "Company_pkey" PRIMARY KEY ("id")
 );
@@ -116,21 +116,23 @@ CREATE TABLE "ContactAttribute" (
 );
 
 -- CreateTable
-CREATE TABLE "Address" (
+CREATE TABLE "Location" (
     "id" SERIAL NOT NULL,
     "streetAddress" TEXT,
+    "streetAddress2" TEXT,
     "city" TEXT,
     "state" TEXT,
     "country" TEXT DEFAULT 'United States',
     "postalCode" TEXT,
+    "companyLocationId" INTEGER,
     "fromDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "toDate" TIMESTAMP(3),
-    "userId" INTEGER,
-    "contactId" INTEGER,
+    "throughDate" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userId" INTEGER,
+    "contactId" INTEGER,
 
-    CONSTRAINT "Address_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Location_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -139,6 +141,7 @@ CREATE TABLE "Email" (
     "subject" TEXT NOT NULL,
     "body" TEXT NOT NULL,
     "sentAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "opens" TIMESTAMP(3)[],
     "contactId" INTEGER,
     "companyId" INTEGER,
     "userId" INTEGER NOT NULL,
@@ -266,7 +269,7 @@ CREATE TABLE "PasswordResetToken" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Job_title_companyId_userId_city_workMode_key" ON "Job"("title", "companyId", "userId", "city", "workMode");
+CREATE UNIQUE INDEX "Job_title_companyId_userId_workMode_key" ON "Job"("title", "companyId", "userId", "workMode");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "ApplicationBoard_name_userId_key" ON "ApplicationBoard"("name", "userId");
@@ -276,6 +279,12 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Company_name_userId_key" ON "Company"("name", "userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Contact_userId_firstName_lastName_email_companyId_key" ON "Contact"("userId", "firstName", "lastName", "email", "companyId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ContactAttribute_name_contactId_key" ON "ContactAttribute"("name", "contactId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "EmailTemplate_name_userId_key" ON "EmailTemplate"("name", "userId");
@@ -314,10 +323,16 @@ ALTER TABLE "Job" ADD CONSTRAINT "Job_companyId_fkey" FOREIGN KEY ("companyId") 
 ALTER TABLE "Job" ADD CONSTRAINT "Job_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Job" ADD CONSTRAINT "Job_addressId_fkey" FOREIGN KEY ("addressId") REFERENCES "Location"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "ApplicationBoard" ADD CONSTRAINT "ApplicationBoard_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Company" ADD CONSTRAINT "Company_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Company" ADD CONSTRAINT "Company_addressId_fkey" FOREIGN KEY ("addressId") REFERENCES "Location"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Contact" ADD CONSTRAINT "Contact_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "Company"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -329,10 +344,10 @@ ALTER TABLE "Contact" ADD CONSTRAINT "Contact_userId_fkey" FOREIGN KEY ("userId"
 ALTER TABLE "ContactAttribute" ADD CONSTRAINT "ContactAttribute_contactId_fkey" FOREIGN KEY ("contactId") REFERENCES "Contact"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Address" ADD CONSTRAINT "Address_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Location" ADD CONSTRAINT "Location_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Address" ADD CONSTRAINT "Address_contactId_fkey" FOREIGN KEY ("contactId") REFERENCES "Contact"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Location" ADD CONSTRAINT "Location_contactId_fkey" FOREIGN KEY ("contactId") REFERENCES "Contact"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Email" ADD CONSTRAINT "Email_contactId_fkey" FOREIGN KEY ("contactId") REFERENCES "Contact"("id") ON DELETE CASCADE ON UPDATE CASCADE;

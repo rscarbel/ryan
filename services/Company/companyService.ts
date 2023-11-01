@@ -4,6 +4,7 @@ export const findOrCreateCompany = async ({
   companyName,
   userId,
   notes = null,
+  addressProperties,
   client = prisma,
 }) => {
   const company = await client.company.findFirst({
@@ -17,11 +18,24 @@ export const findOrCreateCompany = async ({
     return company;
   }
 
+  const newAddress = await client.location.create({
+    data: { ...addressProperties },
+  });
+
   return await client.company.create({
     data: {
       name: companyName,
-      userId: userId,
       notes: notes,
+      user: {
+        connect: {
+          id: userId,
+        },
+      },
+      address: {
+        connect: {
+          id: newAddress.id,
+        },
+      },
     },
   });
 };

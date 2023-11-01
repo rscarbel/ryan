@@ -1,5 +1,13 @@
 import prisma from "@/services/globalPrismaClient";
 import { prettifyDate } from "@/app/utils";
+import {
+  ApplicationStatus,
+  Job,
+  ApplicationBoard,
+  ApplicationCard,
+  Email,
+  Location,
+} from "@prisma/client";
 
 export const getFormattedCardData = async (
   applicationCardId,
@@ -13,6 +21,7 @@ export const getFormattedCardData = async (
       job: {
         include: {
           company: true,
+          address: true,
         },
       },
     },
@@ -36,11 +45,12 @@ export const getFormattedCardData = async (
     payAmountCents: applicationCard.job.payAmountCents,
     payFrequency: applicationCard.job.payFrequency,
     currency: applicationCard.job.currency,
-    streetAddress: applicationCard.job.streetAddress,
-    city: applicationCard.job.city,
-    state: applicationCard.job.state,
-    country: applicationCard.job.country,
-    postalCode: applicationCard.job.postalCode,
+    streetAddress: applicationCard.job?.address?.streetAddress,
+    streetAddress2: applicationCard.job?.address?.streetAddress2,
+    city: applicationCard.job?.address?.city,
+    state: applicationCard.job?.address?.state,
+    country: applicationCard.job?.address?.country,
+    postalCode: applicationCard.job?.address?.postalCode,
     applicationLink: applicationCard.applicationLink,
     applicationDate: applicationCard.applicationDate,
     status: applicationCard.status,
@@ -74,8 +84,8 @@ export const getFormattedCardsForBoard = async (boardId, client = prisma) => {
     payAmountCents: card.job.payAmountCents,
     payFrequency: card.job.payFrequency,
     currency: card.job.currency,
-    city: card.job.city,
-    country: card.job.country,
+    city: card.job?.address?.city,
+    country: card.job?.address?.country,
     applicationLink: card.applicationLink,
     applicationDate: prettifyDate(card.applicationDate),
     status: card.status,
@@ -160,3 +170,37 @@ export const deleteCard = async (cardId, client = prisma) => {
     });
   }
 };
+
+export const linkJob = async (
+  applicationCard: ApplicationCard,
+  jobId: number
+): Promise<Job> => {
+  try {
+    // Update the jobId for the applicationCard in the database
+    await prisma.applicationCard.update({
+      where: { id: applicationCard.id },
+      data: { jobId: jobId },
+    });
+
+    // Fetch the linked Job
+    const linkedJob = await prisma.job.findUnique({ where: { id: jobId } });
+
+    if (!linkedJob) {
+      throw new Error("Failed to link the job: Job not found");
+    }
+
+    return linkedJob;
+  } catch (error) {
+    // Log the error for debugging or monitoring purposes
+    console.error(
+      `Error linking job with ID ${jobId} to application card with ID ${applicationCard.id}:`,
+      error.message
+    );
+
+    // Re-throw the error for the caller to handle or return a general error
+    throw new Error(
+      "Failed to link the job due to an internal error. Please try again later."
+    );
+  }
+};
+
