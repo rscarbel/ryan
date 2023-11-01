@@ -35,6 +35,8 @@ const ReadEditFormFields = (props) => {
   const [isHelpTextVisible, setIsHelpTextVisible] = useState(false);
   const [initialValues, setInitialValues] = useState({});
 
+  const editText = props.isReadOnly ? "N/A" : "Click to edit";
+
   useEffect(() => {
     setInitialValues({
       jobTitle: props.jobTitle,
@@ -292,7 +294,7 @@ const ReadEditFormFields = (props) => {
             disabled={props.isReadOnly}
           >
             <InplaceDisplay>
-              {localState.jobDescription || "Click to edit"}
+              {localState.jobDescription || editText}
               <EditIcon isVisible={!props.isReadOnly} />
             </InplaceDisplay>
             <InplaceContent>
@@ -370,7 +372,7 @@ const ReadEditFormFields = (props) => {
               disabled={props.isReadOnly}
             >
               <InplaceDisplay>
-                {props.city || "Click to edit"}
+                {props.city || editText}
                 <EditIcon isVisible={!props.isReadOnly} />
               </InplaceDisplay>
               <InplaceContent>
@@ -407,7 +409,7 @@ const ReadEditFormFields = (props) => {
               disabled={props.isReadOnly}
             >
               <InplaceDisplay>
-                {props.state || "Click to edit"}
+                {props.state || editText}
                 <EditIcon isVisible={!props.isReadOnly} />
               </InplaceDisplay>
               <InplaceContent>
@@ -445,7 +447,7 @@ const ReadEditFormFields = (props) => {
               disabled={props.isReadOnly}
             >
               <InplaceDisplay>
-                {props.postalCode || "Click to edit"}
+                {props.postalCode || editText}
                 <EditIcon isVisible={!props.isReadOnly} />
               </InplaceDisplay>
               <InplaceContent>
@@ -490,7 +492,7 @@ const ReadEditFormFields = (props) => {
             disabled={props.isReadOnly}
           >
             <InplaceDisplay>
-              {props.applicationLink || "Click to edit"}
+              {props.applicationLink || editText}
               <EditIcon isVisible={!props.isReadOnly} />
             </InplaceDisplay>
             <InplaceContent>
@@ -527,7 +529,7 @@ const ReadEditFormFields = (props) => {
             disabled={props.isReadOnly}
           >
             <InplaceDisplay>
-              {prettifyDate(props.applicationDate) || "Click to edit"}
+              {prettifyDate(props.applicationDate) || editText}
               <EditIcon isVisible={!props.isReadOnly} />
             </InplaceDisplay>
             <InplaceContent>
@@ -565,7 +567,7 @@ const ReadEditFormFields = (props) => {
             disabled={props.isReadOnly}
           >
             <InplaceDisplay>
-              {props.notes || "Click to edit"}
+              {props.notes || editText}
               <EditIcon isVisible={!props.isReadOnly} />
             </InplaceDisplay>
             <InplaceContent>
@@ -604,7 +606,7 @@ const ReadEditFormFields = (props) => {
             disabled={props.isReadOnly}
           >
             <InplaceDisplay>
-              {props.status || "Click to edit"}
+              {props.status || editText}
               <EditIcon isVisible={!props.isReadOnly} />
             </InplaceDisplay>
             <InplaceContent>
