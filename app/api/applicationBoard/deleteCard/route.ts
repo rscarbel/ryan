@@ -11,7 +11,7 @@ export async function POST(request) {
   const { id } = await request.json();
 
   const cardToDelete = await prisma.applicationCard.findUnique({
-    where: { id: parseInt(id) },
+    where: { id: id },
     include: {
       job: true,
     },
