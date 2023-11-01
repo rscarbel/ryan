@@ -1,6 +1,7 @@
 import prisma from "@/services/globalPrismaClient";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
+import { getFormattedCardsForBoard } from "@/services/ApplicationCard/applicationCardService";
 import { humanizedPayFrequency } from "../utils";
 import { formatCurrency, prettifyDate } from "@/app/utils";
 import TopMenu from "../TopMenu";
@@ -16,35 +17,7 @@ const getCardsForUser = async (email: string) => {
   });
   if (!board) return [];
 
-  const cards = await prisma.applicationCard.findMany({
-    where: { applicationBoardId: board.id, userId: user.id },
-    include: {
-      job: {
-        include: {
-          company: true,
-          location: true,
-        },
-      },
-    },
-    orderBy: {
-      applicationDate: "desc",
-    },
-  });
-
-  return cards.map((card) => ({
-    companyName: card.job.company.name,
-    jobTitle: card.job.title,
-    workMode: card.job?.workMode,
-    city: card.job?.location?.city,
-    payAmountCents: formatCurrency(
-      card.job?.payAmountCents,
-      card.job?.location?.country
-    ),
-    payFrequency: humanizedPayFrequency[card.job?.payFrequency],
-    applicationLink: card.applicationLink,
-    applicationDate: prettifyDate(card.applicationDate),
-    status: card.status,
-  }));
+  return await getFormattedCardsForBoard(board.id);
 };
 
 const Table = async () => {
