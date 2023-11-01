@@ -4,7 +4,7 @@ import { Calendar } from "primereact/calendar";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
 import { InputNumber } from "primereact/inputnumber";
-import { STYLE_CLASSES, formatCurrency } from "@/app/utils";
+import { STYLE_CLASSES, formatCurrency, prettifyDate } from "@/app/utils";
 import { payFrequencyOptions, humanizedPayFrequency } from "../utils";
 import ReadEditCountriesField from "./ReadEditCountriesField";
 import ReadEditCompaniesField from "./ReadEditCompaniesField";
@@ -527,7 +527,7 @@ const ReadEditFormFields = (props) => {
             disabled={props.isReadOnly}
           >
             <InplaceDisplay>
-              {props.applicationDate || "Click to edit"}
+              {prettifyDate(props.applicationDate) || "Click to edit"}
               <EditIcon isVisible={!props.isReadOnly} />
             </InplaceDisplay>
             <InplaceContent>
