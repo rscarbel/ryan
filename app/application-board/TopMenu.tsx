@@ -30,7 +30,7 @@ const TopMenu: React.FC<{ activeIndex: number }> = ({ activeIndex }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between">
           <div className="flex">
-            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+            <div className="sm:ml-6 sm:flex sm:space-x-8">
               {menuItems.map((item, index) => (
                 <Link
                   key={item.key}
