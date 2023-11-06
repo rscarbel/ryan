@@ -2,8 +2,6 @@ import prisma from "@/services/globalPrismaClient";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { getFormattedCardsForBoard } from "@/services/ApplicationCard/applicationCardService";
-import { humanizedPayFrequency } from "../utils";
-import { formatCurrency, prettifyDate } from "@/app/utils";
 import TopMenu from "../TopMenu";
 import "primereact/resources/themes/viva-light/theme.css";
 import "primeicons/primeicons.css";
@@ -57,7 +55,7 @@ const Table = async () => {
             headerClassName="font-semibold"
           />
           <Column
-            field="payAmount"
+            field="payAmountCents"
             header="Pay Amount"
             sortable
             headerClassName="font-semibold"

@@ -1,13 +1,6 @@
 import prisma from "@/services/globalPrismaClient";
 import { prettifyDate } from "@/app/utils";
-import {
-  ApplicationStatus,
-  Job,
-  ApplicationBoard,
-  ApplicationCard,
-  Email,
-  Location,
-} from "@prisma/client";
+import { Job, ApplicationCard } from "@prisma/client";
 
 export const getFormattedCardData = async (
   applicationCardId,

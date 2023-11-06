@@ -5,9 +5,6 @@ CREATE TYPE "UserRole" AS ENUM ('USER', 'EDITOR', 'ADMIN');
 CREATE TYPE "EmailStatus" AS ENUM ('SENT', 'FAILED', 'DRAFT');
 
 -- CreateEnum
-CREATE TYPE "OAuthService" AS ENUM ('GOOGLE', 'FACEBOOK', 'TWITTER');
-
--- CreateEnum
 CREATE TYPE "SiteContentFormat" AS ENUM ('HTML', 'MARKDOWN', 'PLAIN_TEXT');
 
 -- CreateEnum
@@ -77,8 +74,9 @@ CREATE TABLE "ApplicationBoard" (
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
-    "firstName" TEXT NOT NULL,
-    "lastName" TEXT NOT NULL,
+    "firstName" TEXT,
+    "lastName" TEXT,
+    "imageURL" TEXT,
     "roles" "UserRole"[] DEFAULT ARRAY['USER']::"UserRole"[],
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -244,9 +242,9 @@ CREATE TABLE "SiteContentHistory" (
 -- CreateTable
 CREATE TABLE "OAuth" (
     "id" SERIAL NOT NULL,
-    "userId" INTEGER NOT NULL,
-    "provider" "OAuthService" NOT NULL,
+    "provider" TEXT NOT NULL,
     "externalId" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL,
 
     CONSTRAINT "OAuth_pkey" PRIMARY KEY ("id")
 );

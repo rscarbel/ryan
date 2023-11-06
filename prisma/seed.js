@@ -1,6 +1,5 @@
 const {
   UserRole,
-  OAuthService,
   ApplicationStatus,
   PayFrequency,
   WorkMode,
@@ -23,7 +22,7 @@ const getCurrencySymbol = (country) => {
 
 const prisma = new PrismaClient();
 
-const NUM_APPLICATION_CARDS = 1;
+const NUM_APPLICATION_CARDS = 10;
 
 const randomApplicationStatus = () => {
   const statuses = Object.values(ApplicationStatus);
@@ -99,7 +98,7 @@ async function main() {
   await prisma.oAuth.create({
     data: {
       userId: user1.id,
-      provider: OAuthService.GOOGLE,
+      provider: "google",
       externalId: "externalId1",
     },
   });

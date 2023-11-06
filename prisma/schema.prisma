@@ -23,12 +23,6 @@ enum EmailStatus {
   DRAFT
 }
 
-enum OAuthService {
-  GOOGLE
-  FACEBOOK
-  TWITTER
-}
-
 enum SiteContentFormat {
   HTML
   MARKDOWN
@@ -96,14 +90,14 @@ model Job {
 }
 
 model Compensation {
-  id           Int           @id @default(autoincrement())
-  payAmount    Float         @default(0)
+  id           Int          @id @default(autoincrement())
+  payAmount    Float        @default(0)
   payFrequency PayFrequency @default(hourly)
-  currency     String        @default("USD")
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @default(now()) @updatedAt
-  job          Job           @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  jobId        Int           @unique
+  currency     String       @default("USD")
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @default(now()) @updatedAt
+  job          Job          @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  jobId        Int          @unique
 }
 
 model ApplicationBoard {
@@ -121,8 +115,9 @@ model ApplicationBoard {
 model User {
   id             Int                @id @default(autoincrement())
   email          String             @unique
-  firstName      String
-  lastName       String
+  firstName      String?
+  lastName       String?
+  imageURL       String?
   roles          UserRole[]         @default([USER])
   oAuth          OAuth[]
   posts          Post[]
@@ -300,10 +295,10 @@ model SiteContentHistory {
 
 model OAuth {
   id         Int          @id @default(autoincrement())
-  userId     Int
-  provider   OAuthService
+  provider   String
   externalId String
   user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int
 
   @@unique([provider, externalId, userId])
 }
