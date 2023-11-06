@@ -9,12 +9,12 @@ import { updateCardStatus, updateCard, deleteCard } from "../network";
 import ColumnRenderer from "./column/ColumnRenderer";
 import EditCardFormModal from "../edit-card/EditCardFormModal";
 import { EditCardContext } from "./card/EditCardContext";
-import Fireworks from "./Fireworks";
-import Confetti from "./Confetti";
+import NoCards from "./NoCards";
 
 const MILLISECONDS_FOR_MESSAGES = 3000;
 const SAVING_LIFE = 10000000;
 const MILLISECONDS_IN_A_SECOND = 1000;
+const DELAY_FACTOR = 5;
 
 const Board: React.FC = ({ board }) => {
   const [boardData, setBoardData] = useState(board);
@@ -27,8 +27,12 @@ const Board: React.FC = ({ board }) => {
 
   const { columns, applicationCards, columnOrder } = boardData;
 
+  const numberOfCards = Object.keys(applicationCards || {}).length || 0;
+
+  if (!numberOfCards) return <NoCards />;
+
   // the more cards there are the more expensive updates are, so delay it proportional to their number
-  const saveDelayMilliseconds = Object.keys(applicationCards).length * 5;
+  const saveDelayMilliseconds = numberOfCards * DELAY_FACTOR;
 
   const showSuccess = () => {
     toast.current?.show({
@@ -216,7 +220,7 @@ const Board: React.FC = ({ board }) => {
       />
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="flex flex-wrap sm:flex-nowrap lg:justify-center p-4">
-          {columnOrder.map((columnId) => (
+          {columnOrder?.map((columnId) => (
             <ColumnRenderer
               key={columnId}
               columnId={columnId}

@@ -76,15 +76,6 @@ const CreateCard: React.FC = () => {
     setExistingJobData(jobData);
   };
 
-  const handlePayAmountChange = (e) => {
-    const { value } = e.target;
-    const cents = Math.round(parseFloat(value) * 100) || 0;
-    setFormData((prev) => ({
-      ...prev,
-      job: { ...prev.job, payAmount: cents },
-    }));
-  };
-
   const handleCountryChange = (country) => {
     const currencySymbol = getCurrencySymbol(country);
     const countryData = { country: country, currency: currencySymbol };
@@ -101,7 +92,6 @@ const CreateCard: React.FC = () => {
     }));
   };
 
-  const payFormAmount = formData?.payAmount / 100;
   const countrySymbol = getCountryCode(formData.country);
   const currencySymbol = getCurrencySymbol(formData.country);
 
@@ -128,11 +118,9 @@ const CreateCard: React.FC = () => {
           {...formData}
           onInputChange={handleInputChange}
           onCountryChange={handleCountryChange}
-          onPayChange={handlePayAmountChange}
           onCompanyChange={handleCompanyChange}
           countrySymbol={countrySymbol}
           currencySymbol={currencySymbol}
-          payFormAmount={payFormAmount}
           onJobBlur={checkIfJobExists}
           existingJobData={existingJobData}
           isDisabled={loading}

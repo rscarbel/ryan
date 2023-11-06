@@ -14,6 +14,9 @@ import EditIcon from "./EditIcon";
 import Undo from "./Undo";
 import { Divider } from "primereact/divider";
 
+const JOB_DESCRIPTION_ROWS = 5;
+const JOB_DESCRIPTION_COLUMNS = 30;
+
 const ReadEditFormFields = (props) => {
   const [localState, setLocalState] = useState({
     jobTitle: props.jobTitle,
@@ -75,20 +78,10 @@ const ReadEditFormFields = (props) => {
   const payFrequencyDisplay = humanizedPayFrequency[props.payFrequency];
   const payDisplay = `${payAmountDisplay} ${payFrequencyDisplay}`;
 
-  const handleLocalChange = (e) => {
-    const { name, value } = e.target;
+  const handleLocalChange = ({ name, value }) => {
     setLocalState((prevState) => ({
       ...prevState,
       [name]: value,
-    }));
-  };
-
-  const handlePayAmountChange = (e) => {
-    const { value } = e.target;
-    const cents = Math.round(parseFloat(value) * 100) || 0;
-    setLocalState((prevState) => ({
-      ...prevState,
-      payAmount: cents,
     }));
   };
 
@@ -160,7 +153,12 @@ const ReadEditFormFields = (props) => {
                 id="jobTitle"
                 name="jobTitle"
                 value={localState.jobTitle}
-                onChange={handleLocalChange}
+                onChange={(e) =>
+                  handleLocalChange({
+                    name: "jobTitle",
+                    value: e.target?.value,
+                  })
+                }
                 disabled={props.isDisabled}
               />
             </InplaceContent>
@@ -204,9 +202,15 @@ const ReadEditFormFields = (props) => {
                 <div className="flex">
                   <InputNumber
                     inputId={`currency-${props.countrySymbol.toLowerCase()}`}
-                    value={localState.payAmount / 100}
+                    name="payAmount"
+                    value={localState.payAmount}
+                    onChange={(e) => {
+                      handleLocalChange({
+                        name: "payAmount",
+                        value: e.value,
+                      });
+                    }}
                     className={`flex-1 mr-2`}
-                    onValueChange={handlePayAmountChange}
                     placeholder="0.00"
                     mode="currency"
                     currency={props.currencySymbol}
@@ -219,7 +223,12 @@ const ReadEditFormFields = (props) => {
                     name="payFrequency"
                     value={localState.payFrequency}
                     options={payFrequencyOptions}
-                    onChange={handleLocalChange}
+                    onChange={(e) => {
+                      handleLocalChange({
+                        name: "payFrequency",
+                        value: e.value,
+                      });
+                    }}
                     placeholder="Frequency"
                     className="flex-1"
                     disabled={props.isDisabled}
@@ -264,7 +273,12 @@ const ReadEditFormFields = (props) => {
                   value={localState.workMode}
                   className={STYLE_CLASSES.FORM_BASIC_INPUT}
                   options={["remote", "onsite", "hybrid"]}
-                  onChange={handleLocalChange}
+                  onChange={(e) =>
+                    handleLocalChange({
+                      name: "workMode",
+                      value: e.value,
+                    })
+                  }
                   placeholder="Select a Status"
                   disabled={props.isDisabled}
                 />
@@ -303,10 +317,15 @@ const ReadEditFormFields = (props) => {
                 id="jobDescription"
                 name="jobDescription"
                 value={localState.jobDescription}
-                onChange={handleLocalChange}
+                onChange={(e) =>
+                  handleLocalChange({
+                    name: "jobDescription",
+                    value: e.target?.value,
+                  })
+                }
                 disabled={props.isDisabled}
-                rows={5}
-                cols={30}
+                rows={JOB_DESCRIPTION_ROWS}
+                cols={JOB_DESCRIPTION_COLUMNS}
               />
             </InplaceContent>
           </Inplace>
@@ -345,7 +364,12 @@ const ReadEditFormFields = (props) => {
                   id="streetAddress"
                   name="streetAddress"
                   value={localState.streetAddress}
-                  onChange={handleLocalChange}
+                  onChange={(e) =>
+                    handleLocalChange({
+                      name: "streetAddress",
+                      value: e.target.value,
+                    })
+                  }
                   disabled={props.isDisabled}
                 />
               </InplaceContent>
@@ -381,7 +405,12 @@ const ReadEditFormFields = (props) => {
                   id="city"
                   name="city"
                   value={localState.city}
-                  onChange={handleLocalChange}
+                  onChange={(e) =>
+                    handleLocalChange({
+                      name: "city",
+                      value: e.target.value,
+                    })
+                  }
                   disabled={props.isDisabled}
                 />
               </InplaceContent>
@@ -418,7 +447,12 @@ const ReadEditFormFields = (props) => {
                   id="state"
                   name="state"
                   value={localState.state}
-                  onChange={handleLocalChange}
+                  onChange={(e) =>
+                    handleLocalChange({
+                      name: "state",
+                      value: e.target.value,
+                    })
+                  }
                   disabled={props.isDisabled}
                 />
               </InplaceContent>
@@ -456,7 +490,12 @@ const ReadEditFormFields = (props) => {
                   id="postalCode"
                   name="postalCode"
                   value={localState.postalCode}
-                  onChange={handleLocalChange}
+                  onChange={(e) =>
+                    handleLocalChange({
+                      name: "postalCode",
+                      value: e.target.value,
+                    })
+                  }
                   disabled={props.isDisabled}
                 />
               </InplaceContent>
@@ -501,7 +540,12 @@ const ReadEditFormFields = (props) => {
                 id="applicationLink"
                 name="applicationLink"
                 value={localState.applicationLink}
-                onChange={handleLocalChange}
+                onChange={(e) =>
+                  handleLocalChange({
+                    name: "applicationLink",
+                    value: e.target.value,
+                  })
+                }
                 disabled={props.isDisabled}
               />
             </InplaceContent>
@@ -538,7 +582,12 @@ const ReadEditFormFields = (props) => {
                 name="applicationDate"
                 className="mt-1 w-full shadow-sm border-gray-300 rounded  focus:border-blue-500 focus:ring focus:ring-blue-200"
                 value={new Date(localState.applicationDate || Date.now())}
-                onChange={handleLocalChange}
+                onChange={(e) =>
+                  handleLocalChange({
+                    name: "applicationDate",
+                    value: e.target.value,
+                  })
+                }
                 dateFormat="mm/dd/yy"
                 disabled={props.isDisabled}
               />
@@ -576,7 +625,12 @@ const ReadEditFormFields = (props) => {
                 id="notes"
                 name="notes"
                 value={localState.notes}
-                onChange={handleLocalChange}
+                onChange={(e) =>
+                  handleLocalChange({
+                    name: "notes",
+                    value: e.target.value,
+                  })
+                }
                 rows={5}
                 cols={30}
                 disabled={props.isDisabled}
@@ -623,7 +677,12 @@ const ReadEditFormFields = (props) => {
                   "accepted",
                   "passed",
                 ]}
-                onChange={handleLocalChange}
+                onChange={(e) =>
+                  handleLocalChange({
+                    name: "status",
+                    value: e.target.value,
+                  })
+                }
                 placeholder="Select a Status"
                 disabled={props.isDisabled}
               />

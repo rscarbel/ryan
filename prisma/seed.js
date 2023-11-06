@@ -65,7 +65,7 @@ const randomPayDetails = () => {
 
   return {
     frequency,
-    amount: amount,
+    amount: parseFloat(amount),
   };
 };
 
@@ -180,6 +180,11 @@ async function main() {
               id: contact.id,
             },
           },
+          user: {
+            connect: {
+              id: user1.id,
+            },
+          },
         },
       });
 
@@ -224,16 +229,6 @@ async function main() {
     const currentStatus = randomApplicationStatus();
     const { frequency, amount } = randomPayDetails();
 
-    const jobAddress = await prisma.jobAddress.create({
-      data: {
-        streetAddress: faker.location.streetAddress(),
-        streetAddress2: faker.location.buildingNumber(),
-        city: faker.location.city(),
-        state: faker.location.state(),
-        country: country,
-      },
-    });
-
     const job = await prisma.job.create({
       data: {
         title: faker.person.jobTitle(),
@@ -257,8 +252,12 @@ async function main() {
           },
         },
         address: {
-          connect: {
-            id: jobAddress.id,
+          create: {
+            streetAddress: faker.location.streetAddress(),
+            streetAddress2: faker.location.buildingNumber(),
+            city: faker.location.city(),
+            state: faker.location.state(),
+            country: country,
           },
         },
       },
