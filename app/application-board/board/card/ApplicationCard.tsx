@@ -11,7 +11,7 @@ const ApplicationCard: React.FC<ApplicationCardInterface> = ({
   companyName,
   title: jobTitle,
   workMode,
-  payAmountCents,
+  payAmount,
   payFrequency,
   currency,
   city,
@@ -28,9 +28,9 @@ const ApplicationCard: React.FC<ApplicationCardInterface> = ({
     )}`,
   };
 
-  const payAmountDisplay = formatCurrency(payAmountCents, country, currency);
+  const payAmountDisplay = formatCurrency(payAmount, country, currency);
   const payFrequencyDisplay = humanizedPayFrequency[payFrequency];
-  const hasPay = payAmountCents > 0;
+  const hasPay = payAmount > 0;
   const payDisplay = `${payAmountDisplay} ${payFrequencyDisplay} (${workMode})`;
   const jobValueDisplay = hasPay ? payDisplay : workMode;
   const jobTitleDisplay = city ? `${jobTitle} - ${city}` : jobTitle;

@@ -7,7 +7,7 @@ export const findOrCreateJob = async ({
   companyId,
   jobDescription,
   workMode,
-  payAmountCents,
+  payAmount,
   payFrequency,
   currency,
   addressProperties,
@@ -29,7 +29,7 @@ export const findOrCreateJob = async ({
         title: jobTitle,
         description: jobDescription,
         workMode: workMode,
-        payAmountCents: payAmountCents,
+        payAmount: payAmount,
         payFrequency: payFrequency,
         currency: currency,
         user: {
@@ -58,7 +58,7 @@ export const createOrUpdateJob = async ({
   companyId,
   jobDescription = "",
   workMode = WorkMode.onsite,
-  payAmountCents,
+  payAmount,
   payFrequency,
   currency,
   addressProperties,
@@ -78,7 +78,7 @@ export const createOrUpdateJob = async ({
       where: { id: existingJob.id },
       data: {
         description: jobDescription,
-        payAmountCents: payAmountCents,
+        payAmount: payAmount,
         payFrequency: payFrequency,
         currency: currency,
         address: {
@@ -94,7 +94,7 @@ export const createOrUpdateJob = async ({
         title: jobTitle,
         description: jobDescription,
         workMode: workMode,
-        payAmountCents: payAmountCents,
+        payAmount: payAmount,
         payFrequency: payFrequency,
         currency: currency,
         user: {
@@ -122,7 +122,7 @@ export const updateJob = async ({
   jobTitle,
   jobDescription,
   workMode,
-  payAmountCents,
+  payAmount,
   payFrequency,
   currency,
   streetAddress,
@@ -151,7 +151,7 @@ export const updateJob = async ({
       title: jobTitle,
       description: jobDescription,
       workMode: workMode,
-      payAmountCents: payAmountCents,
+      payAmount: payAmount,
       payFrequency: payFrequency,
       currency: currency,
       address: {

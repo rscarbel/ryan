@@ -18,7 +18,7 @@ const ReadEditFormFields = (props) => {
   const [localState, setLocalState] = useState({
     jobTitle: props.jobTitle,
     jobDescription: props.jobDescription,
-    payAmountCents: props.payAmountCents,
+    payAmount: props.payAmount,
     payFrequency: props.payFrequency,
     workMode: props.workMode,
     streetAddress: props.streetAddress,
@@ -41,7 +41,7 @@ const ReadEditFormFields = (props) => {
     setInitialValues({
       jobTitle: props.jobTitle,
       jobDescription: props.jobDescription,
-      payAmountCents: props.payAmountCents,
+      payAmount: props.payAmount,
       payFrequency: props.payFrequency,
       workMode: props.workMode,
       streetAddress: props.streetAddress,
@@ -67,7 +67,7 @@ const ReadEditFormFields = (props) => {
   };
 
   const payAmountDisplay = formatCurrency(
-    props.payAmountCents,
+    props.payAmount,
     props.country,
     props.currency
   );
@@ -88,7 +88,7 @@ const ReadEditFormFields = (props) => {
     const cents = Math.round(parseFloat(value) * 100) || 0;
     setLocalState((prevState) => ({
       ...prevState,
-      payAmountCents: cents,
+      payAmount: cents,
     }));
   };
 
@@ -190,7 +190,7 @@ const ReadEditFormFields = (props) => {
               closeIcon="pi pi-check"
               onClose={() => {
                 setIsHelpTextVisible(false);
-                handleInplaceClose("payAmountCents");
+                handleInplaceClose("payAmount");
                 handleInplaceClose("payFrequency");
               }}
               onOpen={() => setIsHelpTextVisible(true)}
@@ -204,7 +204,7 @@ const ReadEditFormFields = (props) => {
                 <div className="flex">
                   <InputNumber
                     inputId={`currency-${props.countrySymbol.toLowerCase()}`}
-                    value={localState.payAmountCents / 100}
+                    value={localState.payAmount / 100}
                     className={`flex-1 mr-2`}
                     onValueChange={handlePayAmountChange}
                     placeholder="0.00"
@@ -229,13 +229,13 @@ const ReadEditFormFields = (props) => {
             </Inplace>
             <Undo
               onClick={() => {
-                resetField("payAmountCents");
+                resetField("payAmount");
                 resetField("payFrequency");
               }}
               originalValue={
-                initialValues?.payAmountCents + initialValues?.payFrequency
+                initialValues?.payAmount + initialValues?.payFrequency
               }
-              newValue={props.payAmountCents + props.payFrequency}
+              newValue={props.payAmount + props.payFrequency}
             />
           </div>
         </div>

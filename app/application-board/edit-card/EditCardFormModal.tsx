@@ -21,7 +21,7 @@ const defaultFormData = {
   jobTitle: "",
   description: "",
   workMode: "",
-  payAmountCents: "",
+  payAmount: "",
   payFrequency: "",
   currency: "",
   streetAddress: "",

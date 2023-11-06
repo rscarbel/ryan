@@ -3,7 +3,7 @@ export interface ApplicationCardInterface {
   boardId: number;
   companyName: string;
   title: string;
-  payAmountCents: number;
+  payAmount: number;
   payFrequency: string;
   currency: string;
   workMode: string;

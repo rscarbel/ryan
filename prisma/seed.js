@@ -4,6 +4,7 @@ const {
   ApplicationStatus,
   PayFrequency,
   WorkMode,
+  EmailStatus,
   PrismaClient,
 } = require("@prisma/client");
 const { faker, fa } = require("@faker-js/faker");
@@ -26,6 +27,12 @@ const NUM_APPLICATION_CARDS = 1;
 
 const randomApplicationStatus = () => {
   const statuses = Object.values(ApplicationStatus);
+  const randomIndex = Math.floor(Math.random() * statuses.length);
+  return statuses[randomIndex];
+};
+
+const randomEmailStatus = () => {
+  const statuses = Object.values(EmailStatus);
   const randomIndex = Math.floor(Math.random() * statuses.length);
   return statuses[randomIndex];
 };
@@ -58,7 +65,7 @@ const randomPayDetails = () => {
 
   return {
     frequency,
-    amountCents: Math.round(amount * 100),
+    amount: amount,
   };
 };
 
@@ -74,7 +81,6 @@ async function main() {
   const user1 = await prisma.user.create({
     data: {
       email: "user1@example.com",
-      passwordHash: "hashedPassword1",
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
       roles: [UserRole.USER],
@@ -100,7 +106,7 @@ async function main() {
 
   const board1 = await prisma.applicationBoard.create({
     data: {
-      name: "Job Applications",
+      name: "Seed Job Applications",
       userId: user1.id,
     },
   });
@@ -115,15 +121,6 @@ async function main() {
 
   for (let i = 0; i < NUM_APPLICATION_CARDS; i++) {
     const country = faker.location.country();
-    const companyAddress = await prisma.location.create({
-      data: {
-        streetAddress: faker.location.streetAddress(),
-        streetAddress2: faker.location.buildingNumber(),
-        city: faker.location.city(),
-        state: faker.location.state(),
-        country: country,
-      },
-    });
     const company = await prisma.company.create({
       data: {
         name: faker.company.name(),
@@ -133,8 +130,12 @@ async function main() {
           },
         },
         address: {
-          connect: {
-            id: companyAddress.id,
+          create: {
+            streetAddress: faker.location.streetAddress(),
+            streetAddress2: faker.location.buildingNumber(),
+            city: faker.location.city(),
+            state: faker.location.state(),
+            country: country,
           },
         },
       },
@@ -173,14 +174,10 @@ async function main() {
         data: {
           subject: "Initial Contact",
           body: faker.lorem.sentences(3),
+          status: randomEmailStatus(),
           contact: {
             connect: {
               id: contact.id,
-            },
-          },
-          user: {
-            connect: {
-              id: user1.id,
             },
           },
         },
@@ -225,9 +222,9 @@ async function main() {
     });
 
     const currentStatus = randomApplicationStatus();
-    const { frequency, amountCents } = randomPayDetails();
+    const { frequency, amount } = randomPayDetails();
 
-    const jobAddress = await prisma.location.create({
+    const jobAddress = await prisma.jobAddress.create({
       data: {
         streetAddress: faker.location.streetAddress(),
         streetAddress2: faker.location.buildingNumber(),
@@ -247,9 +244,13 @@ async function main() {
             id: company.id,
           },
         },
-        payAmountCents: amountCents,
-        payFrequency: frequency,
-        currency: getCurrencySymbol(country),
+        compensation: {
+          create: {
+            payAmount: amount,
+            payFrequency: frequency,
+            currency: getCurrencySymbol(country),
+          },
+        },
         user: {
           connect: {
             id: user1.id,
@@ -278,11 +279,6 @@ async function main() {
         notes: faker.lorem.paragraph(),
         status: currentStatus,
         positionIndex: statusIndices[currentStatus],
-        user: {
-          connect: {
-            id: user1.id,
-          },
-        },
         applicationBoard: {
           connect: {
             id: board1.id,

@@ -13,8 +13,8 @@ import Fireworks from "./Fireworks";
 import Confetti from "./Confetti";
 
 const MILLISECONDS_FOR_MESSAGES = 3000;
-const DELAY_FOR_SAVE = 5000;
 const SAVING_LIFE = 10000000;
+const MILLISECONDS_IN_A_SECOND = 1000;
 
 const Board: React.FC = ({ board }) => {
   const [boardData, setBoardData] = useState(board);
@@ -27,6 +27,9 @@ const Board: React.FC = ({ board }) => {
 
   const { columns, applicationCards, columnOrder } = boardData;
 
+  // the more cards there are the more expensive updates are, so delay it proportional to their number
+  const saveDelayMilliseconds = Object.keys(applicationCards).length * 5;
+
   const showSuccess = () => {
     toast.current?.show({
       severity: "success",
@@ -37,7 +40,8 @@ const Board: React.FC = ({ board }) => {
   };
 
   const showSaving = () => {
-    if (isSaving) return;
+    const isAShortTime = saveDelayMilliseconds <= MILLISECONDS_IN_A_SECOND;
+    if (isSaving || isAShortTime) return;
 
     toast.current?.show({
       severity: "info",
@@ -180,7 +184,7 @@ const Board: React.FC = ({ board }) => {
         showError((error as Error).message);
         setBoardData(lastSavedBoardData);
       }
-    }, DELAY_FOR_SAVE);
+    }, saveDelayMilliseconds);
   };
 
   useEffect(() => {

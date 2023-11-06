@@ -29,7 +29,7 @@ const defaultFormData = {
   jobTitle: "",
   description: "",
   workMode: WorkMode.onsite,
-  payAmountCents: 0,
+  payAmount: 0,
   payFrequency: PayFrequency.hourly,
   currency: "USD",
   streetAddress: "",
@@ -81,7 +81,7 @@ const CreateCard: React.FC = () => {
     const cents = Math.round(parseFloat(value) * 100) || 0;
     setFormData((prev) => ({
       ...prev,
-      job: { ...prev.job, payAmountCents: cents },
+      job: { ...prev.job, payAmount: cents },
     }));
   };
 
@@ -101,7 +101,7 @@ const CreateCard: React.FC = () => {
     }));
   };
 
-  const payFormAmount = formData?.payAmountCents / 100;
+  const payFormAmount = formData?.payAmount / 100;
   const countrySymbol = getCountryCode(formData.country);
   const currencySymbol = getCurrencySymbol(formData.country);
 

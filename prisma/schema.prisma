@@ -17,6 +17,12 @@ enum UserRole {
   ADMIN
 }
 
+enum EmailStatus {
+  SENT
+  FAILED
+  DRAFT
+}
+
 enum OAuthService {
   GOOGLE
   FACEBOOK
@@ -60,34 +66,44 @@ model ApplicationCard {
   jobId              Int
   positionIndex      Int
   notes              String?
-  user               User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId             Int
   status             ApplicationStatus @default(applied)
   createdAt          DateTime          @default(now())
   updatedAt          DateTime          @default(now()) @updatedAt
   applicationBoard   ApplicationBoard  @relation(fields: [applicationBoardId], references: [id], onDelete: Cascade)
   applicationBoardId Int
+
+  @@index([applicationBoardId])
 }
 
 model Job {
-  id             Int               @id @default(autoincrement())
-  title          String
-  description    String?
-  workMode       WorkMode?
-  company        Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  companyId      Int
-  applications   ApplicationCard[]
-  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId         Int
-  payAmountCents Int               @default(0)
-  payFrequency   PayFrequency?     @default(hourly)
-  currency       String?           @default("USD")
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime          @default(now()) @updatedAt
-  address    Location    @relation(fields: [addressId], references: [id])
-  addressId   Int
+  id           Int               @id @default(autoincrement())
+  title        String
+  description  String?
+  company      Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId    Int
+  applications ApplicationCard[]
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int
+  workMode     WorkMode?
+  compensation Compensation?
+  address      JobAddress?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @default(now()) @updatedAt
 
   @@unique([title, companyId, userId, workMode])
+  @@index([companyId])
+  @@index([userId])
+}
+
+model Compensation {
+  id           Int           @id @default(autoincrement())
+  payAmount    Float         @default(0)
+  payFrequency PayFrequency @default(hourly)
+  currency     String        @default("USD")
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @default(now()) @updatedAt
+  job          Job           @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  jobId        Int           @unique
 }
 
 model ApplicationBoard {
@@ -103,46 +119,43 @@ model ApplicationBoard {
 }
 
 model User {
-  id                  Int                  @id @default(autoincrement())
-  email               String               @unique
-  passwordHash        String?
-  firstName           String
-  lastName            String
-  roles               UserRole[]           @default([USER])
-  oAuth               OAuth[]
-  passwordResetTokens PasswordResetToken[]
-  posts               Post[]
-  comments            Comment[]
-  edits               EditHistory[]        @relation("EditorToEditHistory")
-  applications        ApplicationBoard[]
-  companies           Company[]
-  emailTemplates      EmailTemplate[]
-  emails              Email[]
-  contacts            Contact[]
-  jobs                Job[]
-  applicationCards    ApplicationCard[]
-  createdAt           DateTime             @default(now())
-  updatedAt           DateTime             @default(now()) @updatedAt
-  deletedAt           DateTime?
-  addresses           Location[]
+  id             Int                @id @default(autoincrement())
+  email          String             @unique
+  firstName      String
+  lastName       String
+  roles          UserRole[]         @default([USER])
+  oAuth          OAuth[]
+  posts          Post[]
+  comments       Comment[]
+  edits          EditHistory[]      @relation("EditorToEditHistory")
+  applications   ApplicationBoard[]
+  companies      Company[]
+  emailTemplates EmailTemplate[]
+  emails         Email[]
+  contacts       Contact[]
+  jobs           Job[]
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @default(now()) @updatedAt
+  deletedAt      DateTime?
+  addresses      UserAddress[]
 }
 
 model Company {
-  id         Int        @id @default(autoincrement())
+  id         Int             @id @default(autoincrement())
   name       String
   contacts   Contact[]
   notes      String?
   sentEmails Email[]
   jobs       Job[]
-  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     Int
   locationId Int?
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @default(now()) @updatedAt
-  address    Location    @relation(fields: [addressId], references: [id])
-  addressId   Int
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @default(now()) @updatedAt
+  address    CompanyAddress?
 
   @@unique([name, userId])
+  @@index([userId])
 }
 
 model Contact {
@@ -151,12 +164,12 @@ model Contact {
   lastName   String
   phone      String?
   email      String?
-  company    Company            @relation(fields: [companyId], references: [id])
-  companyId  Int
+  company    Company?           @relation(fields: [companyId], references: [id])
+  companyId  Int?
   notes      String?
   sentEmails Email[]
   attributes ContactAttribute[]
-  addresses  Location[]
+  addresses  ContactAddress[]
   user       User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     Int
 
@@ -173,39 +186,83 @@ model ContactAttribute {
   @@unique([name, contactId])
 }
 
-model Location {
-  id                Int       @id @default(autoincrement())
-  streetAddress     String?
-  streetAddress2    String?
-  city              String?
-  state             String?
-  country           String?   @default("United States")
-  postalCode        String?
-  companyLocationId Int?
-  fromDate          DateTime  @default(now())
-  throughDate       DateTime?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @default(now()) @updatedAt
-  jobs               Job[]
-  user              User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId            Int?
-  company           Company[]
-  contact           Contact?  @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  contactId         Int?
+model UserAddress {
+  id             Int       @id @default(autoincrement())
+  streetAddress  String?
+  streetAddress2 String?
+  city           String?
+  state          String?
+  country        String?   @default("United States")
+  postalCode     String?
+  fromDate       DateTime  @default(now())
+  throughDate    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @default(now()) @updatedAt
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         Int       @unique
+}
+
+model JobAddress {
+  id             Int      @id @default(autoincrement())
+  streetAddress  String?
+  streetAddress2 String?
+  city           String?
+  state          String?
+  country        String?  @default("United States")
+  postalCode     String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now()) @updatedAt
+  job            Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  jobId          Int      @unique
+}
+
+model CompanyAddress {
+  id             Int      @id @default(autoincrement())
+  streetAddress  String?
+  streetAddress2 String?
+  city           String?
+  state          String?
+  country        String?  @default("United States")
+  postalCode     String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now()) @updatedAt
+  company        Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId      Int      @unique
+}
+
+model ContactAddress {
+  id             Int       @id @default(autoincrement())
+  streetAddress  String?
+  streetAddress2 String?
+  city           String?
+  state          String?
+  country        String?   @default("United States")
+  postalCode     String?
+  fromDate       DateTime  @default(now())
+  throughDate    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @default(now()) @updatedAt
+  contact        Contact   @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId      Int       @unique
 }
 
 model Email {
-  id        Int        @id @default(autoincrement())
+  id        Int         @id @default(autoincrement())
   subject   String
   body      String
-  sentAt    DateTime   @default(now())
+  sentAt    DateTime    @default(now())
   opens     DateTime[]
-  contact   Contact?   @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  status    EmailStatus @default(DRAFT)
+  contact   Contact?    @relation(fields: [contactId], references: [id], onDelete: Cascade)
   contactId Int?
-  company   Company?   @relation(fields: [companyId], references: [id])
+  company   Company?    @relation(fields: [companyId], references: [id])
   companyId Int?
-  user      User       @relation(fields: [userId], references: [id])
+  user      User        @relation(fields: [userId], references: [id])
   userId    Int
+
+  @@index([contactId])
+  @@index([companyId])
+  @@index([userId])
 }
 
 model EmailTemplate {
@@ -217,6 +274,7 @@ model EmailTemplate {
   userId  Int
 
   @@unique([name, userId])
+  @@index([userId])
 }
 
 model SiteContent {
@@ -311,13 +369,4 @@ model Comment {
   post            Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
   author          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   deletedAt       DateTime?
-}
-
-model PasswordResetToken {
-  id     Int      @id @default(autoincrement())
-  userId Int
-  token  String   @unique
-  expiry DateTime
-  used   Boolean  @default(false)
-  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

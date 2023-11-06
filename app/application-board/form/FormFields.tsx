@@ -14,7 +14,7 @@ const FormFields = ({
   jobTitle,
   jobDescription,
   workMode,
-  payAmountCents,
+  payAmount,
   payFrequency,
   streetAddress,
   city,
@@ -110,7 +110,7 @@ const FormFields = ({
         <div className="flex items-center">
           <InputNumber
             inputId={`currency-${countrySymbol.toLowerCase()}`}
-            value={payAmountCents || 0 / 100}
+            value={payAmount || 0 / 100}
             className={`flex-1 mr-2`}
             onValueChange={onPayChange}
             placeholder="0.00"

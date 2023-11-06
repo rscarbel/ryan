@@ -57,7 +57,7 @@ const Table = async () => {
             headerClassName="font-semibold"
           />
           <Column
-            field="payAmountCents"
+            field="payAmount"
             header="Pay Amount"
             sortable
             headerClassName="font-semibold"
