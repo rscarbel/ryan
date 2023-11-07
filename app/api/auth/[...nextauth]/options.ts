@@ -62,15 +62,39 @@ export const options: AuthOptions = {
   callbacks: {
     async signIn({ user, account, profile }) {
       const email = user.email;
+
       if (!email) {
         return false;
       }
       try {
         const existingUser = await prisma.user.findUnique({
           where: { email: email },
+          include: {
+            oAuth: true,
+          },
         });
 
-        if (!existingUser) {
+        if (existingUser) {
+          const isProviderLinked = existingUser.oAuth.some(
+            (oAuthAccount) => oAuthAccount.provider === account.provider
+          );
+
+          if (!isProviderLinked) {
+            await prisma.oAuth.create({
+              data: {
+                provider: account.provider,
+                externalId: account.providerAccountId,
+                user: {
+                  connect: {
+                    id: existingUser.id,
+                  },
+                },
+              },
+            });
+          }
+
+          return true;
+        } else {
           const newUser = await prisma.user.create({
             data: {
               email: email,
@@ -89,20 +113,29 @@ export const options: AuthOptions = {
             },
           });
         }
-
-        return true;
       } catch (error) {
         console.error("Sign in error:", error);
         return false;
       }
+      return true;
     },
     async redirect({ url, baseUrl }) {
+      if (url.startsWith(baseUrl)) {
+        return url;
+      }
       return baseUrl;
     },
     async session({ session, user }) {
+      if (user) {
+        session.user.id = user.id;
+        session.user.roles = user.roles;
+      }
       return session;
     },
     async jwt({ token, user, account, profile }) {
+      if (user) {
+        token.uid = user.id;
+      }
       return token;
     },
   },
