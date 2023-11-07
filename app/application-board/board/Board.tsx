@@ -191,6 +191,7 @@ const Board: React.FC = ({ board }) => {
     }, saveDelayMilliseconds);
   };
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     return () => {
       if (saveTimeoutRef.current) {

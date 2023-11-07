@@ -1,5 +1,4 @@
 import prisma from "@/services/globalPrismaClient";
-import { ApplicationStatus, PayFrequency, WorkMode } from "@prisma/client";
 import { findOrCreateCompany } from "@/services/Company/companyService";
 import { createOrUpdateJob } from "@/services/Job/jobService";
 import { incrementCardsAfterIndex } from "@/services/ApplicationCard/applicationCardService";

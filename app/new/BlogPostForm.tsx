@@ -2,7 +2,6 @@
 "use client";
 
 import { Calendar } from "primereact/calendar";
-import { Editor } from "primereact/editor";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { SplitButton } from "primereact/splitbutton";
@@ -138,10 +137,11 @@ const BlogPostForm: React.FC = () => {
 
           <label className="block mt-4">
             <span className="text-sm font-medium text-gray-700">Content:</span>
-            <Editor
+            <InputTextarea
+              placeholder="Content of the post"
+              className={STYLE_CLASSES.FORM_BASIC_INPUT}
               value={content}
-              onTextChange={(e) => setContent(e.htmlValue)}
-              style={{ height: "320px", padding: "0.5rem" }}
+              onChange={(e) => setContent(e.target.value)}
             />
           </label>
 
