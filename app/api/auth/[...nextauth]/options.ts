@@ -20,15 +20,20 @@ export const options: AuthOptions = {
       },
     }),
     LinkedInProvider({
-      clientId: process.env.LINKEDIN_CLIENT_ID ?? "",
-      clientSecret: process.env.LINKEDIN_CLIENT_SECRET ?? "",
-      profile(profile) {
+      clientId: process.env.LINKEDIN_CLIENT_ID,
+      clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
+      authorization: {
+        params: { scope: "openid profile email" },
+      },
+      issuer: "https://www.linkedin.com",
+      jwks_endpoint: "https://www.linkedin.com/oauth/openid/jwks",
+      profile(profile, tokens) {
         return {
-          id: profile.id,
-          email: profile.emailAddress,
-          firstName: profile.firstName.localized.en_US,
-          lastName: profile.lastName.localized.en_US,
-          imageUrl: profile.profilePicture.displayImage,
+          id: profile.sub,
+          email: profile.email,
+          firstName: profile.given_name,
+          lastName: profile.family_name,
+          imageUrl: profile.picture,
         };
       },
     }),
