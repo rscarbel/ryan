@@ -1,3 +1,5 @@
+import { reportErrorToServer } from "@/app/utils";
+
 export const updateCardStatus = async (
   cardId: string,
   newStatus: string,
@@ -57,7 +59,7 @@ export const createCard = async (card) => {
     const data = await response.json();
     return { response, data };
   } catch (error) {
-    //todo report to bugsnag
+    await reportErrorToServer(error);
   }
 };
 
@@ -70,7 +72,7 @@ export const findCompanies = async (userId: number) => {
     const text = await response.text();
     data = JSON.parse(text);
   } catch (error) {
-    //todo report to bugsnag
+    await reportErrorToServer(error);
   }
   return data?.body || [];
 };
@@ -89,7 +91,7 @@ export const findJobTitle = async ({
     const text = await response.text();
     data = JSON.parse(text);
   } catch (error) {
-    //todo report to bugsnag
+    await reportErrorToServer(error);
   }
   return data?.body || null;
 };
@@ -104,7 +106,7 @@ export const findCard = async (cardId: number) => {
     const responseData = JSON.parse(text);
     data = JSON.parse(responseData.body);
   } catch (error) {
-    //todo report to bugsnag
+    await reportErrorToServer(error);
   }
   return data;
 };

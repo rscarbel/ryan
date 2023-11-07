@@ -3,6 +3,7 @@ import { ApplicationStatus, PayFrequency, WorkMode } from "@prisma/client";
 import { findOrCreateCompany } from "@/services/Company/companyService";
 import { createOrUpdateJob } from "@/services/Job/jobService";
 import { incrementCardsAfterIndex } from "@/services/ApplicationCard/applicationCardService";
+import { reportError } from "@/app/api/reportError/reportError";
 
 export async function POST(request) {
   const {
@@ -103,6 +104,8 @@ export async function POST(request) {
     });
     return new Response(null, { status: 200 });
   } catch (error) {
+    reportError(error);
+
     return new Response(
       JSON.stringify({
         error: error.message,

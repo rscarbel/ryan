@@ -39,3 +39,20 @@ export const prettifyDate = (date: Date) => {
     return "";
   }
 };
+
+
+export const reportErrorToServer = async (error, userInfo = null) => {
+  const errorInfo = {
+    message: error?.message,
+    stack: error?.stack,
+    user: userInfo,
+  };
+
+  await fetch("/api/reportError", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ error: errorInfo }),
+  });
+};

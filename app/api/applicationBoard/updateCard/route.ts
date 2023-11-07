@@ -7,6 +7,7 @@ import {
 import { updateCompany } from "@/services/Company/companyService";
 import { updateJob } from "@/services/Job/jobService";
 import { calculateBoardStructure } from "../calculateBoardStructure";
+import { reportError } from "@/app/api/reportError/reportError";
 
 export async function POST(request: Request) {
   const {
@@ -119,6 +120,8 @@ export async function POST(request: Request) {
       status: 200,
     });
   } catch (error) {
+    reportError(error);
+
     return new Response(
       JSON.stringify({
         error: error.message,

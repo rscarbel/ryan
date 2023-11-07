@@ -1,4 +1,5 @@
 import prisma from "@/services/globalPrismaClient";
+import { reportError } from "@/app/api/reportError/reportError";
 
 export async function POST(request) {
   const { id, status, newPositionIndex } = await request.json();
@@ -88,6 +89,7 @@ export async function POST(request) {
       status: 200,
     });
   } catch (error) {
+    reportError(error);
     return new Response(
       JSON.stringify({
         error: error.message,

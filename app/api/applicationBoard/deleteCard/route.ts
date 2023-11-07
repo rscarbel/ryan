@@ -1,11 +1,11 @@
 import prisma from "@/services/globalPrismaClient";
-
 import {
   decrementCardsAfterIndex,
   deleteCard,
   getFormattedCardsForBoard,
 } from "@/services/ApplicationCard/applicationCardService";
 import { calculateBoardStructure } from "../calculateBoardStructure";
+import { reportError } from "@/app/api/reportError/reportError";
 
 export async function POST(request) {
   const { id } = await request.json();
@@ -46,6 +46,7 @@ export async function POST(request) {
       status: 200,
     });
   } catch (error) {
+    reportError(error);
     return new Response(
       JSON.stringify({
         error: error.message,
