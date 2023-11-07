@@ -56,8 +56,6 @@ export async function POST(request) {
         addressProperties,
       });
 
-      console.log(newCompany.id);
-
       const job = await createOrUpdateJob({
         jobTitle: jobTitle,
         userId: user.id,

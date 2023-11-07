@@ -1,20 +1,17 @@
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import type { AuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import LinkedInProvider from "next-auth/providers/linkedin";
 import prisma from "@/services/globalPrismaClient";
 
-const authorizationOptions: AuthOptions = {
-  adapter: PrismaAdapter(prisma),
+export const options: AuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      allowDangerousEmailAccountLinking: true,
       profile(profile) {
         return {
-          id: profile.id,
+          id: profile.sub,
           email: profile.email,
           firstName: profile.given_name,
           lastName: profile.family_name,
@@ -25,7 +22,6 @@ const authorizationOptions: AuthOptions = {
     LinkedInProvider({
       clientId: process.env.LINKEDIN_CLIENT_ID ?? "",
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET ?? "",
-      allowDangerousEmailAccountLinking: true,
       profile(profile) {
         return {
           id: profile.id,
@@ -39,7 +35,6 @@ const authorizationOptions: AuthOptions = {
     GitHubProvider({
       clientId: process.env.GITHUB_CLIENT_ID as string,
       clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
-      allowDangerousEmailAccountLinking: true,
       profile(profile) {
         return {
           id: profile.id,
@@ -53,73 +48,57 @@ const authorizationOptions: AuthOptions = {
   ],
   session: { strategy: "jwt" },
   events: {
-    async signIn(message) {
-      console.log(message);
-    },
-    async signOut(message) {
-      console.log(message);
-    },
-    async createUser(message) {
-      console.log(message);
-    },
-    async updateUser(message) {
-      console.log(message);
-    },
-    async linkAccount(message) {
-      console.log(message);
-    },
+    async signIn(message) {},
+    async signOut(message) {},
+    async createUser(message) {},
+    async updateUser(message) {},
+    async linkAccount(message) {},
   },
   callbacks: {
     async signIn({ user, account, profile }) {
-      if (account.provider && profile.id) {
-        const oauthUser = await prisma.oAuth.findUnique({
-          where: {
-            provider_externalId_userId: {
-              provider: account.provider,
-              externalId: profile.id.toString(),
-              userId: user.id,
-            },
-          },
+      const email = user.email;
+      if (!email) {
+        return false;
+      }
+      try {
+        const existingUser = await prisma.user.findUnique({
+          where: { email: email },
         });
 
-        if (!oauthUser) {
-          await prisma.oAuth.create({
+        if (!existingUser) {
+          const newUser = await prisma.user.create({
             data: {
-              provider: account.provider,
-              externalId: profile.id.toString(),
-              user: {
-                connect: { id: user.id },
+              email: email,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              imageURL: user.imageUrl,
+              oAuth: {
+                create: {
+                  provider: account.provider,
+                  externalId: account.providerAccountId,
+                },
               },
+            },
+            include: {
+              oAuth: true,
             },
           });
         }
-      }
 
-      return true;
+        return true;
+      } catch (error) {
+        console.error("Sign in error:", error);
+        return false;
+      }
     },
     async redirect({ url, baseUrl }) {
       return baseUrl;
     },
     async session({ session, user }) {
-      if (session?.user && user?.id) {
-        session.user.roles = user.roles;
-      }
       return session;
     },
-    async jwt({ token, user, account, profile, isNewUser }) {
-      if (user) {
-        token.id = user.id;
-        token.roles = user.roles;
-      }
-
-      if (isNewUser && account?.provider && profile?.id) {
-        token.provider = account.provider;
-        token.providerAccountId = profile.id;
-      }
-
+    async jwt({ token, user, account, profile }) {
       return token;
     },
   },
 };
-
-export default authorizationOptions;
